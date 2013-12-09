@@ -2,7 +2,7 @@
 \alias{prentice}
 \alias{prentice.Q4}
 \alias{prentice.SO3}
-\title{Prentice confidence region method}
+\title{Eigenvector theory confidence region}
 \usage{
   prentice(x, alp)
 
@@ -12,8 +12,8 @@
 }
 \arguments{
   \item{x}{\eqn{n\times p}{n-by-p} matrix where each row
-  corresponds to a random rotation in matrix (p=9) or
-  quaternion (p=4) form.}
+  corresponds to a random rotation in matrix (\eqn{p=9}) or
+  quaternion (\eqn{p=4}) form.}
 
   \item{alp}{alpha level desired, e.g. 0.05 or 0.10.}
 }
@@ -23,18 +23,16 @@
 }
 \description{
   Find the radius of a \eqn{100(1-\alpha)}\% confidence
-  region for the projected mean.
+  region for the projected mean based on eigenvector based
+  result.
 }
 \details{
   Compute the radius of a \eqn{100(1-\alpha)}\% confidence
   region for the central orientation based on the projected
   mean estimator using the method due to \cite{Prentice
   (1986)}.  For a rotation specific version see
-  \cite{Rancourt et al. (2000)}. The variability in each
+  \cite{Rancourt et al. (2000)}. The variablity in each
   axis is different so each axis will have its own radius.
-  In \cite{Bingham et al. (2009)} they take the largest
-  radius and use it to form regions that are symmetric
-  about all three axes.
 }
 \examples{
 Qs<-ruars(20,rcayley,kappa=100,space='Q4')
@@ -50,11 +48,9 @@ region(Qs,method='eigen',type='theory',alp=0.1,estimator='mean')
   orientation statistics to investigate variations in human
   kinematics." Journal of the Royal Statistical Society:
   Series C (Applied Statistics), 49(1), pp. 81-94.
-
-Bingham, M. A., Nordman, D., & Vardeman, S. (2009). "Modeling and inference for measured crystal orientations and a tractable class of symmetric distributions for rotations in three dimensions." Journal of the American Statistical Association, 104(488), pp. 1385-1397.
 }
 \seealso{
-  \code{\link{fisheretal}}, \code{\link{chang}},
-  \code{\link{zhang}}
+  \code{\link{bayesCR}}, \code{\link{fisheretal}},
+  \code{\link{chang}}, \code{\link{zhang}}
 }
 

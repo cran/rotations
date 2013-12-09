@@ -6,6 +6,7 @@
 \alias{SO3}
 \alias{SO3.default}
 \alias{SO3.Q4}
+\alias{SO3.SO3}
 \title{Rotation matrices}
 \format{\code{id.SO3} is the identity rotation given by the the 3-by-3 identity matrix.}
 \usage{
@@ -14,6 +15,8 @@
   \method{SO3}{default} (R, theta = NULL, ...)
 
   \method{SO3}{Q4} (R, ...)
+
+  \method{SO3}{SO3} (R, ...)
 
   as.SO3(R)
 
@@ -34,11 +37,11 @@
   depending on whether its argument satifies the conditions
   to be an rotation matrix.  Namely, has determinant one
   and its transpose is its inverse.}
-  \item{SO3.default}{returns an n-by-9 matrix where each
-  row is a rotation matrix constructed from axis U and
-  angle theta.} \item{SO3.Q4}{returns n-by-9 matrix where
-  each row is a rotation matrix constructed from the
-  corresponding quaternion.}
+  \item{SO3.default}{returns an \eqn{n}-by-9 matrix where
+  each row is a rotation matrix constructed from axis
+  \eqn{U} and angle theta.} \item{SO3.Q4}{returns
+  \eqn{n}-by-9 matrix where each row is a rotation matrix
+  constructed from the corresponding quaternion.}
 }
 \description{
   Creates or tests for objects of class "SO3."
@@ -46,12 +49,12 @@
 \details{
   Construct a 3-by-3 matrix to represent a rotation.  Each
   rotation matrix can be interpreted as a rotation of some
-  reference frame about the axis U (of unit length) through
-  the angle theta.  For each axis, U, and angle theta the
-  matrix is formed through
-  \deqn{R=exp[\Phi(Ur)]}{R=exp[\Phi(Ur)].} If the theta
-  element is left empty then the length of each axis is
-  taken to be the angle of rotation theta.  If a
+  reference frame about the axis \eqn{U} (of unit length)
+  through the angle \eqn{\theta}.  For each axis and angle
+  the matrix is formed through
+  \deqn{R=\exp[\Phi(U\theta)]}{R=exp[\Phi(U\theta)].} If no
+  angle of rotation are supplied then the length of each
+  axis is taken to be the angle of rotation theta.  If a
   \code{\link{Q4}} object is given then this function will
   return the rotation matrix equivalent.
 }

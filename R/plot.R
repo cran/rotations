@@ -1,5 +1,5 @@
-library(ggplot2)
-require(grid)
+#library(ggplot2)
+
 
 #this had to be added because the .Call version of SO3.default can't be called from insider the function...I think
 oldSO3 <- function(U, theta=NULL) {
@@ -28,8 +28,8 @@ oldSO3 <- function(U, theta=NULL) {
 	return(R)
 }
 
-suppressMessages(library(ggplot2))
-require(grid)
+#suppressMessages(library(ggplot2))
+#require(gridExtra)
 
 # set origin of concentric circles
 origin <- matrix(oldSO3(c(1,-1,0), pi/16),3,3)
@@ -102,6 +102,7 @@ roteye <- function(origin, center, column=1) {
 #' @export
 #' 
 pointsXYZ <- function(data, center, column=1) {
+  
 	rot <- roteye(origin, center, column)
 	idx <- list(1:3,4:6, 7:9)[[column]]
 	data <- as.matrix(data[,idx])
@@ -122,8 +123,8 @@ pointsXYZ <- function(data, center, column=1) {
 #'
 #' @param x n rotations in \code{SO3} format.
 #' @param center rotation about which to center the observations.
-#' @param col integer 1 to 3 indicating which column to display.
-#' @param to_range show only part of the globe that is in range of the data?
+#' @param col integer or vector 1 to 3 indicating which column(s) to display.  If \code{length(col)>1} then each eyeball is labelled with the corresponding axis.
+#' @param to_range logical; if \code{TRUE} only part of the globe relavent to the data is displayed
 #' @param show_estimates character vector to specify  which of the four estimates of the principal direction to show. Possibilities are "all", "proj.mean", "proj.median", "geom.mean", "geom.median."
 #' @param label_points  vector of labels.
 #' @param mean_regions character vector to specify which of the three confidence regions to show for the projected mean.  Possibilities are "all", "eigen theory","eigen bootstrap, "moment theory", "moment bootstrap."
@@ -147,6 +148,10 @@ pointsXYZ <- function(data, center, column=1) {
 
 plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...) {
 
+  if(length(col)>1){
+    mplotSO3(x, center=center, col=col, to_range=to_range, show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,...)
+  }else{
+  
   Rs <- as.SO3(x)
 	xlimits <- c(-1,1)
 	ylimits <- c(-1,1)
@@ -265,5 +270,69 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
     regs+
 		regsMed+
 		xlim(xlimits) + ylim(ylimits)
+  }
 }
 
+#Function written by Luciano Selzer and published on Stackoverflow on Aug 9 2012 and edited by user "sebastian-c".
+#It removes the guide from a ggplot2 object that can then be drawn by calling "grid.draw()" on what is returned
+g_legend<-function(a.gplot){
+  tmp <- ggplot_gtable(ggplot_build(a.gplot))
+  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
+  if(length(leg)>0){
+    legend <- tmp$grobs[[leg]]
+    return(legend)
+  }else return(NULL)
+}
+
+
+#If more then one column is called in plot.SO3 then this is called to independencly create an eyeball for each column
+#and print them in a single row with the legend at the end, if applicable.
+mplotSO3<-function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...){
+  
+  p4<-NULL
+  if(1 %in% col){
+    p1<-plot(x,center=center,col=1,to_range=to_range,show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,...)
+    p1<-p1+theme(axis.title.x=element_text(size=rel(1.5)))+xlab("x-axis")
+    p4<-g_legend(p1)
+    p1<-p1+theme(legend.position='none')
+  }else p1<-NULL
+
+  if(2 %in% col){
+    p2<-plot(x,center=center,col=2,to_range=to_range,show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,...)
+    p2<-p2+theme(axis.title.x=element_text(size=rel(1.5)))+xlab("y-axis")
+    p4<-g_legend(p2)
+    p2<-p2+theme(legend.position='none')
+  }else p2<-NULL
+
+  if(3 %in% col){
+    p3<-plot(x,center=center,col=3,to_range=to_range,show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,...)
+    p3<-p3+theme(axis.title.x=element_text(size=rel(1.5)))+xlab("z-axis")
+    p4<-g_legend(p3)
+    p3<-p3+theme(legend.position='none')
+  }else p3<-NULL
+
+  
+  
+  ps<-list(p1,p2,p3,p4)
+  ps<-!sapply(ps, is.null)
+  if(all(ps==c(T,T,T,T))){
+    gridExtra::grid.arrange(p1,p2,p3,p4,nrow=2,widths=c(2,2,2,1))
+  }else if(all(ps==c(T,T,F,T))){
+    gridExtra::grid.arrange(p1,p2,p4,nrow=1,widths=c(2,2,1))
+  }else if(all(ps==c(T,F,T,T))){
+    gridExtra::grid.arrange(p1,p3,p4,nrow=1,widths=c(2,2,1))
+  }else if(all(ps==c(F,T,T,T))){
+    gridExtra::grid.arrange(p2,p3,p4,nrow=1,widths=c(2,2,1))
+  }else if(all(ps==c(T,T,T,F))){
+    gridExtra::grid.arrange(p1,p2,p3,nrow=1)
+  }else if(all(ps==c(T,T,F,F))){
+    gridExtra::grid.arrange(p1,p2,nrow=1)
+  }else if(all(ps==c(T,F,T,F))){
+    gridExtra::grid.arrange(p1,p3,nrow=1)
+  } else if(all(ps==c(F,T,T,F))){
+    gridExtra::grid.arrange(p2,p3,nrow=1)
+  }else{
+    stop("Specify the columns correctly.")
+  }
+
+}

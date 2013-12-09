@@ -1,18 +1,18 @@
-#' Confidence region for central orientation
+#' Confidence and creible regions for the central orientation
 #'
-#' Find the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean or median.
+#' Find the radius of a \eqn{100(1-\alpha)}\% confidence or credible region for the central orientation based on the projected mean or median.
 #' For more on the currently available methods see \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}},
-#' and \code{\link{zhang}}.
+#' \code{\link{zhang}} and \code{\link{bayesCR}}.
 #'
-#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (p=9) or quaternion (p=4) form.
-#' @param method character string specifying which type of interval to report, "eigen" or "moment" based theory.
-#' @param type characted string, "bootstrap" or "theory" are available.
-#' @param estimator character string either "mean" or "median."
+#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
+#' @param method character string specifying which type of interval to report, "bayes", "eigen" or "moment" based theory.
+#' @param type characted string, "bootstrap" or "theory" are available.  For Bayes regions, give the type of likelihood: "Cayley","Mises" or "Fisher."
+#' @param estimator character string either "mean" or "median."  Note that not all method/type combinations are available for both estimators.
 #' @param alp the alpha level desired, e.g. 0.05 or 0.10.
 #' @param ... additional arguments that are method specific.
-#' @return Radius of the confidence region centered at the projected mean.
-#' @seealso \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}}, \code{\link{zhang}}
-#' @cite prentice1986, fisher1996, rancourt2000, chang2001
+#' @return For frequentist regions only the radius of the confidence region centered at the specified estimator is returned.
+#'   For Bayes regions the posterior mode and radius of the credible region centered at that mode is returned.
+#' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}}, \code{\link{zhang}}
 #' @export
 #' @examples
 #' Rs<-ruars(20,rcayley,kappa=100)
@@ -20,6 +20,8 @@
 #' region(Rs,method='eigen',type='bootstrap',estimator='mean',alp=0.1,symm=TRUE)
 #' region(Rs,method='moment',type='bootstrap',estimator='mean',alp=0.1,m=100)
 #' region(Rs,method='moment',type='theory',estimator='mean',alp=0.1)
+#' region(Rs,method='Bayes',type='Cayley',estimator='mean',
+#' S0=mean(Rs),kappa0=2,tuneS=39,tuneK=.8,burn_in=100,alp=.01)
 
 region<-function(x,method, type, estimator,alp,...){
 	UseMethod("region")
@@ -72,6 +74,16 @@ region.Q4<-function(x,method, type, estimator,alp=NULL,...){
 		
 		return(r)
 		
+	}else if(method%in%c('Bayes','bayes')){
+	  
+	  if(estimator!='mean'){
+	    stop("Bayes confidence regions are only available for the mean estimator.")
+	  }
+	  
+	  r<-bayesCR.Q4(x=Qs,type=type,alp=alp,...)
+	  
+	  return(r)
+	  
 	}else{
 		
 		stop("Please choose a correct combination of method, type and estimator.  See help file.")
@@ -127,6 +139,16 @@ region.SO3<-function(x,method,type,estimator,alp=NULL,...){
 		
 		return(r)
 		
+	}else if(method%in%c('Bayes','bayes')){
+	  
+	  if(estimator!='mean'){
+	    stop("Bayes confidence regions are only available for the mean estimator.")
+	  }
+	  
+	  r<-bayesCR.SO3(x=Rs,type=type,alp=alp,...)
+	  
+	  return(r)
+	  
 	}else{
 		
 	  stop("Please choose a correct combination of method, type and estimator.  See help file.")
@@ -135,20 +157,19 @@ region.SO3<-function(x,method,type,estimator,alp=NULL,...){
 	
 }
 
-#' Prentice confidence region method
+#' Eigenvector theory confidence region
 #'
-#' Find the radius of a \eqn{100(1-\alpha)}\% confidence region for the projected mean.
+#' Find the radius of a \eqn{100(1-\alpha)}\% confidence region for the projected mean based on eigenvector based result.
 #'
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean
 #' estimator using the method due to \cite{prentice1986}.  For a rotation specific version see \cite{rancourt2000}. The variablity
-#' in each axis is different so each axis will have its own radius.  In \cite{bingham09} they take the largest radius and use it to
-#' form regions that are symmetric about all three axes.
+#' in each axis is different so each axis will have its own radius. 
 #'
-#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (p=9) or quaternion (p=4) form.
+#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param alp alpha level desired, e.g. 0.05 or 0.10.
 #' @return Radius of the confidence region centered at the projected mean for each of the x-, y- and z-axes.
-#' @seealso \code{\link{fisheretal}}, \code{\link{chang}}, \code{\link{zhang}}
-#' @cite prentice1986, rancourt2000, bingham09
+#' @seealso \code{\link{bayesCR}}, \code{\link{fisheretal}}, \code{\link{chang}}, \code{\link{zhang}}
+#' @cite prentice1986, rancourt2000
 #' @export
 #' @examples
 #' Qs<-ruars(20,rcayley,kappa=100,space='Q4')
@@ -205,21 +226,21 @@ prentice.SO3<-function(x,alp=NULL){
 	return(r)
 }
 
-#' Zhang and Nordman confidence region method
+#' M-estimator theory pivotal boostrap confidence region
 #'
-#' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation.
+#' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on M-estiamtor theory.
 #' 
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean
 #' estimator using the method due to Zhang & Nordman (2009) (unpublished MS thesis).  By construction each axis will have the same
 #' radius so the radius reported is for all three axis.  A normal theory version of this procedure uses the theoretical
 #' chi-square limiting distribution and is given by the \code{\link{chang}} option.
 #'
-#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (p=9) or quaternion (p=4) form.
+#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param estimator character string either "mean" or "median."
 #' @param alp alpha level desired, e.g. 0.05 or 0.10.
 #' @param m number of replicates to use to estiamte the critical value.
 #' @return Radius of the confidence region centered at the specified estimator.
-#' @seealso \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}}
+#' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}}
 #' @export
 #' @examples
 #' Rs<-ruars(20,rcayley,kappa=100)
@@ -254,7 +275,7 @@ zhang.SO3<-function(x,estimator,alp=NULL,m=300){
   	n<-nrow(Rs)
   	stats<-zhangMedianC(Rs,m)
   	cdtilde<-cdfunsCSO3(Rs,median(Rs))
-  	rad<-sqrt(as.numeric(quantile(stats,1-alp))*cdtilde[1]/(2*n*cdtilde[2]^2))
+  	rad<-sqrt(as.numeric(quantile(stats,1-alp,na.rm=T))*cdtilde[1]/(2*n*cdtilde[2]^2))
   	
   }else if(estimator=='mean'){
   
@@ -287,7 +308,7 @@ zhang.Q4<-function(x,estimator,alp=NULL,m=300){
   	stats<-zhangQ4(Qs,m)
 		#Shat<-mean(Qs)
   	cdhat<-cdfuns(Qs,estimator)
-		rad<-sqrt(as.numeric(quantile(stats,1-alp))*cdhat$c/(2*n*cdhat$d^2))
+		rad<-sqrt(as.numeric(quantile(stats,1-alp,na.rm=T))*cdhat$c/(2*n*cdhat$d^2))
 		
 	}else if(estimator=='median'){
 		
@@ -321,20 +342,20 @@ cdfuns<-function(Qs,estimator){
 	return(list(c=cd[1],d=cd[2]))
 }
 
-#' Chang and Rivest confidence region method
+#' M-estimator theory confidence region
 #'
-#' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation.
+#' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on M-estimator theory.
 #' 
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation centered at the projected mean
 #' or median based on a result due to \cite{chang2001} amongst others.  By construction each axis will have the same
 #' radius so the radius reported is for all three axes.
 #'
-#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (p=9) or quaternion (p=4) form.
+#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param estimator character string either "mean" or "median."
 #' @param alp alpha level desired, e.g. 0.05 or 0.10.
 #' @return Radius of the confidence region centered at the specified estimator.
 #' @cite chang2001
-#' @seealso \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{zhang}}
+#' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{zhang}}
 #' @export
 #' @examples
 #' Rs<-ruars(20,rcayley,kappa=100)
@@ -384,21 +405,21 @@ chang.Q4<-function(x,estimator,alp=NULL){
 }
 
 
-#' Fisher confidence region method
+#' Eigenvector theory pivotal bootstrap confidence region
 #'
-#' Find the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation.
+#' Find the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on eigenvector theory.
 #'
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean
 #' estimator using the method for the mean polar axis as proposed in \cite{fisher1996}.  To be able to reduce their method
 #' to a radius requires the additonal assumption of rotational symmetry, equation (10) in \cite{fisher1996}. 
 #'
-#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (p=9) or quaternion (p=4) form.
+#' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param alp alpha level desired, e.g. 0.05 or 0.10.
 #' @param boot should the bootstrap or normal theory critical value be used.
 #' @param m number of bootstrap replicates to use to estimate critical value.
 #' @param symm logical; if TRUE (default), a symmetric region is constructed.
 #' @return Radius of the confidence region centered at the projected mean.
-#' @seealso \code{\link{prentice}}, \code{\link{chang}}, \code{\link{zhang}}
+#' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{chang}}, \code{\link{zhang}}
 #' @cite fisher1996
 #' @export
 #' @examples
@@ -428,11 +449,11 @@ fisheretal.Q4<-function(x,alp=NULL,boot=T,m=300,symm=TRUE){
     
 	  Tstats <- fisherBootC(Qs,m,symm)
     
-		qhat<-as.numeric(quantile(Tstats,1-alp))
+		qhat<-as.numeric(quantile(Tstats,1-alp,na.rm=T))
 		
 	}else{
 		
-		qhat<-qchisq(alp,3)
+		qhat<-qchisq(1-alp,3)
 		
 	}
 	
@@ -465,4 +486,3 @@ fisheretal.SO3<-function(x,alp=NULL,boot=T,m=300,symm=T){
 	
 	return(r)
 }
-

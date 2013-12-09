@@ -5,14 +5,18 @@
   fisher_kappa(nu)
 }
 \arguments{
-  \item{nu}{circular variance.}
+  \item{nu}{circular variance}
 }
 \value{
   Concentration parameter corresponding to nu.
 }
 \description{
+  Return the concentration parameter that corresponds to a
+  given circular variance.
+}
+\details{
   The concentration parameter \eqn{\kappa} does not
-  translate across circular distributions A commonly used
+  translate across circular distributions.  A commonly used
   measure of spread in circular distributions that does
   translate is the circular variance defined as
   \eqn{\nu=1-E[\cos(r)]}{\nu=1-E[cos(r)]} where
@@ -23,7 +27,8 @@
   for the matrix-Fisher distribution.
 }
 \references{
-  Mardia, K. V., & Jupp, P. E. Directional statistics. 2000.
+  Mardia K and Jupp P (2000). Directional statistics.
+  John Wiley & Sons, Chichester, England.
 }
 \seealso{
   \code{\link{Fisher}}

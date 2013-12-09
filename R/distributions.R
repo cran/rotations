@@ -27,8 +27,9 @@ rar <- function(n, f, M, ...) {
 #'
 #' Density, distribution function and random generation for the Cayley distribution with concentration \code{kappa} \eqn{\kappa}.
 #'
-#' The symmetric Cayley distribution with concentration kappa (or circular variance nu) had density 
+#' The symmetric Cayley distribution with concentration \eqn{\kappa} has density 
 #' \deqn{C_C(r |\kappa)=\frac{1}{\sqrt{\pi}} \frac{\Gamma(\kappa+2)}{\Gamma(\kappa+1/2)}2^{-(\kappa+1)}(1+\cos r)^\kappa(1-\cos r).}{C(r |\kappa)= \Gamma(\kappa+2)(1+cos r)^\kappa(1-cos r)/[\Gamma(\kappa+1/2)2^(\kappa+1)\sqrt\pi].}
+#' The Cayley distribution is equivalent to the de la Vallee Poussin distribution of \cite{Schaeben1997}.
 #'
 #' @name Cayley
 #' @aliases Cayley rcayley dcayley
@@ -107,10 +108,10 @@ rcayley <- function(n, kappa = 1, nu = NULL) {
 #'
 #' Density, distribution function and random generation for the matrix-Fisher distribution with concentration \code{kappa} \eqn{\kappa}.
 #'
-#' The matrix-Fisher distribution with concentration kappa has density
+#' The matrix-Fisher distribution with concentration \eqn{\kappa} has density
 #' \deqn{C_\mathrm{{F}}(r|\kappa)=\frac{1}{2\pi[\mathrm{I_0}(2\kappa)-\mathrm{I_1}(2\kappa)]}e^{2\kappa\cos(r)}[1-\cos(r)]}{C(r|\kappa)=exp[2\kappa cos(r)][1-cos(r)]/(2\pi[I0(2\kappa)-I1(2\kappa)])}
-#' where \eqn{\mathrm{I_p}(\cdot)}{Ip()} denotes the Bessel function of order \eqn{p} defined as  
-#' \eqn{\mathrm{I_p}(\kappa)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\cos(pr)e^{\kappa\cos r}dr}{Ip(\kappa)}.
+#' with respect to Lebesgue measure where \eqn{\mathrm{I}_p(\cdot)}{Ip()} denotes the Bessel function of order \eqn{p} defined as  
+#' \eqn{\mathrm{I}_p(\kappa)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\cos(pr)e^{\kappa\cos r}dr}{Ip(\kappa)}.
 #'
 #' @name Fisher
 #' @aliases Fisher dfisher rfisher pfisher
@@ -248,7 +249,7 @@ rhaar<-function(n){
 #'
 #' Density, distribution function and random generation for the circular-von Mises distribution with concentration \code{kappa} \eqn{\kappa}.
 #' 
-#' The circular von Mises-based distribution has the density
+#' The circular von Mises distribution with concentration \eqn{\kappa} has density
 #' \deqn{C_\mathrm{M}(r|\kappa)=\frac{1}{2\pi \mathrm{I_0}(\kappa)}e^{\kappa cos(r)}.}{C(r|\kappa)=exp[\kappa cos(r)]/[2\pi I(\kappa)]}
 #' where \eqn{\mathrm{I_0}(\kappa)}{I(\kappa)} is the modified bessel function of order 0.
 #'
@@ -358,8 +359,8 @@ rvmises <- function(n, kappa = 1, nu = NULL) {
 #'
 #' Density, distribution function and random generation for the the generic uniform axis-random spin (UARS) class of distributions.
 #' 
-#' For the rotation R with central orientation S and concentration \eqn{kappa} the UARS density is given by 
-#' \deqn{f(R|S,\kappa)=\frac{4\pi}{3-tr(S^\top R)}C(acos[tr(S^\top R)-1]/2|\kappa)}{f(R|S,\kappa)=4\pi C(acos[tr(S'R)-1]/2|\kappa)/[3-tr(S'R)]}
+#' For the rotation R with central orientation S and concentration \eqn{\kappa} the UARS density is given by 
+#' \deqn{f(R|S,\kappa)=\frac{4\pi}{3-tr(S^\top R)}C(\cos^{-1}[tr(S^\top R)-1]/2|\kappa)}{f(R|S,\kappa)=4\pi C(acos[tr(S'R)-1]/2|\kappa)/[3-tr(S'R)]}
 #' where \eqn{C(r|\kappa)} is one of the \link{Angular-distributions}.
 #'
 #' @name UARS

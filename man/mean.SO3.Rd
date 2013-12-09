@@ -25,8 +25,8 @@
   \item{...}{additional arguments.}
 }
 \value{
-  Estimate of the projected or geometric mean of the
-  sample.
+  Estimate of the projected or geometric mean of the sample
+  in the same parameterization.
 }
 \description{
   Compute the sample geometric or projected mean.
@@ -68,6 +68,7 @@ mean(Qs)
   The Annals of Statistics, pp. 725-736.
 }
 \seealso{
-  \code{\link{median.SO3}}
+  \code{\link{median.SO3}}, \code{\link{bayes.mean}},
+  \code{\link{weighted.mean.SO3}}
 }
 

@@ -17,7 +17,7 @@
   \item{n}{number of observations.  If \code{length(n)>1},
   the length is taken to be the number required.}
 
-  \item{kappa}{concentration parameter.}
+  \item{kappa}{concentration paramter.}
 
   \item{nu}{circular variance, can be used in place of
   \code{kappa}.}
@@ -41,12 +41,14 @@
 }
 \details{
   The symmetric Cayley distribution with concentration
-  kappa (or circular variance nu) had density \deqn{C_C(r
+  \eqn{\kappa} has density \deqn{C_C(r
   |\kappa)=\frac{1}{\sqrt{\pi}}
   \frac{\Gamma(\kappa+2)}{\Gamma(\kappa+1/2)}2^{-(\kappa+1)}(1+\cos
   r)^\kappa(1-\cos r).}{C(r |\kappa)=
   \Gamma(\kappa+2)(1+cos r)^\kappa(1-cos
-  r)/[\Gamma(\kappa+1/2)2^(\kappa+1)\sqrt\pi].}
+  r)/[\Gamma(\kappa+1/2)2^(\kappa+1)\sqrt\pi].} The Cayley
+  distribution is equivalent to the de la Vallee Poussin
+  distribution of \cite{Schaeben (1997)}.
 }
 \references{
   Schaeben H (1997). "A Simple Standard Orientation Density
