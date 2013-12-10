@@ -14,9 +14,9 @@
 #' @param epsilon stopping rule for the geometric-mean.
 #' @param maxIter maximum number of iterations allowed for geometric-mean.
 #' @param ... additional arguments.
-#' @return Estimate of the projected or geometric mean of the sample.
+#' @return Estimate of the projected or geometric mean of the sample in the same parameterization.
 #' @aliases mean.Q4
-#' @seealso \code{\link{median.SO3}}
+#' @seealso \code{\link{median.SO3}}, \code{\link{bayes.mean}}, \code{\link{weighted.mean.SO3}}
 #' @cite tyler1981, moakher02, manton04
 #' @S3method mean SO3
 #' @method mean SO3
@@ -65,7 +65,7 @@ mean.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...) 
 		
 	}else{
 		
-		Rs<-SO3(Qs)
+		Rs<-SO3.Q4(Qs)
   	R<-gmeanSO3C(Rs,maxIter,epsilon)
 		R<-Q4.SO3(R)
 	}
@@ -84,7 +84,7 @@ mean.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...) 
 #' If the choice of distance metric \eqn{d} is Riemannian then the estimator is called the geometric median, 
 #' and if the distance metric in Euclidean then it is called the projected median.
 #' The algorithm used in the geometric case is discussed in \cite{hartley11} 
-#' and the projected case was written by the authors.
+#' and the projected case is in \cite{stanfill2013}.
 #'
 #' @name median.SO3
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix form (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
@@ -92,10 +92,10 @@ mean.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...) 
 #' @param epsilon stopping rule.
 #' @param maxIter maximum number of iterations allowed before returning most recent estimate.
 #' @param ... additional arguments.
-#' @return An estimate of the projected or geometric mean.
+#' @return Estimate of the projected or geometric median in the same parameterization.
 #' @aliases median.Q4 median.SO3
-#' @seealso \code{\link{mean.SO3}}
-#' @cite hartley11
+#' @seealso \code{\link{mean.SO3}}, \code{\link{bayes.mean}}, \code{\link{weighted.mean.SO3}}
+#' @cite hartley11 stanfill2013
 #' @export
 
 median<-function(x,...){
@@ -144,22 +144,23 @@ median.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...
 	if(length(Qs)==4)
 		return(Qs)
 
-  Rs<-SO3(Qs)
+  Rs<-SO3.Q4(Qs)
   
-  R<-median(Rs,type,epsilon,maxIter)
-  
+  R<-median.SO3(Rs,type,epsilon,maxIter,...)
+
   return(Q4.SO3(R))
 }
 
 
-#' Weighted Mean Rotation
+#' Weighted mean rotation
 #'
 #' Compute the weighted geometric or projected mean of a sample of rotations.
 #'
-#' This function takes a sample of 3D rotations (in matrix or quaternion form) and returns the weighted projected arithmetic mean denoted \eqn{\widehat{\bm S}_P}{S_P} or
+#' This function takes a sample of 3D rotations (in matrix or quaternion form) and returns the weighted projected arithmetic mean \eqn{\widehat{\bm S}_P}{S_P} or
 #' geometric mean \eqn{\widehat{\bm S}_G}{S_G} according to the \code{type} option.
-#' For a sample of \eqn{n} rotations in matrix form \eqn{\bm{R}_i\in SO(3), i=1,2,\dots,n}{Ri in SO(3), i=1,2,\dots,n}, the mean-type estimator is defined as \deqn{\widehat{\bm{S}}=argmin_{\bm{S}\in SO(3)}\sum_{i=1}^nd^2(\bm{R}_i,\bm{S})}{argmin\sum d(bar(R),S)} where \eqn{\bar{\bm{R}}=\frac{1}{n}\sum_{i=1}^n\bm{R}_i}{bar(R)=\sum R_i/n} and the distance metric \eqn{d}
-#' is the Riemannian or Euclidean.  For more on the projected mean see \cite{moakher02} and for the geometric mean see \cite{manton04}.
+#' For a sample of \eqn{n} rotations in matrix form \eqn{\bm{R}_i\in SO(3), i=1,2,\dots,n}{Ri in SO(3), i=1,2,\dots,n}, the weighted mean is defined as 
+#' \deqn{\widehat{\bm{S}}=argmin_{\bm{S}\in SO(3)}\sum_{i=1}^nw_id^2(\bm{R}_i,\bm{S})}{argmin\sum wi d^2(Ri,S)} where \eqn{d}
+#' is the Riemannian or Euclidean distance.  For more on the projected mean see \cite{moakher02} and for the geometric mean see \cite{manton04}.
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix form (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param w vector of weights the same length as the number of rows in x giving the weights to use for elements of x.
@@ -167,8 +168,8 @@ median.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...
 #' @param epsilon stopping rule for the geometric method.
 #' @param maxIter maximum number of iterations allowed before returning most recent estimate.
 #' @param ... only used for consistency with mean.default.
-#' @return Weighted mean of the sample.
-#' @seealso \code{\link{median.SO3}}, \code{\link{mean.SO3}}
+#' @return Weighted mean of the sample in the same parameterization.
+#' @seealso \code{\link{median.SO3}}, \code{\link{mean.SO3}}, \code{\link{bayes.mean}}
 #' @aliases weighted.mean.Q4
 #' @cite moakher02
 #' @S3method weighted.mean SO3

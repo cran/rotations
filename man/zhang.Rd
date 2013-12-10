@@ -2,7 +2,7 @@
 \alias{zhang}
 \alias{zhang.Q4}
 \alias{zhang.SO3}
-\title{Zhang and Nordman confidence region method}
+\title{M-estimator theory pivotal boostrap confidence region}
 \usage{
   zhang(x, estimator, alp, m)
 
@@ -12,15 +12,15 @@
 }
 \arguments{
   \item{x}{\eqn{n\times p}{n-by-p} matrix where each row
-  corresponds to a random rotation in matrix (p=9) or
-  quaternion (p=4) form.}
+  corresponds to a random rotation in matrix (\eqn{p=9}) or
+  quaternion (\eqn{p=4}) form.}
 
   \item{estimator}{character string either "mean" or
   "median."}
 
   \item{alp}{alpha level desired, e.g. 0.05 or 0.10.}
 
-  \item{m}{number of replicates to use to estimate the
+  \item{m}{number of replicates to use to estiamte the
   critical value.}
 }
 \value{
@@ -29,7 +29,8 @@
 }
 \description{
   Compute the radius of a \eqn{100(1-\alpha)}\% confidence
-  region for the central orientation.
+  region for the central orientation based on M-estiamtor
+  theory.
 }
 \details{
   Compute the radius of a \eqn{100(1-\alpha)}\% confidence
@@ -47,7 +48,7 @@ Rs<-ruars(20,rcayley,kappa=100)
 region(Rs,method='moment',type='bootstrap',alp=0.1,estimator='mean')
 }
 \seealso{
-  \code{\link{prentice}}, \code{\link{fisheretal}},
-  \code{\link{chang}}
+  \code{\link{bayesCR}}, \code{\link{prentice}},
+  \code{\link{fisheretal}}, \code{\link{chang}}
 }
 

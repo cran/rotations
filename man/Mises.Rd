@@ -17,7 +17,7 @@
   \item{n}{number of observations.  If \code{length(n)>1},
   the length is taken to be the number required.}
 
-  \item{kappa}{concentration parameter.}
+  \item{kappa}{concentration paramter.}
 
   \item{nu}{circular variance, can be used in place of
   \code{kappa}.}
@@ -40,7 +40,8 @@
   \code{kappa} \eqn{\kappa}.
 }
 \details{
-  The circular von Mises-based distribution has the density
+  The circular von Mises distribution with concentration
+  \eqn{\kappa} has density
   \deqn{C_\mathrm{M}(r|\kappa)=\frac{1}{2\pi
   \mathrm{I_0}(\kappa)}e^{\kappa
   cos(r)}.}{C(r|\kappa)=exp[\kappa cos(r)]/[2\pi

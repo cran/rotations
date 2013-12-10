@@ -13,546 +13,1120 @@ using namespace Rcpp;
 arma::mat eskewC(arma::rowvec U);
 static SEXP rotations_eskewC_try(SEXP USEXP) {
 BEGIN_RCPP
-    arma::rowvec U = Rcpp::as<arma::rowvec >(USEXP);
-    arma::mat __result = eskewC(U);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::rowvec >::type U(USEXP );
+        arma::mat __result = eskewC(U);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_eskewC(SEXP USEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_eskewC_try(USEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_eskewC_try(USEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // SO3defaultC
 arma::mat SO3defaultC(arma::mat U, arma::vec theta);
 static SEXP rotations_SO3defaultC_try(SEXP USEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
-    arma::mat U = Rcpp::as<arma::mat >(USEXP);
-    arma::vec theta = Rcpp::as<arma::vec >(thetaSEXP);
-    arma::mat __result = SO3defaultC(U, theta);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type U(USEXP );
+        Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP );
+        arma::mat __result = SO3defaultC(U, theta);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_SO3defaultC(SEXP USEXP, SEXP thetaSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_SO3defaultC_try(USEXP, thetaSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_SO3defaultC_try(USEXP, thetaSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // Q4defaultC
 arma::mat Q4defaultC(arma::mat U, arma::vec theta);
 static SEXP rotations_Q4defaultC_try(SEXP USEXP, SEXP thetaSEXP) {
 BEGIN_RCPP
-    arma::mat U = Rcpp::as<arma::mat >(USEXP);
-    arma::vec theta = Rcpp::as<arma::vec >(thetaSEXP);
-    arma::mat __result = Q4defaultC(U, theta);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type U(USEXP );
+        Rcpp::traits::input_parameter< arma::vec >::type theta(thetaSEXP );
+        arma::mat __result = Q4defaultC(U, theta);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_Q4defaultC(SEXP USEXP, SEXP thetaSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_Q4defaultC_try(USEXP, thetaSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_Q4defaultC_try(USEXP, thetaSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // pMatC
 arma::mat pMatC(arma::mat p);
 static SEXP rotations_pMatC_try(SEXP pSEXP) {
 BEGIN_RCPP
-    arma::mat p = Rcpp::as<arma::mat >(pSEXP);
-    arma::mat __result = pMatC(p);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type p(pSEXP );
+        arma::mat __result = pMatC(p);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_pMatC(SEXP pSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_pMatC_try(pSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_pMatC_try(pSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // genrC
 arma::mat genrC(arma::vec r, arma::mat S, int SO3, arma::mat u);
 static SEXP rotations_genrC_try(SEXP rSEXP, SEXP SSEXP, SEXP SO3SEXP, SEXP uSEXP) {
 BEGIN_RCPP
-    arma::vec r = Rcpp::as<arma::vec >(rSEXP);
-    arma::mat S = Rcpp::as<arma::mat >(SSEXP);
-    int SO3 = Rcpp::as<int >(SO3SEXP);
-    arma::mat u = Rcpp::as<arma::mat >(uSEXP);
-    arma::mat __result = genrC(r, S, SO3, u);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::vec >::type r(rSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP );
+        Rcpp::traits::input_parameter< int >::type SO3(SO3SEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type u(uSEXP );
+        arma::mat __result = genrC(r, S, SO3, u);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_genrC(SEXP rSEXP, SEXP SSEXP, SEXP SO3SEXP, SEXP uSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_genrC_try(rSEXP, SSEXP, SO3SEXP, uSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_genrC_try(rSEXP, SSEXP, SO3SEXP, uSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
+    return __result;
+}
+// centerCpp
+arma::mat centerCpp(arma::mat Rs, arma::mat S);
+static SEXP rotations_centerCpp_try(SEXP RsSEXP, SEXP SSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP );
+        arma::mat __result = centerCpp(Rs, S);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_centerCpp(SEXP RsSEXP, SEXP SSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_centerCpp_try(RsSEXP, SSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// lpvmises
+double lpvmises(arma::mat Rs, arma::mat S, double kappa);
+static SEXP rotations_lpvmises_try(SEXP RsSEXP, SEXP SSEXP, SEXP kappaSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP );
+        Rcpp::traits::input_parameter< double >::type kappa(kappaSEXP );
+        double __result = lpvmises(Rs, S, kappa);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_lpvmises(SEXP RsSEXP, SEXP SSEXP, SEXP kappaSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_lpvmises_try(RsSEXP, SSEXP, kappaSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// lpfisher
+double lpfisher(arma::mat Rs, arma::mat S, double kappa);
+static SEXP rotations_lpfisher_try(SEXP RsSEXP, SEXP SSEXP, SEXP kappaSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP );
+        Rcpp::traits::input_parameter< double >::type kappa(kappaSEXP );
+        double __result = lpfisher(Rs, S, kappa);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_lpfisher(SEXP RsSEXP, SEXP SSEXP, SEXP kappaSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_lpfisher_try(RsSEXP, SSEXP, kappaSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// lpcayley
+double lpcayley(arma::mat Rs, arma::mat S, double kappa);
+static SEXP rotations_lpcayley_try(SEXP RsSEXP, SEXP SSEXP, SEXP kappaSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP );
+        Rcpp::traits::input_parameter< double >::type kappa(kappaSEXP );
+        double __result = lpcayley(Rs, S, kappa);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_lpcayley(SEXP RsSEXP, SEXP SSEXP, SEXP kappaSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_lpcayley_try(RsSEXP, SSEXP, kappaSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// S_MCMC_CPP
+arma::mat S_MCMC_CPP(arma::mat Rs, arma::mat oldS, double rho, double kappa, Function f);
+static SEXP rotations_S_MCMC_CPP_try(SEXP RsSEXP, SEXP oldSSEXP, SEXP rhoSEXP, SEXP kappaSEXP, SEXP fSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type oldS(oldSSEXP );
+        Rcpp::traits::input_parameter< double >::type rho(rhoSEXP );
+        Rcpp::traits::input_parameter< double >::type kappa(kappaSEXP );
+        Rcpp::traits::input_parameter< Function >::type f(fSEXP );
+        arma::mat __result = S_MCMC_CPP(Rs, oldS, rho, kappa, f);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_S_MCMC_CPP(SEXP RsSEXP, SEXP oldSSEXP, SEXP rhoSEXP, SEXP kappaSEXP, SEXP fSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_S_MCMC_CPP_try(RsSEXP, oldSSEXP, rhoSEXP, kappaSEXP, fSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// kap_MCMC_CPP
+double kap_MCMC_CPP(arma::mat Rs, double oldKappa, double sigma, arma::mat S, Function f);
+static SEXP rotations_kap_MCMC_CPP_try(SEXP RsSEXP, SEXP oldKappaSEXP, SEXP sigmaSEXP, SEXP SSEXP, SEXP fSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< double >::type oldKappa(oldKappaSEXP );
+        Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S(SSEXP );
+        Rcpp::traits::input_parameter< Function >::type f(fSEXP );
+        double __result = kap_MCMC_CPP(Rs, oldKappa, sigma, S, f);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_kap_MCMC_CPP(SEXP RsSEXP, SEXP oldKappaSEXP, SEXP sigmaSEXP, SEXP SSEXP, SEXP fSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_kap_MCMC_CPP_try(RsSEXP, oldKappaSEXP, sigmaSEXP, SSEXP, fSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// afun_CPP
+arma::rowvec afun_CPP(arma::mat R1, arma::mat R2);
+static SEXP rotations_afun_CPP_try(SEXP R1SEXP, SEXP R2SEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type R1(R1SEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type R2(R2SEXP );
+        arma::rowvec __result = afun_CPP(R1, R2);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_afun_CPP(SEXP R1SEXP, SEXP R2SEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_afun_CPP_try(R1SEXP, R2SEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
+    return __result;
+}
+// both_MCMC_CPP
+List both_MCMC_CPP(arma::mat Rs, arma::mat S0, double kappa0, double rho, double sigma, int burnin, int B, Function f);
+static SEXP rotations_both_MCMC_CPP_try(SEXP RsSEXP, SEXP S0SEXP, SEXP kappa0SEXP, SEXP rhoSEXP, SEXP sigmaSEXP, SEXP burninSEXP, SEXP BSEXP, SEXP fSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type S0(S0SEXP );
+        Rcpp::traits::input_parameter< double >::type kappa0(kappa0SEXP );
+        Rcpp::traits::input_parameter< double >::type rho(rhoSEXP );
+        Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP );
+        Rcpp::traits::input_parameter< int >::type burnin(burninSEXP );
+        Rcpp::traits::input_parameter< int >::type B(BSEXP );
+        Rcpp::traits::input_parameter< Function >::type f(fSEXP );
+        List __result = both_MCMC_CPP(Rs, S0, kappa0, rho, sigma, burnin, B, f);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP_RETURN_ERROR
+}
+RcppExport SEXP rotations_both_MCMC_CPP(SEXP RsSEXP, SEXP S0SEXP, SEXP kappa0SEXP, SEXP rhoSEXP, SEXP sigmaSEXP, SEXP burninSEXP, SEXP BSEXP, SEXP fSEXP) {
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_both_MCMC_CPP_try(RsSEXP, S0SEXP, kappa0SEXP, rhoSEXP, sigmaSEXP, burninSEXP, BSEXP, fSEXP));
+    }
+    Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
+    UNPROTECT(1);
     return __result;
 }
 // checkQ4
 int checkQ4(NumericMatrix Q);
 static SEXP rotations_checkQ4_try(SEXP QSEXP) {
 BEGIN_RCPP
-    NumericMatrix Q = Rcpp::as<NumericMatrix >(QSEXP);
-    int __result = checkQ4(Q);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Q(QSEXP );
+        int __result = checkQ4(Q);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_checkQ4(SEXP QSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_checkQ4_try(QSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_checkQ4_try(QSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // checkSO3
 int checkSO3(arma::mat Rs);
 static SEXP rotations_checkSO3_try(SEXP RsSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    int __result = checkSO3(Rs);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        int __result = checkSO3(Rs);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_checkSO3(SEXP RsSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_checkSO3_try(RsSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_checkSO3_try(RsSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // expskewC
 arma::mat expskewC(arma::mat M);
 static SEXP rotations_expskewC_try(SEXP MSEXP) {
 BEGIN_RCPP
-    arma::mat M = Rcpp::as<arma::mat >(MSEXP);
-    arma::mat __result = expskewC(M);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type M(MSEXP );
+        arma::mat __result = expskewC(M);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_expskewC(SEXP MSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_expskewC_try(MSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_expskewC_try(MSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // expskewCMulti
 arma::mat expskewCMulti(arma::mat M);
 static SEXP rotations_expskewCMulti_try(SEXP MSEXP) {
 BEGIN_RCPP
-    arma::mat M = Rcpp::as<arma::mat >(MSEXP);
-    arma::mat __result = expskewCMulti(M);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type M(MSEXP );
+        arma::mat __result = expskewCMulti(M);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_expskewCMulti(SEXP MSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_expskewCMulti_try(MSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_expskewCMulti_try(MSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // logSO3C
 arma::mat logSO3C(arma::mat R);
 static SEXP rotations_logSO3C_try(SEXP RSEXP) {
 BEGIN_RCPP
-    arma::mat R = Rcpp::as<arma::mat >(RSEXP);
-    arma::mat __result = logSO3C(R);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP );
+        arma::mat __result = logSO3C(R);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_logSO3C(SEXP RSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_logSO3C_try(RSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_logSO3C_try(RSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // logSO3CMulti
 arma::mat logSO3CMulti(arma::mat R);
 static SEXP rotations_logSO3CMulti_try(SEXP RSEXP) {
 BEGIN_RCPP
-    arma::mat R = Rcpp::as<arma::mat >(RSEXP);
-    arma::mat __result = logSO3CMulti(R);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type R(RSEXP );
+        arma::mat __result = logSO3CMulti(R);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_logSO3CMulti(SEXP RSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_logSO3CMulti_try(RSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_logSO3CMulti_try(RSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // projectSO3C
 arma::mat projectSO3C(arma::mat M);
 static SEXP rotations_projectSO3C_try(SEXP MSEXP) {
 BEGIN_RCPP
-    arma::mat M = Rcpp::as<arma::mat >(MSEXP);
-    arma::mat __result = projectSO3C(M);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type M(MSEXP );
+        arma::mat __result = projectSO3C(M);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_projectSO3C(SEXP MSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_projectSO3C_try(MSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_projectSO3C_try(MSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // meanSO3C
 arma::mat meanSO3C(arma::mat Rs);
 static SEXP rotations_meanSO3C_try(SEXP RsSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    arma::mat __result = meanSO3C(Rs);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        arma::mat __result = meanSO3C(Rs);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_meanSO3C(SEXP RsSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_meanSO3C_try(RsSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_meanSO3C_try(RsSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // meanQ4C
 arma::rowvec meanQ4C(arma::mat Q);
 static SEXP rotations_meanQ4C_try(SEXP QSEXP) {
 BEGIN_RCPP
-    arma::mat Q = Rcpp::as<arma::mat >(QSEXP);
-    arma::rowvec __result = meanQ4C(Q);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Q(QSEXP );
+        arma::rowvec __result = meanQ4C(Q);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_meanQ4C(SEXP QSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_meanQ4C_try(QSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_meanQ4C_try(QSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // medianSO3C
 arma::mat medianSO3C(arma::mat Rs, int maxIterations, double maxEps);
 static SEXP rotations_medianSO3C_try(SEXP RsSEXP, SEXP maxIterationsSEXP, SEXP maxEpsSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    int maxIterations = Rcpp::as<int >(maxIterationsSEXP);
-    double maxEps = Rcpp::as<double >(maxEpsSEXP);
-    arma::mat __result = medianSO3C(Rs, maxIterations, maxEps);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< int >::type maxIterations(maxIterationsSEXP );
+        Rcpp::traits::input_parameter< double >::type maxEps(maxEpsSEXP );
+        arma::mat __result = medianSO3C(Rs, maxIterations, maxEps);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_medianSO3C(SEXP RsSEXP, SEXP maxIterationsSEXP, SEXP maxEpsSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_medianSO3C_try(RsSEXP, maxIterationsSEXP, maxEpsSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_medianSO3C_try(RsSEXP, maxIterationsSEXP, maxEpsSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // HartmedianSO3C
 arma::mat HartmedianSO3C(arma::mat Rs, int maxIterations, double maxEps);
 static SEXP rotations_HartmedianSO3C_try(SEXP RsSEXP, SEXP maxIterationsSEXP, SEXP maxEpsSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    int maxIterations = Rcpp::as<int >(maxIterationsSEXP);
-    double maxEps = Rcpp::as<double >(maxEpsSEXP);
-    arma::mat __result = HartmedianSO3C(Rs, maxIterations, maxEps);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< int >::type maxIterations(maxIterationsSEXP );
+        Rcpp::traits::input_parameter< double >::type maxEps(maxEpsSEXP );
+        arma::mat __result = HartmedianSO3C(Rs, maxIterations, maxEps);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_HartmedianSO3C(SEXP RsSEXP, SEXP maxIterationsSEXP, SEXP maxEpsSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_HartmedianSO3C_try(RsSEXP, maxIterationsSEXP, maxEpsSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_HartmedianSO3C_try(RsSEXP, maxIterationsSEXP, maxEpsSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // gmeanSO3C
 arma::mat gmeanSO3C(arma::mat Rs, int maxIterations, double maxEps);
 static SEXP rotations_gmeanSO3C_try(SEXP RsSEXP, SEXP maxIterationsSEXP, SEXP maxEpsSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    int maxIterations = Rcpp::as<int >(maxIterationsSEXP);
-    double maxEps = Rcpp::as<double >(maxEpsSEXP);
-    arma::mat __result = gmeanSO3C(Rs, maxIterations, maxEps);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< int >::type maxIterations(maxIterationsSEXP );
+        Rcpp::traits::input_parameter< double >::type maxEps(maxEpsSEXP );
+        arma::mat __result = gmeanSO3C(Rs, maxIterations, maxEps);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_gmeanSO3C(SEXP RsSEXP, SEXP maxIterationsSEXP, SEXP maxEpsSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_gmeanSO3C_try(RsSEXP, maxIterationsSEXP, maxEpsSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_gmeanSO3C_try(RsSEXP, maxIterationsSEXP, maxEpsSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // fisherAxisC
 double fisherAxisC(arma::mat Qs, arma::rowvec Qhat);
 static SEXP rotations_fisherAxisC_try(SEXP QsSEXP, SEXP QhatSEXP) {
 BEGIN_RCPP
-    arma::mat Qs = Rcpp::as<arma::mat >(QsSEXP);
-    arma::rowvec Qhat = Rcpp::as<arma::rowvec >(QhatSEXP);
-    double __result = fisherAxisC(Qs, Qhat);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Qs(QsSEXP );
+        Rcpp::traits::input_parameter< arma::rowvec >::type Qhat(QhatSEXP );
+        double __result = fisherAxisC(Qs, Qhat);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_fisherAxisC(SEXP QsSEXP, SEXP QhatSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_fisherAxisC_try(QsSEXP, QhatSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_fisherAxisC_try(QsSEXP, QhatSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // fisherAxisCSymmetric
 double fisherAxisCSymmetric(arma::mat Qs, arma::rowvec Qhat);
 static SEXP rotations_fisherAxisCSymmetric_try(SEXP QsSEXP, SEXP QhatSEXP) {
 BEGIN_RCPP
-    arma::mat Qs = Rcpp::as<arma::mat >(QsSEXP);
-    arma::rowvec Qhat = Rcpp::as<arma::rowvec >(QhatSEXP);
-    double __result = fisherAxisCSymmetric(Qs, Qhat);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Qs(QsSEXP );
+        Rcpp::traits::input_parameter< arma::rowvec >::type Qhat(QhatSEXP );
+        double __result = fisherAxisCSymmetric(Qs, Qhat);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_fisherAxisCSymmetric(SEXP QsSEXP, SEXP QhatSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_fisherAxisCSymmetric_try(QsSEXP, QhatSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_fisherAxisCSymmetric_try(QsSEXP, QhatSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // fisherBootC
 arma::vec fisherBootC(arma::mat Qs, int m, bool symm);
 static SEXP rotations_fisherBootC_try(SEXP QsSEXP, SEXP mSEXP, SEXP symmSEXP) {
 BEGIN_RCPP
-    arma::mat Qs = Rcpp::as<arma::mat >(QsSEXP);
-    int m = Rcpp::as<int >(mSEXP);
-    bool symm = Rcpp::as<bool >(symmSEXP);
-    arma::vec __result = fisherBootC(Qs, m, symm);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Qs(QsSEXP );
+        Rcpp::traits::input_parameter< int >::type m(mSEXP );
+        Rcpp::traits::input_parameter< bool >::type symm(symmSEXP );
+        arma::vec __result = fisherBootC(Qs, m, symm);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_fisherBootC(SEXP QsSEXP, SEXP mSEXP, SEXP symmSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_fisherBootC_try(QsSEXP, mSEXP, symmSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_fisherBootC_try(QsSEXP, mSEXP, symmSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // RdistC
 NumericVector RdistC(NumericMatrix Q1, NumericVector Q2);
 static SEXP rotations_RdistC_try(SEXP Q1SEXP, SEXP Q2SEXP) {
 BEGIN_RCPP
-    NumericMatrix Q1 = Rcpp::as<NumericMatrix >(Q1SEXP);
-    NumericVector Q2 = Rcpp::as<NumericVector >(Q2SEXP);
-    NumericVector __result = RdistC(Q1, Q2);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Q1(Q1SEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type Q2(Q2SEXP );
+        NumericVector __result = RdistC(Q1, Q2);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_RdistC(SEXP Q1SEXP, SEXP Q2SEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_RdistC_try(Q1SEXP, Q2SEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_RdistC_try(Q1SEXP, Q2SEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // rdistSO3C
 arma::rowvec rdistSO3C(arma::mat Rs, arma::mat R2);
 static SEXP rotations_rdistSO3C_try(SEXP RsSEXP, SEXP R2SEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    arma::mat R2 = Rcpp::as<arma::mat >(R2SEXP);
-    arma::rowvec __result = rdistSO3C(Rs, R2);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type R2(R2SEXP );
+        arma::rowvec __result = rdistSO3C(Rs, R2);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_rdistSO3C(SEXP RsSEXP, SEXP R2SEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_rdistSO3C_try(RsSEXP, R2SEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_rdistSO3C_try(RsSEXP, R2SEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // EdistC
 NumericVector EdistC(NumericMatrix Q1, NumericVector Q2);
 static SEXP rotations_EdistC_try(SEXP Q1SEXP, SEXP Q2SEXP) {
 BEGIN_RCPP
-    NumericMatrix Q1 = Rcpp::as<NumericMatrix >(Q1SEXP);
-    NumericVector Q2 = Rcpp::as<NumericVector >(Q2SEXP);
-    NumericVector __result = EdistC(Q1, Q2);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Q1(Q1SEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type Q2(Q2SEXP );
+        NumericVector __result = EdistC(Q1, Q2);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_EdistC(SEXP Q1SEXP, SEXP Q2SEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_EdistC_try(Q1SEXP, Q2SEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_EdistC_try(Q1SEXP, Q2SEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // oneRdistC
 double oneRdistC(NumericMatrix Q1, NumericVector Q2);
 static SEXP rotations_oneRdistC_try(SEXP Q1SEXP, SEXP Q2SEXP) {
 BEGIN_RCPP
-    NumericMatrix Q1 = Rcpp::as<NumericMatrix >(Q1SEXP);
-    NumericVector Q2 = Rcpp::as<NumericVector >(Q2SEXP);
-    double __result = oneRdistC(Q1, Q2);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Q1(Q1SEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type Q2(Q2SEXP );
+        double __result = oneRdistC(Q1, Q2);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_oneRdistC(SEXP Q1SEXP, SEXP Q2SEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_oneRdistC_try(Q1SEXP, Q2SEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_oneRdistC_try(Q1SEXP, Q2SEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // cdfunsC
 NumericVector cdfunsC(NumericMatrix Qs, NumericVector Qhat);
 static SEXP rotations_cdfunsC_try(SEXP QsSEXP, SEXP QhatSEXP) {
 BEGIN_RCPP
-    NumericMatrix Qs = Rcpp::as<NumericMatrix >(QsSEXP);
-    NumericVector Qhat = Rcpp::as<NumericVector >(QhatSEXP);
-    NumericVector __result = cdfunsC(Qs, Qhat);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Qs(QsSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type Qhat(QhatSEXP );
+        NumericVector __result = cdfunsC(Qs, Qhat);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_cdfunsC(SEXP QsSEXP, SEXP QhatSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_cdfunsC_try(QsSEXP, QhatSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_cdfunsC_try(QsSEXP, QhatSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // cdfunsCMedian
 NumericVector cdfunsCMedian(NumericMatrix Qs, NumericVector Qhat);
 static SEXP rotations_cdfunsCMedian_try(SEXP QsSEXP, SEXP QhatSEXP) {
 BEGIN_RCPP
-    NumericMatrix Qs = Rcpp::as<NumericMatrix >(QsSEXP);
-    NumericVector Qhat = Rcpp::as<NumericVector >(QhatSEXP);
-    NumericVector __result = cdfunsCMedian(Qs, Qhat);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Qs(QsSEXP );
+        Rcpp::traits::input_parameter< NumericVector >::type Qhat(QhatSEXP );
+        NumericVector __result = cdfunsCMedian(Qs, Qhat);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_cdfunsCMedian(SEXP QsSEXP, SEXP QhatSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_cdfunsCMedian_try(QsSEXP, QhatSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_cdfunsCMedian_try(QsSEXP, QhatSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // zhangQ4
 NumericVector zhangQ4(NumericMatrix Q, int m);
 static SEXP rotations_zhangQ4_try(SEXP QSEXP, SEXP mSEXP) {
 BEGIN_RCPP
-    NumericMatrix Q = Rcpp::as<NumericMatrix >(QSEXP);
-    int m = Rcpp::as<int >(mSEXP);
-    NumericVector __result = zhangQ4(Q, m);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< NumericMatrix >::type Q(QSEXP );
+        Rcpp::traits::input_parameter< int >::type m(mSEXP );
+        NumericVector __result = zhangQ4(Q, m);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_zhangQ4(SEXP QSEXP, SEXP mSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_zhangQ4_try(QSEXP, mSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_zhangQ4_try(QSEXP, mSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // cdfunsCSO3
 NumericVector cdfunsCSO3(arma::mat Rs, arma::mat Rhat);
 static SEXP rotations_cdfunsCSO3_try(SEXP RsSEXP, SEXP RhatSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    arma::mat Rhat = Rcpp::as<arma::mat >(RhatSEXP);
-    NumericVector __result = cdfunsCSO3(Rs, Rhat);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< arma::mat >::type Rhat(RhatSEXP );
+        NumericVector __result = cdfunsCSO3(Rs, Rhat);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_cdfunsCSO3(SEXP RsSEXP, SEXP RhatSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_cdfunsCSO3_try(RsSEXP, RhatSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_cdfunsCSO3_try(RsSEXP, RhatSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 // zhangMedianC
 NumericVector zhangMedianC(arma::mat Rs, int m);
 static SEXP rotations_zhangMedianC_try(SEXP RsSEXP, SEXP mSEXP) {
 BEGIN_RCPP
-    arma::mat Rs = Rcpp::as<arma::mat >(RsSEXP);
-    int m = Rcpp::as<int >(mSEXP);
-    NumericVector __result = zhangMedianC(Rs, m);
-    return Rcpp::wrap(__result);
+    SEXP __sexp_result;
+    {
+        Rcpp::traits::input_parameter< arma::mat >::type Rs(RsSEXP );
+        Rcpp::traits::input_parameter< int >::type m(mSEXP );
+        NumericVector __result = zhangMedianC(Rs, m);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
 END_RCPP_RETURN_ERROR
 }
 RcppExport SEXP rotations_zhangMedianC(SEXP RsSEXP, SEXP mSEXP) {
-    Rcpp::RNGScope __rngScope;
-    SEXP __result = PROTECT(rotations_zhangMedianC_try(RsSEXP, mSEXP));
+    SEXP __result;
+    {
+        Rcpp::RNGScope __rngScope;
+        __result = PROTECT(rotations_zhangMedianC_try(RsSEXP, mSEXP));
+    }
     Rboolean __isError = Rf_inherits(__result, "try-error");
+    if (__isError) {
+        SEXP __msgSEXP = Rf_asChar(__result);
+        UNPROTECT(1);
+        Rf_error(CHAR(__msgSEXP));
+    }
     UNPROTECT(1);
-    if (__isError)
-        Rf_error(CHAR(Rf_asChar(__result)));
     return __result;
 }
 
@@ -565,6 +1139,14 @@ static int rotations_RcppExport_validate(const char* sig) {
         signatures.insert("arma::mat(*Q4defaultC)(arma::mat,arma::vec)");
         signatures.insert("arma::mat(*pMatC)(arma::mat)");
         signatures.insert("arma::mat(*genrC)(arma::vec,arma::mat,int,arma::mat)");
+        signatures.insert("arma::mat(*centerCpp)(arma::mat,arma::mat)");
+        signatures.insert("double(*lpvmises)(arma::mat,arma::mat,double)");
+        signatures.insert("double(*lpfisher)(arma::mat,arma::mat,double)");
+        signatures.insert("double(*lpcayley)(arma::mat,arma::mat,double)");
+        signatures.insert("arma::mat(*S_MCMC_CPP)(arma::mat,arma::mat,double,double,Function)");
+        signatures.insert("double(*kap_MCMC_CPP)(arma::mat,double,double,arma::mat,Function)");
+        signatures.insert("arma::rowvec(*afun_CPP)(arma::mat,arma::mat)");
+        signatures.insert("List(*both_MCMC_CPP)(arma::mat,arma::mat,double,double,double,int,int,Function)");
         signatures.insert("int(*checkQ4)(NumericMatrix)");
         signatures.insert("int(*checkSO3)(arma::mat)");
         signatures.insert("arma::mat(*expskewC)(arma::mat)");
@@ -600,6 +1182,14 @@ RcppExport SEXP rotations_RcppExport_registerCCallable() {
     R_RegisterCCallable("rotations", "rotations_Q4defaultC", (DL_FUNC)rotations_Q4defaultC_try);
     R_RegisterCCallable("rotations", "rotations_pMatC", (DL_FUNC)rotations_pMatC_try);
     R_RegisterCCallable("rotations", "rotations_genrC", (DL_FUNC)rotations_genrC_try);
+    R_RegisterCCallable("rotations", "rotations_centerCpp", (DL_FUNC)rotations_centerCpp_try);
+    R_RegisterCCallable("rotations", "rotations_lpvmises", (DL_FUNC)rotations_lpvmises_try);
+    R_RegisterCCallable("rotations", "rotations_lpfisher", (DL_FUNC)rotations_lpfisher_try);
+    R_RegisterCCallable("rotations", "rotations_lpcayley", (DL_FUNC)rotations_lpcayley_try);
+    R_RegisterCCallable("rotations", "rotations_S_MCMC_CPP", (DL_FUNC)rotations_S_MCMC_CPP_try);
+    R_RegisterCCallable("rotations", "rotations_kap_MCMC_CPP", (DL_FUNC)rotations_kap_MCMC_CPP_try);
+    R_RegisterCCallable("rotations", "rotations_afun_CPP", (DL_FUNC)rotations_afun_CPP_try);
+    R_RegisterCCallable("rotations", "rotations_both_MCMC_CPP", (DL_FUNC)rotations_both_MCMC_CPP_try);
     R_RegisterCCallable("rotations", "rotations_checkQ4", (DL_FUNC)rotations_checkQ4_try);
     R_RegisterCCallable("rotations", "rotations_checkSO3", (DL_FUNC)rotations_checkSO3_try);
     R_RegisterCCallable("rotations", "rotations_expskewC", (DL_FUNC)rotations_expskewC_try);
