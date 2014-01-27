@@ -1,7 +1,7 @@
 Package: rotations
 Type: Package
 Title: Tools for Working with Rotation Data
-Version: 0.2
+Version: 1.0
 Author: Bryan Stanfill <stanfill@iastate.edu>, Heike Hofmann
     <hofmann@iastate.edu>, Ulrike Genschel <ulrike@iastate.edu>
 Maintainer: Bryan Stanfill <stanfill@iastate.edu>
@@ -12,14 +12,15 @@ Description: This package implements tools for working with rotational data: it
     for the central orientation based on those estimators and it includes a novel 
     visualization technique for rotation data.
 License: MIT + file LICENSE
-Depends: R (>= 3.0), ggplot2, Rcpp, RcppArmadillo
+Depends: R (>= 3.0), ggplot2, Rcpp
 Imports: grid, stats, utils, methods
-Suggests: gridExtra
+Suggests: gridExtra, knitr, onion, orientlib
 LinkingTo: Rcpp, RcppArmadillo
-Collate: 'help.R' 'parameterizations.R' 'estimators.R' 'preliminary.R'
+VignetteBuilder: knitr
+Collate: 'help.R' 'estimators.R' 'preliminary.R' 'parameterizations.R'
         'distributions.R' 'kappa.R' 'regions.R' 'RcppExports.R'
         'plot.R' 'grid-search.R' 'bayes.R' 'primatives.R'
-Packaged: 2013-12-09 22:42:34 UTC; stanfill
+Packaged: 2014-01-27 23:15:32 UTC; stanfill
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-12-10 15:01:02
+Date/Publication: 2014-01-28 08:43:40

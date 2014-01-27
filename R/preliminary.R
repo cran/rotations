@@ -38,7 +38,6 @@ arsample.unif <- function(f, M, ...) {
 #' both in \eqn{SO(3)}, the Euclidean distance between them is \deqn{||R_1-R_2||_F}{||R1-R2||} where \eqn{||\cdot||_F}{|| ||} is the Frobenius norm.
 #' The Riemannian distance is defined as \deqn{||Log(R_1^\top R_2)||_F}{||Log(R1'R2)||} where \eqn{Log} is the matrix logarithm, and it corresponds
 #' to the misorientation angle of \eqn{R_1^\top R_2}{R1'R2}.
-#' To compute the distance matrix use \code{stats::dist()}.
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param R2,Q2 the second rotation in the same parameterization as x.
@@ -47,17 +46,24 @@ arsample.unif <- function(f, M, ...) {
 #' @param ... additional arguments.
 #' @return The rotational distance between each rotation in x and R2 or Q2.
 #' @export
+#' @examples
+#' rs <- rcayley(20, kappa = 10)
+#' Rs <- genR(rs, S = id.SO3)
+#' dEs <- rot.dist(Rs,id.SO3)
+#' dRs <- rot.dist(Rs, id.SO3 , method = 'intrinsic')
+#' all.equal(dRs, abs(rs))              #TRUE
+#' all.equal(dEs, 2*sqrt(2)*sin(dRs/2)) #TRUE
 
-dist<-function(x,...){
-  UseMethod("dist")
+rot.dist<-function(x,...){
+  UseMethod("rot.dist")
 }
 
 
-#' @rdname dist
-#' @method dist SO3
-#' @S3method dist SO3
+#' @rdname rot.dist
+#' @method rot.dist SO3
+#' @S3method rot.dist SO3
 
-dist.SO3 <- function(x, R2=id.SO3, method='extrinsic' , p=1,...) {
+rot.dist.SO3 <- function(x, R2=id.SO3, method='extrinsic' , p=1,...) {
   
   R1<-formatSO3(x)
   
@@ -86,11 +92,11 @@ dist.SO3 <- function(x, R2=id.SO3, method='extrinsic' , p=1,...) {
 }
 
 
-#' @rdname dist
-#' @method dist Q4
-#' @S3method dist Q4
+#' @rdname rot.dist
+#' @method rot.dist Q4
+#' @S3method rot.dist Q4
 
-dist.Q4 <- function(x, Q2=id.Q4 ,method='extrinsic', p=1,...) {
+rot.dist.Q4 <- function(x, Q2=id.Q4 ,method='extrinsic', p=1,...) {
 
   Q1<-formatQ4(x)
   Q2<-formatQ4(Q2)
@@ -115,48 +121,54 @@ dist.Q4 <- function(x, Q2=id.Q4 ,method='extrinsic', p=1,...) {
 #' 
 #' Compute the misorientation angle of a rotation.
 #' 
-#' Every rotation can be thought of as some reference coordinate system rotated about an axis through an angle.  These quantites
+#' Every rotation can be thought of as some reference coordinate system rotated about an axis through an angle.  These quantities
 #' are referred to as the misorientation axis and misorientation angle, respectively, in the material sciences literature.
 #' This function returns the misorentation angle associated with a rotation assuming the reference coordinate system
 #' is the identity.
 #'  
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @return Angle of rotation.
-#' @seealso \code{\link{axis}}
+#' @seealso \code{\link{mis.axis}}
 #' @export
+#' @examples
+#' rs <- rcayley(20, kappa = 20)
+#' Rs <- genR(rs, S = id.SO3)
+#' mis.angle(Rs)
+#' 
+#' #If the central orientation is id.SO3 then mis.angle(Rs) and abs(rs) are equal
+#' all.equal(mis.angle(Rs), abs(rs))  #TRUE
+#' 
+#' #If the central orientation is NOT id.SO3 then mis.angle(Rs) and abs(rs) are usual unequal
+#' Rs <- genR(rs, S = genR(pi/8))
+#' all.equal(mis.angle(Rs), abs(rs))  #Mean relative difference > 0
 
-angle<-function(x){
-  UseMethod("angle")
+mis.angle<-function(x){
+  UseMethod("mis.angle")
 }
 
 
-#' @rdname angle
-#' @method angle SO3
-#' @S3method angle SO3
+#' @rdname mis.angle
+#' @method mis.angle SO3
+#' @S3method mis.angle SO3
 
-angle.SO3 <- function(x){
+mis.angle.SO3 <- function(x){
 	
 	Rs<-formatSO3(x)
-	n<-nrow(Rs)
-	theta<-c(rdistSO3C(Rs,id.SO3))
+	theta<-c(rdistSO3C(Rs,diag(1,3,3)))
   return(theta)
 }
 
 
-#' @rdname angle
-#' @method angle Q4
-#' @S3method angle Q4
+#' @rdname mis.angle
+#' @method mis.angle Q4
+#' @S3method mis.angle Q4
 
-angle.Q4 <- function(x){
+mis.angle.Q4 <- function(x){
 	
   Qs<-formatQ4(x)
-	n<-nrow(Qs)
-	theta<-rep(0,n)
-	
-	for(i in 1:n){
-	  theta[i]<-2*acos(Qs[i,1])
-	}
-	 return(theta)
+	theta<-2*acos(Qs[,1])
+  class(theta)<-"numeric"
+	return(theta)
 }
 
 
@@ -164,26 +176,35 @@ angle.Q4 <- function(x){
 #' 
 #' Determine the misorientation axis of a rotation.
 #' 
-#' Every rotation can be interpreted as some reference coordinate system rotated about an axis through an angle.  These quantites
+#' Every rotation can be interpreted as some reference coordinate system rotated about an axis through an angle.  These quantities
 #' are referred to as the misorientation axis and misorientation angle, respectively, in the material sciences literature.
 #' This function returns the misorentation axis associated with a rotation assuming the reference coordinate system
 #' is the identity.
 #' 
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
-#' @param ... additional arguements.
+#' @param ... additional arguments.
 #' @return Axis in form of three dimensional vector of length one.
-#' @seealso \code{\link{angle}}
+#' @seealso \code{\link{mis.angle}}
 #' @export
+#' @examples
+#' rs <- rcayley(20, kappa = 20)
+#' Rs <- genR(rs, S = id.SO3)
+#' mis.axis(Rs)
+#' all.equal(Rs, as.SO3(mis.axis(Rs), mis.angle(Rs)))
+#' 
+#' Qs <- genR(rs, S = id.Q4, space = "Q4")
+#' mis.axis(Qs)
+#' all.equal(Qs, as.Q4(mis.axis(Qs), mis.angle(Qs)))
 
-axis<-function(x,...){
-  UseMethod("axis")
+mis.axis<-function(x,...){
+  UseMethod("mis.axis")
 }
 
-#' @rdname axis
-#' @method axis SO3
-#' @S3method axis SO3
+#' @rdname mis.axis
+#' @method mis.axis SO3
+#' @S3method mis.axis SO3
 
-axis.SO3<-function(x,...){
+mis.axis.SO3<-function(x,...){
   
 	R<-formatSO3(x)
   n<-nrow(R)
@@ -193,20 +214,26 @@ axis.SO3<-function(x,...){
 		Ri<-matrix(R[i,],3,3)
   	X <- Ri - t(Ri)
   	u[i,] <- rev(X[upper.tri(X)])*c(-1,1,-1)
-		u[i,]<-u[i,]/sqrt(sum(u[i,]^2))
-	}
-  return(u) # will be trouble, if R is symmetric, i.e. id,  .... 
+    norm<-sqrt(sum(u[i,]^2))
+    
+    if(norm!=0){
+      u[i,]<-u[i,]/norm
+    }
 
+	}
+
+  return(u) # will be trouble, if R is symmetric, i.e. id,  .... 
+  
 }
 
-#' @rdname axis
-#' @method axis Q4
-#' @S3method axis Q4
+#' @rdname mis.axis
+#' @method mis.axis Q4
+#' @S3method mis.axis Q4
 
-axis.Q4 <- function(x,...){
+mis.axis.Q4<- function(x,...){
   
   q<-formatQ4(x)
-  theta<-angle(q)
+  theta<-mis.angle(q)
   
   u <- q[,2:4]/sin(theta/2)
 
@@ -219,8 +246,6 @@ axis.Q4 <- function(x,...){
   
   return(u)
 }
-
-
 
 eskew <- function(U) {
   
@@ -255,9 +280,9 @@ eskew <- function(U) {
 #' @return A \eqn{n\times p}{n-by-p}matrix where each row is a random rotation matrix (\eqn{p=9}) or quaternion (\eqn{p=4}).
 #' @export
 #' @examples
-#' r<-rvmises(20,0.01)
-#' Rs<-genR(r,space="SO3")
-#' Qs<-genR(r,space="Q4")
+#' r <- rvmises(20, kappa = 0.01)
+#' Rs <- genR(r, space = "SO3")
+#' Qs <- genR(r, space = "Q4")
 
 genR <- function(r, S = NULL, space='SO3') {
   
@@ -265,7 +290,7 @@ genR <- function(r, S = NULL, space='SO3') {
     stop("Incorrect space argument.  Options are: SO3 and Q4. ")
   
   n<-length(r)
-  
+
   theta <- acos(runif(n, -1, 1))
   
   # Generate angles phi from a uniform distribution from -pi to pi
@@ -279,9 +304,9 @@ genR <- function(r, S = NULL, space='SO3') {
   	#S<-matrix(S,3,3)
   	#o<-SO3defaultC(u,r)
   	#o<-genrC(r,S,1,u)
-  	
-  	o<-SO3(u,r)
-  	
+
+  	o<-as.SO3.default(x=u,theta=r)
+    
   	if(is.null(S)){
   		
   		class(o) <- "SO3"
@@ -313,7 +338,7 @@ genR <- function(r, S = NULL, space='SO3') {
   	}else{
   	
   		S<-formatQ4(S)
-  		S[2:4]<--S[2:4]
+      S<--S
   		q<-center.Q4(q,S)
   	
   		class(q)<-"Q4"
@@ -331,21 +356,29 @@ genR <- function(r, S = NULL, space='SO3') {
 #' The expansion is significantly simplified for skew-symmetric matrices, see \cite{moakher02}.
 #' Maps a matrix belonging to the lie algebra \eqn{so(3)} into the lie group \eqn{SO(3)}.
 #'
-#' @param H single \eqn{3\times 3}{3-by-3} skew-symmetric matrix or \eqn{n\times 9}{n-by-9} sample of skew-symmetric matrices.
+#' @param x single \eqn{3\times 3}{3-by-3} skew-symmetric matrix or \eqn{n\times 9}{n-by-9} sample of skew-symmetric matrices.
 #' @return Matrix \eqn{e^{\bm H}}{e^H} in \eqn{SO(3)} .
 #' @cite moakher02
 #' @export
+#' @examples
+#' Rs <- ruars(20, rcayley)
+#' lRs <- log(Rs)           #Take the matrix logarithm for rotation matrices
+#' Rs2 <- skew.exp(lRs)     #Go back to rotation matrices
+#' all.equal(Rs, Rs2)
 
-exp_skew <- function(H) {
+skew.exp <- function(x) {
 
-  if(length(H)==9){
+  if(length(x)==9){
     
-    H<-matrix(H,3,3)
-
-    return(as.SO3(expskewC(H)))
+    H<-matrix(x,3,3)
+    Hmat<-expskewC(H)
+    class(Hmat)<-"SO3"
+    return(Hmat)
     
   }else{
-    return(as.SO3(expskewCMulti(H)))
+    Hmat<-expskewCMulti(x)
+    class(Hmat)<-"SO3"
+    return(Hmat)
   }
 }
 
@@ -354,14 +387,28 @@ exp_skew <- function(H) {
 #'
 #' Compute the logarithm of a rotation matrix, which results in a \eqn{3\times 3}{3-by-3} skew-symmetric matrix.  This function maps
 #' the lie group \eqn{SO(3)} into its tangent space, which is the space of all \eqn{3\times 3}{3-by-3} skew symmetric matrices,
-#' the lie algerbra \eqn{so(3)}.  For details see e.g. \cite{moakher02}.
+#' the lie algebra \eqn{so(3)}.  For details see e.g. \cite{moakher02}.
 #'
 #' @param x \eqn{n\times 9}{n-by-9} matrix where each row corresponds to a random rotation matrix.
-#' @param ... additional arguements.
+#' @param ... additional arguments.
 #' @return Skew symmetric matrix \eqn{\log(R)}{log(R)}.
 #' @cite moakher02
 #' @S3method log SO3
 #' @method log SO3
+#' @examples
+#' Rs <- ruars(20, rcayley)
+#' 
+#' #Here we demonstrate how the logarithm can be used to determine the angle and 
+#' #axis corresponding to the provided sample
+#' 
+#' lRs <- log(Rs)               #Take the logarithm of the sample
+#' Ws <- lRs[,c(6, 7, 2)]       #The appropriate diagonal entries are the axis*angle
+#' lens <- sqrt(rowSums(Ws^2))  
+#' axes <- mis.axis(Rs)
+#' angs <- mis.angle(Rs)
+#' all.equal(axes, Ws/lens)
+#' all.equal(angs, lens)
+
 
 log.SO3 <- function(x,...) {
   if(length(x)==9){
@@ -385,8 +432,15 @@ log.SO3 <- function(x,...) {
 #' @seealso \code{\link{mean.SO3}}, \code{\link{median.SO3}}
 #' @export
 #' @examples
-#' M<-matrix(rnorm(9),3,3)
+#' #Project an arbitrary 3x3 matrix into SO(3)
+#' M<-matrix(rnorm(9), 3, 3)
 #' project.SO3(M)
+#' 
+#' #Project a sample arithmetic mean into SO(3), same as 'mean'
+#' Rs <- ruars(20, rcayley)
+#' Rbar <- colSums(Rs)/nrow(Rs)
+#' project.SO3(Rbar)              #The following is equivalent
+#' mean(Rs)         
 
 project.SO3 <- function(M) {
   
@@ -400,41 +454,64 @@ project.SO3 <- function(M) {
 #'
 #' Compute the sum of the \eqn{p^{th}}{pth} order distances between each row of x and S.
 #'
+#' @name rotdist.sum
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param S the individual matrix of interest, usually an estimate of the mean.
 #' @param method type of distance used method in "extrinsic" or "intrinsic"
 #' @param p the order of the distances to compute.
 #' @return The sum of the pth order distance between each row of x and S.
-#' @seealso \code{\link{dist.SO3}}, \code{\link{dist.Q4}}
+#' @seealso \code{\link{rot.dist}}
+#' @aliases rotdist.sum.SO3 rotdist.sum.Q4
 #' @export
 #' @examples
-#' Rs<-ruars(20,rvmises,kappa=10)
-#' Sp<-mean(Rs)
-#' sum_dist(Rs,S=Sp,p=2)
+#' Rs <- ruars(20, rvmises, kappa = 10)
+#' 
+#' SE1 <- median(Rs)                      #Projected median
+#' SE2 <- mean(Rs)                        #Projected mean
+#' SR2 <- mean(Rs, type = 'geometric')    #Geometric mean
+#' 
+#' #I will use "rotdist.sum" to verify these three estimators minimize the
+#' #loss function they are designed to minimize relative to the other esimators.
+#' #All of the following statements should evaluate to "TRUE"
+#' 
+#' #The projected mean minimizes the sum of squared Euclidean distances 
+#' rotdist.sum(Rs, S = SE2, p = 2) < rotdist.sum(Rs, S = SE1, p = 2)
+#' rotdist.sum(Rs, S = SE2, p = 2) < rotdist.sum(Rs, S = SR2, p = 2)
+#' 
+#' #The projected median minimizes the sum of first order Euclidean distances 
+#' rotdist.sum(Rs, S = SE1, p = 1) < rotdist.sum(Rs, S = SE2, p = 1)
+#' rotdist.sum(Rs, S = SE1, p = 1) < rotdist.sum(Rs, S = SR2, p = 1)
+#' 
+#' #The geometric mean minimizes the sum of squared Riemannian distances 
+#' rotdist.sum(Rs, S = SR2, p = 2, method = 'intrinsic') < 
+#'                  rotdist.sum(Rs, S = SE1, p = 2, method = 'intrinsic')
+#' rotdist.sum(Rs, S = SR2, p = 2, method = 'intrinsic') < 
+#'                  rotdist.sum(Rs, S = SE2, p = 2, method = 'intrinsic')
 
-sum_dist<-function(x, S = genR(0, space=class(x)), method='extrinsic', p=1){
+
+rotdist.sum<-function(x, S = genR(0, space=class(x)), method='extrinsic', p=1){
   
-  UseMethod( "sum_dist" )
+  UseMethod( "rotdist.sum" )
 
 }
 
-#' @rdname sum_dist
-#' @method sum_dist SO3
-#' @S3method sum_dist SO3
+#' @rdname rotdist.sum
+#' @method rotdist.sum SO3
+#' @S3method rotdist.sum SO3
 
-sum_dist.SO3 <- function(x, S = id.SO3, method='extrinsic', p=1) {
+rotdist.sum.SO3 <- function(x, S = id.SO3, method='extrinsic', p=1) {
 
-  return(sum(dist(x,S, method=method, p=p)))
+  return(sum(rot.dist(x,S, method=method, p=p)))
   
 }
 
-#' @rdname sum_dist
-#' @method sum_dist Q4
-#' @S3method sum_dist Q4
+#' @rdname rotdist.sum
+#' @method rotdist.sum Q4
+#' @S3method rotdist.sum Q4
 
-sum_dist.Q4 <- function(x, S = id.Q4, method='extrinsic', p=1) {
+rotdist.sum.Q4 <- function(x, S = id.Q4, method='extrinsic', p=1) {
   
-  return(sum(dist(x,S, method=method, p=p)))
+  return(sum(rot.dist(x,S, method=method, p=p)))
   
 }
 
@@ -445,13 +522,20 @@ sum_dist.Q4 <- function(x, S = id.Q4, method='extrinsic', p=1) {
 #' If S is the true center then the projected mean should be close to the 3-by-3 identity matrix. 
 #' 
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
-#' @param S the rotation about which to center x.
+#' @param S the rotation or a matrix of \eqn{n\times p}{n-by-p} rotations about which to center each row of x.
 #' @return The centered sample.
 #' @export
 #' @examples
-#' Rs<-ruars(5,rcayley)
-#' cRs<-center(Rs,mean(Rs))
-#' mean(cRs) #Should be close to identity matrix
+#' Rs <- ruars(5, rcayley)
+#' cRs <- center(Rs, mean(Rs))
+#' mean(cRs)                      #Close to identity matrix
+#' 
+#' all.equal(cRs, Rs - mean(Rs))  #TRUE, center and '-' have the same effect
+#'                                #See ?"-.SO3" for more details
+#'                                
+#' center(Rs,Rs)                  #n-Identity matrices: If the second argument is of the same dimension
+#'                                #as Rs then each row is centered around the corresponding
+#'                                #row in the first argument
 
 center<-function(x,S){
   
@@ -467,10 +551,24 @@ center.SO3<-function(x,S){
 	#This takes a set of observations in SO3 and centers them around S
 	
 	Rs<-formatSO3(x)
-	S<-matrix(formatSO3(S),3,3)
-	
-  Rs<-centerCpp(Rs,S)
-	return(as.SO3(Rs))
+  
+  if(length(S)==9){
+    
+	  S<-matrix(formatSO3(S),3,3)
+    Rs<-centerCpp(Rs,S)
+    
+  }else if(nrow(x)==nrow(S)){
+    
+    for(i in 1:nrow(x)){
+      Rs[i,]<-centerCpp(matrix(Rs[i,],1,9),matrix(S[i,],3,3))
+    }
+    
+  }else{
+    stop("S must either be a single rotation or have as many rows as x.")
+  }
+  
+  class(Rs)<-"SO3"
+	return(Rs)
 }
 
 
@@ -482,13 +580,26 @@ center.Q4<-function(x,S){
 	#This takes a set of observations in Q4 and centers them around S
 	Qs<-formatQ4(x)
 	S<-formatQ4(S)
-	S[2:4]<--S[2:4]
+  
+  if(length(S)==4){
+    S<--S
 	
-	for(i in 1:nrow(Qs)){
-		Qs[i,]<-qMult(S,Qs[i,])
-	}
-
-	return(as.Q4(Qs))
+	  for(i in 1:nrow(Qs)){
+	  	Qs[i,]<-qMult(S,Qs[i,])
+	  }
+    
+  }else if(nrow(x)==nrow(S)){
+    
+    for(i in 1:nrow(Qs)){
+      Si <- -S[i,]
+      Qs[i,]<-qMult(Si,Qs[i,])
+    }
+    
+  }else{
+    stop("S must either be a single rotation or have as many rows as x.")
+  }
+  class(Qs)<-"Q4"
+	return(Qs)
 }
 
 
@@ -503,11 +614,11 @@ formatSO3<-function(Rs){
 	
 	Rs<-matrix(Rs,len/9,9)
 	
-	if (!all(apply(Rs, 1, is.SO3))) 
+	if (!all(is.SO3(Rs))) 
 		warning("At least one of the given observations is not in SO(3).  Use result with caution.")
 	
-	
-	return(as.SO3(Rs))
+	class(Rs)<-"SO3"
+	return(Rs)
 
 }
 
@@ -519,14 +630,15 @@ formatQ4<-function(Qs){
   
   Qs<-matrix(Qs,length(Qs)/4,4)
   
-  if (!all(apply(Qs, 1, is.Q4))) 
+  if (!all(is.Q4(Qs))) 
   	warning("At least one of the given observations is not a unit quaternion.  Use result with caution.")
   
   
   #if(length(Qs)==4)
   #  return(as.Q4(Qs))
   #else
-  return(as.Q4(Qs))
+  class(Qs)<-"Q4"
+  return(Qs)
 }
 
 pMat<-function(p){

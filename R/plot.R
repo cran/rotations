@@ -1,38 +1,5 @@
-#library(ggplot2)
-
-
-#this had to be added because the .Call version of SO3.default can't be called from insider the function...I think
-oldSO3 <- function(U, theta=NULL) {
-	n<-length(U)/3
-	if(n%%1!=0)
-			stop("This functions only works in three dimensions.")	
-	U<-matrix(U,n,3)
-	ulen<-sqrt(rowSums(U^2)) 
-	if(is.null(theta)){ 
-			theta<-ulen%%(pi)
-					
-					#if(theta>pi)
-					#	theta<-2*pi-theta
-			}
-	R<-matrix(NA,n,9)
- 	for(i in 1:n){
-					
-				if(ulen[i]!=0)
-						U[i,]<-U[i,]/ulen[i]
-					
-				P <- U[i,] %*% t(U[i,])
-					
-				R[i,] <- P + (diag(3) - P) * cos(theta[i]) + eskew(U[i,]) * sin(theta[i])
-	}
-	class(R) <- "SO3"
-	return(R)
-}
-
-#suppressMessages(library(ggplot2))
-#require(gridExtra)
-
 # set origin of concentric circles
-origin <- matrix(oldSO3(c(1,-1,0), pi/16),3,3)
+origin <- matrix(as.SO3(c(1,-1,0), pi/16),3,3)
 
 # construct helper grid lines for sphere
 
@@ -61,7 +28,7 @@ circles.2$ID <- as.numeric(factor(df$phi))+9
 circles <- rbind(circles, circles.2)
 
 
-setOrigin <- function(origin = matrix(oldSO3(c(1,-1,0), pi/8),3,3)) {
+setOrigin <- function(origin = matrix(as.SO3(c(1,-1,0), pi/8),3,3)) {
 	origin <<- origin
 	pcircles <- data.frame(as.matrix(circles[,1:3]) %*% origin)
 	pcircles
@@ -70,7 +37,7 @@ setOrigin <- function(origin = matrix(oldSO3(c(1,-1,0), pi/8),3,3)) {
 
 # this is the coordinate system and should be fixed, no matter what column of the rotation matrices is shown
 
-base <- ggplot(aes(x=X1, y=X2), data=setOrigin(matrix(oldSO3(c(1,-1,0), pi/16),3,3))) + 
+base <- ggplot(aes(x=X1, y=X2), data=setOrigin(matrix(as.SO3(c(1,-1,0), pi/16),3,3))) + 
 	coord_equal() + 
 	geom_point(aes(alpha=X3), size=0.6, colour="grey65") + 
 	scale_alpha(range=c(0,0.8),  guide="none") + 
@@ -86,7 +53,7 @@ base <- ggplot(aes(x=X1, y=X2), data=setOrigin(matrix(oldSO3(c(1,-1,0), pi/16),3
 
 
 roteye <- function(origin, center, column=1) {
-	R <- list(matrix(oldSO3(c(0,1,0), pi/2),3,3), matrix(oldSO3(c(1,0,0), -pi/2),3,3), diag(c(1,1,1)))[[column]]
+	R <- list(matrix(as.SO3(c(0,1,0), pi/2),3,3), matrix(as.SO3(c(1,0,0), -pi/2),3,3), diag(c(1,1,1)))[[column]]
 	rot <- center %*% R %*% origin 
 }
 
@@ -96,16 +63,28 @@ roteye <- function(origin, center, column=1) {
 #' Projection of rotation matrices onto sphere with given center.
 #'
 #' @param data data frame of rotation matrices in \eqn{3\times 3}{3-by-3} matrix representation.
-#' @param center point about which to center the observations.
+#' @param center rotation matrix about which to center the observations.
 #' @param column integer 1 to 3 indicating which column to display.
 #' @return  Data frame with columns X, Y, Z standing for the respective coordinates in 3D space.
 #' @export
+#' @examples
+#' Rs<-ruars(20, rcayley)
 #' 
-pointsXYZ <- function(data, center, column=1) {
+#' #Project the sample's 3 axes onto the 3-shere centered at the identity rotation
+#' 
+#' pointsXYZ(Rs, center = id.SO3, column = 1)  #x-axis
+#' pointsXYZ(Rs, center = id.SO3, column = 2)  #y-axis
+#' pointsXYZ(Rs, center = id.SO3, column = 3)  #z-axis
+
+pointsXYZ <- function(data, center=id.SO3, column=1) {
+  
+  data<-as.SO3(data)
+  data<-matrix(data,length(data)/9,9)
+  center<-matrix(as.SO3(center),3,3)
   
 	rot <- roteye(origin, center, column)
-	idx <- list(1:3,4:6, 7:9)[[column]]
-	data <- as.matrix(data[,idx])
+	idx <- list(1:3,4:6,7:9)[[column]]
+	data <- matrix(data[,idx],ncol=3)
 	
 	psample1 <- data.frame(data %*% rot)
 	names(psample1) <- c("X","Y","Z")
@@ -124,7 +103,7 @@ pointsXYZ <- function(data, center, column=1) {
 #' @param x n rotations in \code{SO3} format.
 #' @param center rotation about which to center the observations.
 #' @param col integer or vector 1 to 3 indicating which column(s) to display.  If \code{length(col)>1} then each eyeball is labelled with the corresponding axis.
-#' @param to_range logical; if \code{TRUE} only part of the globe relavent to the data is displayed
+#' @param to_range logical; if \code{TRUE} only part of the globe relevant to the data is displayed
 #' @param show_estimates character vector to specify  which of the four estimates of the principal direction to show. Possibilities are "all", "proj.mean", "proj.median", "geom.mean", "geom.median."
 #' @param label_points  vector of labels.
 #' @param mean_regions character vector to specify which of the three confidence regions to show for the projected mean.  Possibilities are "all", "eigen theory","eigen bootstrap, "moment theory", "moment bootstrap."
@@ -133,18 +112,22 @@ pointsXYZ <- function(data, center, column=1) {
 #' @param m number of bootstrap replicates to use in Zhang confidence region.
 #' @param ... parameters passed onto the points layer.
 #' @return  A \code{ggplot2} object with the data displayed on spherical grid.
+#' @aliases plot.Q4
 #' @S3method plot SO3
 #' @method plot SO3
 #' @cite wickham09
 #' @export
 #' @examples
-#' r<-rvmises(200,1.0)
-#' Rs<-genR(r)
-#' plot(Rs,center=mean(Rs),show_estimates=NULL,shape=4)
+#' r <- rvmises(200, kappa = 1.0)
+#' Rs <- genR(r)
+#' 
+#' plot(Rs, center = mean(Rs), show_estimates = "proj.mean", shape = 4)
+#' 
+#' \dontrun{
 #' # Z is computed internally and contains information on depth
-#' plot(Rs,center=mean(Rs),show_estimates=c("proj.mean", "geom.mean"), 
-#'  label_points=sample(LETTERS, 200, replace=TRUE)) + aes(size=Z, alpha=Z) + 
-#'  scale_size(limits=c(-1,1), range=c(0.5,2.5))
+#' plot(Rs, center = mean(Rs), show_estimates = c("proj.mean", "geom.mean"), 
+#'  label_points = sample(LETTERS, 200, replace = TRUE)) + aes(size = Z, alpha = Z) + 
+#'  scale_size(limits = c(-1, 1), range = c(0.5, 2.5))}
 
 plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...) {
 
@@ -197,10 +180,10 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
 		
 		if(!is.null(mean_regions) || !is.null(median_regions)){
 			vals<-3:(2+nrow(Shats)) #Make the shapes noticable, 15:18
-			estimates <- list(geom_point(aes(x=X, y=Y, shape=Est),size=3.5, data=data.frame(pointsXYZ(Shats, center=center, column=col), Shats)),
+			estimates <- list(geom_point(aes(x=X, y=Y, shape=Est),size=3.5, data=data.frame(pointsXYZ(Shats[,1:9], center=center, column=col), Shats)),
 												scale_shape_manual(name="Estimates", labels=Estlabels,values=vals))
 		}else{
-			estimates <- list(geom_point(aes(x=X, y=Y, colour=Est),size=3.5, data=data.frame(pointsXYZ(Shats, center=center, column=col), Shats)),
+			estimates <- list(geom_point(aes(x=X, y=Y, colour=Est),size=3.5, data=data.frame(pointsXYZ(Shats[,1:9], center=center, column=col), Shats)),
 												scale_colour_brewer(name="Estimates", palette="Paired", labels=Estlabels))
 		}
 	}
@@ -220,13 +203,13 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
     
     for(i in 1:nrow(Regions)){
       if(col==1)
-        cisp.boot <- rbind(cisp.boot,t(replicate(500, oldSO3(c(0,runif(2,-1,1)), Regions$X1[i]),simplify="matrix")))
+        cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(0,runif(2,-1,1)), Regions$X1[i]),simplify="matrix")))
       
       if(col==2)
-        cisp.boot <- rbind(cisp.boot,t(replicate(500, oldSO3(c(runif(1,-1,1),0,runif(1,-1,1)), Regions$X1[i]),simplify="matrix")))
+        cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(runif(1,-1,1),0,runif(1,-1,1)), Regions$X1[i]),simplify="matrix")))
       
       if(col==3)
-	      cisp.boot <- rbind(cisp.boot,t(replicate(500, oldSO3(c(runif(2,-1,1),0), Regions$X1[i]),simplify="matrix")))
+	      cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(runif(2,-1,1),0), Regions$X1[i]),simplify="matrix")))
     }
 	  
 	  regs <- geom_point(aes(x=X, y=Y,colour=Regions), data=data.frame(pointsXYZ(cisp.boot, center=t(mean(Rs))%*%center, column=col),Regions=rep(Regions$Meth,each=500)))
@@ -246,13 +229,13 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
 		
 		for(i in 1:nrow(MedRegions)){
 			if(col==1)
-				cisp.boot <- rbind(cisp.boot,t(replicate(500, oldSO3(c(0,runif(2,-1,1)), MedRegions$X1[i]),simplify="matrix")))
+				cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(0,runif(2,-1,1)), MedRegions$X1[i]),simplify="matrix")))
 			
 			if(col==2)
-				cisp.boot <- rbind(cisp.boot,t(replicate(500, oldSO3(c(runif(1,-1,1),0,runif(1,-1,1)), MedRegions$X1[i]),simplify="matrix")))
+				cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(runif(1,-1,1),0,runif(1,-1,1)), MedRegions$X1[i]),simplify="matrix")))
 			
 			if(col==3)
-				cisp.boot <- rbind(cisp.boot,t(replicate(500, oldSO3(c(runif(2,-1,1),0), MedRegions$X1[i]),simplify="matrix")))
+				cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(runif(2,-1,1),0), MedRegions$X1[i]),simplify="matrix")))
 		}
 		
 		regsMed <- geom_point(aes(x=X, y=Y,colour=Regions), data=data.frame(pointsXYZ(cisp.boot, center=t(median(Rs))%*%center, column=col),Regions=rep(MedRegions$Meth,each=500)))
@@ -336,3 +319,16 @@ mplotSO3<-function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL
   }
 
 }
+
+#' @rdname plot.SO3
+#' @aliases plot.SO3
+#' @S3method plot Q4
+#' @method plot Q4
+#' @export
+
+plot.Q4 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...) {
+  Rs<-as.SO3(x)
+  center<-as.SO3(center)
+  plot(Rs, center=center, col=col, to_range=to_range, show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,  ...)
+}
+  

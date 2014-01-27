@@ -1,4 +1,4 @@
-#' A package for working with rotaional data.
+#' A package for working with rotation data.
 #'
 #' This package implements tools for working with rotational data: it allows simulation from the 
 #' most commonly used  distributions on \eqn{SO(3)}, it includes methods for different mean and median type 
@@ -6,5 +6,5 @@
 #' for those estimates and it includes a novel visualization technique for rotation data. 
 #' 
 #' @docType package
-#' @name package-rotations
+#' @name rotations
 NULL

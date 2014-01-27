@@ -17,13 +17,15 @@
 #' @param m number of draws to keep from posterior distribution
 #' @return  list of \item{S}{Draws from the posterior distribution for central orientation S}
 #'          \item{kappa}{Draws from the posterior distribution for concentration parameter kappa}
-#'          \item{Saccept}{Acceptance rate for cenral orientaion draws}
+#'          \item{Saccept}{Acceptance rate for central orientation draws}
 #'          \item{Kaccept}{Acceptance rate for concentration draws}
 #' @cite bingham2009b bingham2010
 #' @export
 #' @examples
-#' Rs<-ruars(20,rcayley,kappa=4)
-#' draws<-MCMCSO3(Rs,type='Cayley',S0=mean(Rs),kappa0=2,tuneS=39,tuneK=.8,burn_in=100,m=5000)
+#' \dontrun{
+#' Rs <- ruars(20, rvmises, kappa = 10)
+#' draws <- MCMCSO3(Rs, type = 'Mises', S0 = mean(Rs), kappa0 = 10, tuneS = 5000, 
+#'                  tuneK = 1,burn_in = 1000, m = 5000)}
 
 MCMCSO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   UseMethod("MCMCSO3")
@@ -53,7 +55,8 @@ MCMCSO3.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   }
   
   listRes<-both_MCMC_CPP(x,S0, kappa0,tuneS,tuneK,burn_in,m, lpangle)
-  listRes$S<-as.SO3(listRes$S)
+  class(listRes$S)<-"SO3"
+  #listRes$S<-as.SO3(listRes$S)
   
   return(listRes)
 }
@@ -64,10 +67,10 @@ MCMCSO3.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
 
 MCMCSO3.Q4<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   
-  Rs<-SO3(x)
-  S0<-as.SO3(matrix(SO3(S0),3,3))
+  Rs<-as.SO3(x)
+  S0<-as.SO3(matrix(S0,3,3))
   SO3Res<-MCMCSO3(Rs,type,S0,kappa0,tuneS,tuneK,burn_in,m)
-  Q4Res<-list(Q=Q4(SO3Res$S),kappa=SO3Res$kappa,Qaccept=SO3Res$Saccept,Kaccept=SO3Res$Kaccept)
+  Q4Res<-list(Q=as.Q4(SO3Res$S),kappa=SO3Res$kappa,Qaccept=SO3Res$Saccept,Kaccept=SO3Res$Kaccept)
   return(Q4Res)
   
 }
@@ -96,9 +99,19 @@ MCMCSO3.Q4<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
 #' @cite bingham2009b bingham2010
 #' @export
 #' @examples
-#' Rs<-ruars(20,rcayley,kappa=4)
-#' region(Rs,type='Cayley',method='Bayes',estimator='mean',
-#' S0=mean(Rs),kappa0=2,tuneS=39,tuneK=.8,burn_in=100,alp=.01)
+#' \dontrun{
+#' Rs <- ruars(20, rvmises, kappa = 10)
+#' 
+#' #Compare the region size of the moment based theory mean estimator to the 
+#' #Bayes region.
+#' 
+#' region(Rs, method = 'moment', type = 'theory', estimator = 'mean', alp=0.1, m = 100)
+#' bayesCR <- region(Rs, type = 'Mises', method = 'Bayes', estimator = 'mean', S0 = mean(Rs),
+#'                    kappa0 = 10, tuneS = 5000, tuneK = 1, burn_in = 1000, alp = .01, m = 5000)
+#'                    
+#' bayesCR$Radius       #Region size is give by "Radius"
+#' bayesCR$Shat         #The Bayes region is centered around the posterior mode: "Shat"}
+
 
 bayesCR<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000,alp=0.1){
   UseMethod("bayesCR")
@@ -130,7 +143,7 @@ bayesCR.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000,alp=0.1){
   listRes<-both_MCMC_CPP(x,S0, kappa0,tuneS,tuneK,burn_in,m, lpangle)
   Sdraws<-as.SO3(listRes$S)
   Shat<-mean(Sdraws)
-  rs<-dist(Sdraws,Shat)
+  rs<-rot.dist(Sdraws,Shat)
   
   return(list(Shat=Shat,Radius=quantile(rs,1-alp)))
 }
@@ -141,10 +154,10 @@ bayesCR.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000,alp=0.1){
 
 bayesCR.Q4<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000,alp=0.1){
   
-  Rs<-SO3(x)
-  S0<-as.SO3(matrix(SO3(S0),3,3))
+  Rs<-as.SO3(x)
+  S0<-as.SO3(matrix(S0,3,3))
   SO3Res<-bayesCR(Rs,type,S0,kappa0,tuneS,tuneK,burn_in,m,alp)
-  Q4Res<-list(Qhat=Q4(SO3Res$Shat),Radius=SO3Res$Radius)
+  Q4Res<-list(Qhat=as.Q4(SO3Res$Shat),Radius=SO3Res$Radius)
   return(Q4Res)
   
 }
@@ -166,14 +179,27 @@ bayesCR.Q4<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000,alp=0.1){
 #' @param tuneK concentration tuning parameter, standard deviation of proposal distribution
 #' @param burn_in number of draws to use as burn-in
 #' @param m number of draws to keep from posterior distribution
-#' @return  list of \item{Shat}{Draws from the posterior distribution for central orientation S}
-#'          \item{kappa}{Draws from the posterior distribution for concentration parameter kappa}
+#' @return  list of \item{Shat}{Mode of the posterior distribution for the central orientation S}
+#'          \item{kappa}{Mean of the posterior distribution for the concentration kappa}
 #' @seealso \code{\link{mean.SO3}}, \code{\link{median.SO3}}
 #' @cite bingham2009b bingham2010
 #' @export
 #' @examples
-#' Rs<-ruars(20,rcayley,kappa=4)
-#' ests<-bayes.mean(Rs,type='Cayley',S0=mean(Rs),kappa0=4,tuneS=39,tuneK=.8,burn_in=100,m=5000)
+#' Rs <- ruars(20, rvmises, kappa = 10)
+#' 
+#' Shat <- mean(Rs)               #Estimate the central orientation using the projected mean
+#' rotdist.sum(Rs, Shat, p = 2)   #The projected mean minimizes the sum of squared Euclidean
+#' rot.dist(Shat)                 #distances, compute the minimized sum and estimator bias 
+#' 
+#' #Estimate the central orientation using the posterior mode (it isn't run because it takes some time) 
+#' #Compare it to the projected mean in terms of the squared Euclidean distance and bias
+#' \dontrun{
+#' ests <- bayes.mean(Rs, type = 'Mises', S0 = mean(Rs), kappa0 = 10, tuneS = 5000,
+#'                    tuneK = 1, burn_in = 1000, m = 5000)
+#'                    
+#' Shat2 <- ests$Shat             #The posterior mode is the 'Shat' object
+#' rotdist.sum(Rs, Shat2, p = 2)  #Compute sum of squared Euclidean distances
+#' rot.dist(Shat2)                #Bayes estimator bias}
 
 bayes.mean<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   UseMethod("bayes.mean")
@@ -214,10 +240,10 @@ bayes.mean.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
 
 bayes.mean.Q4<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   
-  Rs<-SO3(x)
-  S0<-as.SO3(matrix(SO3(S0),3,3))
+  Rs<-as.SO3(x)
+  S0<-as.SO3(matrix(S0,3,3))
   SO3Res<-MCMCSO3(Rs,type,S0,kappa0,tuneS,tuneK,burn_in,m)
-  Q4Res<-list(Qhat=Q4(mean(SO3Res$S)),kappa=mean(SO3Res$kappa))
+  Q4Res<-list(Qhat=as.Q4(mean(SO3Res$S)),kappa=mean(SO3Res$kappa))
   return(Q4Res)
   
 }

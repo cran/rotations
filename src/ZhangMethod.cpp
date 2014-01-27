@@ -2,7 +2,7 @@
 #include <Rcpp.h>
 #include "../inst/include/rotations.h"
 using namespace Rcpp;
-// [[Rcpp::depends(RcppArmadillo)]] 
+
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
@@ -28,11 +28,23 @@ NumericVector RdistC(NumericMatrix Q1, NumericVector Q2){
 arma::rowvec rdistSO3C(arma::mat Rs, arma::mat R2){
   
   int n = Rs.n_rows, m=Rs.n_cols , i,j;
+  double tri;
+  arma::mat R2t = R2.t();
   
   if(m==3){
-  	Rs = Rs * R2.t();
-    arma::rowvec theta(1); 
-    theta(0) = acos(0.5*trace(Rs)-0.5);
+
+  	Rs = Rs * R2t;
+    //Rs.print("Rs2:");
+    
+    arma::rowvec theta(1);
+    tri = trace(Rs);
+    
+    if((3-tri)<10e-10){
+      theta(0) = 0;
+    }else{
+      theta(0) = acos(0.5*tri-0.5);
+    }
+    
     return theta;
   }
   
@@ -47,8 +59,15 @@ arma::rowvec rdistSO3C(arma::mat Rs, arma::mat R2){
       Rsi(j)=Rs(i,j);
     }
     
-    Rsi = Rsi * R2.t();
-    theta(i) = acos(0.5*trace(Rsi)-0.5);
+    Rsi = Rsi * R2t;
+    
+    tri = trace(Rsi);
+    //printf("Trace: %lf",tri);
+    if((3-tri)<10e-10){
+      theta(i) = 0;
+    }else{
+      theta(i) = acos(0.5*tri-0.5);
+    }
     
   }
   return theta;

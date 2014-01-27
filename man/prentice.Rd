@@ -31,17 +31,20 @@
   region for the central orientation based on the projected
   mean estimator using the method due to \cite{Prentice
   (1986)}.  For a rotation specific version see
-  \cite{Rancourt et al. (2000)}. The variablity in each
+  \cite{Rancourt et al. (2000)}. The variability in each
   axis is different so each axis will have its own radius.
 }
 \examples{
-Qs<-ruars(20,rcayley,kappa=100,space='Q4')
-region(Qs,method='eigen',type='theory',alp=0.1,estimator='mean')
+Qs<-ruars(20, rcayley, kappa = 100, space = 'Q4')
+
+#The prentice method can be accesed from the "region" function or the "prentice" function
+region(Qs, method = 'eigen', type = 'theory', alp = 0.1, estimator='mean')
+prentice(Qs, alp = 0.1)
 }
 \references{
   Prentice MJ (1986). "Orientation statistics without
-  parametric assumptions." Journal of the Royal
-  Statistical Society. Series B (Methodological), pp.
+  parametric assumptions." _Journal of the Royal
+  Statistical Society. Series B (Methodological)_, pp.
   214-222.
 
   Rancourt D, Rivest L and Asselin J (2000). "Using

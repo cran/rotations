@@ -48,10 +48,19 @@
   quaternion point of view see \cite{Tyler (1981)}.
 }
 \examples{
-Rs<-ruars(20,rvmises,kappa=0.01)
-mean(Rs)
-Qs<-Q4(Rs)
-mean(Qs)
+Rs <- ruars(20, rvmises, kappa = 0.01)
+mean(Rs)                               #Projected mean
+project.SO3(colMeans(Rs))              #Same as mean(Rs)
+
+mean(Rs, type = 'geometric')           #Geometric mean
+rot.dist(mean(Rs))                     #Bias of the projected mean
+rot.dist(mean(Rs, type = 'geometric')) #Bias of the geometric mean
+
+Qs <- as.Q4(Rs)
+mean(Qs)                               #Projected mean
+mean(Qs, type = 'geometric')           #Geometric mean
+rot.dist(mean(Qs))                     #Bias of the projected mean
+rot.dist(mean(Qs, type = 'geometric')) #Bias of the geometric mean
 }
 \references{
   Moakher M (2002). "Means and averaging in the group of

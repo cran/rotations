@@ -1,9 +1,9 @@
 \name{Haar}
-\alias{dhaar}
 \alias{Haar}
+\alias{dhaar}
 \alias{phaar}
 \alias{rhaar}
-\title{Uniform distribution on \eqn{SO(3)}}
+\title{Uniform distribution}
 \usage{
   dhaar(r)
 
@@ -28,12 +28,40 @@
 }
 \description{
   Density, distribution function and random generation for
-  the uniform distribution on \eqn{SO(3)}.
+  the uniform distribution on the circle.
 }
 \details{
-  The uniform distribution on the space \eqn{SO(3)} (also
-  referred to as the Haar measure) has density
-  \deqn{C_U(r)=\frac{[1-cos(r)]}{2\pi}.}{C(r)=[1-cos(r)]/2\pi.}
+  The uniform distribution on the interval \eqn{[-\pi,\pi)}
+  has density
+  \deqn{C_U(r)=\frac{[1-cos(r)]}{2\pi}}{C(r)=[1-cos(r)]/2\pi}
+  with respect to the Lebesgue measure.  The Haar measure
+  is a volume invariance measure for spaces such as SO(3)
+  that plays the role of the uniform measure on SO(3).  The
+  uniform distribution with respect to the Haar measure is
+  given by \deqn{C_U(r)=\frac{1}{2\pi}}{C(r)=1/(2\pi)}.
+  Because the uniform distribution on the circle with
+  respect to the Haar measure gives a horizontal line at 1
+  with respect to the Lebesgue measure, we called this
+  distribution 'Haar.'
+}
+\examples{
+r <- seq(-pi, pi, length = 1000)
+
+#Visualize the uniform distribution on the circle with respect to Lebesgue measure
+plot(r, dhaar(r), type = 'l', ylab = 'f(r)')
+
+#Visualize the uniform distribution on the circle with respect to Haar measure, which is
+#a horizontal line at 1
+plot(r, 2*pi*dhaar(r)/(1-cos(r)), type = 'l', ylab = 'f(r)')
+
+#Plot the uniform CDF
+plot(r,phaar(r), type = 'l', ylab = 'F(r)')
+
+#Generate random observations from uniform circular distribution
+rs <- rhaar(50)
+
+#Visualize on the real line
+hist(rs, breaks = 10)
 }
 \seealso{
   \link{Angular-distributions} for other distributions in

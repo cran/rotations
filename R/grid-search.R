@@ -11,7 +11,7 @@ search.sphere <- function(k=9) {
 
 sphereA <- function(A, theta, sphere) {
   ## gives a grid of rotation matrices with the same distance from rotation A
-  R <- SO3(as.matrix(sphere), theta=rep(theta, length=nrow(sphere)))
+  R <- as.SO3(as.matrix(sphere), theta=rep(theta, length=nrow(sphere)))
   # multiplication isn't right
   X <- matrix(A, nrow=3)
   for (i in 1:nrow(R)) {
@@ -23,7 +23,7 @@ sphereA <- function(A, theta, sphere) {
 
 
 L2.error <- function(sample, Shat) {
-  sum(dist(sample, Shat, method="intrinsic", p=2))
+  sum(rot.dist(sample, Shat, method="intrinsic", p=2))
 }
 
 error.grid <- function(sample, Shat, theta=1, error, sphere) {
@@ -58,14 +58,17 @@ error.grid <- function(sample, Shat, theta=1, error, sphere) {
 #' @examples 
 #' # minimize L1 norm:
 #' L1.error <- function(sample, Shat) {
-#'   sum(dist(sample, Shat, method="intrinsic", p=1))
+#'   sum(rot.dist(sample, Shat, method = "intrinsic", p = 1))
 #' }
 #' 
 #' cayley.sample <- ruars(n = 10, rangle = rcayley, nu = 1, space = 'SO3')
-#' SL1 <- gradient.search(cayley.sample, L1.error, start=id.SO3)
+#' SL1 <- gradient.search(cayley.sample, L1.error, start = id.SO3)
+#' 
 #' # visually no perceptible difference between median estimates from in-built function and 
 #' # gradient based search (for almost all starting values)
-#' plot(cayley.sample, center=SL1$Shat, show_estimates="all")
+#' 
+#' \dontrun{
+#' plot(cayley.sample, center=SL1$Shat, show_estimates="all")}
 
 gradient.search <- function(sample, error, minerr =1e-5, start = mean(sample), theta=NULL) {
 # 	if (length(start) == 1)

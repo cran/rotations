@@ -8,9 +8,18 @@ print.SO3<-function(x,...){
   #  stop("Input is not of the correct length.")
   
   if(len==9){
-    print.default(as.SO3(matrix(Rs,3,3)),...)
+    tr<-matrix(Rs,3,3)
+    #class(tr)<-"SO3"
+    print.default(tr,...)
   }else{
-    print.default(Rs,...)
+    n<-nrow(Rs)
+    p<-ncol(Rs)
+    tRs<-matrix(Rs,nrow=n,ncol=p)
+    if(p==9){
+      cnames<-c("R11","R21","R31","R12","R22","R32","R13","R23","R33")
+      colnames(tRs)<-cnames
+    }
+    print.default(tRs,...)
   }
 }
 
@@ -29,8 +38,7 @@ head.SO3<-function(x,n=6L,...){
 #' @S3method str SO3
 #' @method str SO3
 str.SO3<-function(object,...){
-  
-  object<-matrix(object,dim(object))
+  object<-matrix(object,length(object)/9,9)
   str(object)
 }
 
@@ -86,18 +94,21 @@ print.Q4<-function(x,...){
     }
     
   }else{
-    if(is.null(ncol(Qs))) {
+    n<-nrow(Qs)
+    p<-ncol(Qs)
+    tQs<-matrix(Qs,n,p)
+    if(is.null(p)) {
       
-      print.default(Qs,...)
+      print.default(tQs,...)
       
-    }else if(ncol(Qs)==4){
+    }else if(p==4){
       
-      colnames(Qs)<-c("Real","i","j","k")
-      print.default(Qs,...)
+      colnames(tQs)<-c("Real","i","j","k")
+      print.default(tQs,...)
       
     }else{
       
-      print.default(Qs,...)
+      print.default(tQs,...)
       
     }
   }
@@ -133,7 +144,7 @@ head.Q4<-function(x,n=6L,...){
 #' @method str Q4
 str.Q4<-function(object,...){
   
-  object<-matrix(object,dim(object))
+  object<-matrix(object,length(object)/4,4)
   str(object)
 }
 
@@ -142,15 +153,17 @@ str.Q4<-function(object,...){
 '[.SO3'<-function(x,i,...){
   x<-matrix(x,dim(x))
   x<-x[i,...]
-  return(as.SO3(x))
+  class(x)<-"SO3"
+  return(x)
 }
 
 #' @S3method [ Q4
 #' @method [ Q4
 '[.Q4'<-function(x,i,...){
-  x<-matrix(x,dim(x))
+  x<-matrix(x,length(x)/4,4)
   x<-x[i,...]
-  return(as.Q4(x))
+  class(x)<-"Q4"
+  return(x)
 }
 
 #' @S3method == Q4
@@ -170,17 +183,47 @@ str.Q4<-function(object,...){
 #' 
 #' The rotation group SO(3) is a multiplicative group so ``adding" rotations \eqn{R_1}{R1} and \eqn{R_2}{R2}
 #' results in \eqn{R_1+R_2=R_2R_1}{R1+R2=R2R1}.  Similarly, the difference between rotations \eqn{R_1}{R1} and \eqn{R_2}{R2} is
-#' \eqn{R_1-R_2=R_2^\top R_1}{R1-R2=R2'R1}.  With this definiton it is clear that 
+#' \eqn{R_1-R_2=R_2^\top R_1}{R1-R2=R2'R1}.  With this definition it is clear that 
 #' \eqn{R_1+R_2-R_2=R_2^\top R_2R_1=R_1}{R1+R2-R2=R2'R2R1=R1}.  
 #' If only one rotation is provided to subtraction then the inverse (transpose) it returned, 
 #' e.g. \eqn{-R_2=R_2^\top}{-R2=R2'}.
 #' 
 #' @name Arithmetic
 #' @aliases "+.SO3" "-.SO3" "+.Q4" "-.Q4"
-#' @param x first arguement
-#' @param y second arguement (optional for subtraction)
+#' @param x first argument
+#' @param y second argument (optional for subtraction)
 #' @return  \item{+}{the result of rotating the identity frame through x then y}
-#'          \item{-}{the difference of the rotations, or the inverse rotation of only one arguement is provided}
+#'          \item{-}{the difference of the rotations, or the inverse rotation of only one argument is provided}
+#' @examples
+#' U <- c(1, 0, 0)          #Rotate about the x-axis
+#' R1 <- as.SO3(U, pi/8)    #Rotate pi/8 radians about the x-axis
+#' R2 <- R1 + R1            #Rotate pi/8 radians about the x-axis twice
+#' mis.axis(R2)             #x-axis: (1,0,0)
+#' mis.angle(R2)            #pi/8 + pi/8 = pi/4
+#' 
+#' R3 <- R1 - R1            #Rotate pi/8 radians about x-axis then back again
+#' R3                       #Identity matrix
+#' 
+#' R4 <- -R1                #Rotate in the opposite direction through pi/8
+#' R5 <- as.SO3(U, -pi/8)   #Equivalent to R4
+#' 
+#' M1 <- matrix(R1, 3, 3)   #If element-wise addition is requred,
+#' M2 <- matrix(R2, 3, 3)   #translate them to matrices then treat as usual
+#' M3 <- M1 + M2
+#' 
+#' M1 %*% M1                #Equivalent to R2
+#' t(M1) %*% M1             #Equivalent to R3
+#' t(M1)                    #Equivalent to R4 and R5
+#' 
+#' #The same can be done with quaternions: the identity rotation is (1, 0, 0, 0)
+#' #and the inverse rotation of Q=(a, b, c, d) is -Q=(a, -b, -c, -d)
+#' 
+#' Q1 <- as.Q4(R1)
+#' Q2 <- Q1 + Q1
+#' mis.axis(Q2)
+#' mis.angle(Q2)
+#' 
+#' Q1 - Q1                  #id.Q4 = (1, 0, 0, 0)
 
 
 NULL
@@ -191,9 +234,19 @@ NULL
 #' @method + SO3
 
 '+.SO3'<-function(x,y){
-
-  y<-t(matrix(y,3,3))
-  return(center(x,y))
+  
+  if(length(y)==9){
+    
+    y<-t(matrix(y,3,3))
+    return(center(x,y))
+    
+  }else if(all(dim(x)==dim(y))){
+    y<--y
+    return(center(x,y))
+    
+  }else{
+    stop("y can be a sinlge rotation or x and y must be of the same dimension")
+  }
 
 }
 
@@ -203,10 +256,27 @@ NULL
 #' @method - SO3
 
 '-.SO3'<-function(x,y=NULL){
-
-  if(is.null(y)) return(as.SO3(t(matrix(x,3,3))))
   
-  return(center.SO3(x,y))
+  #If y is left null, return the transpose of
+  #each rotation in x
+  if(is.null(y)){
+    
+      n<-length(x)/9
+      
+      if(n%%1!=0){
+        stop("x must be of dimension n-by-9")
+      }
+      
+      xt<-matrix(x,n,9)
+      xt<-xt[,c(1,4,7,2,5,8,3,6,9)]
+  
+    class(xt)<-"SO3"
+    return(xt)  
+  }else{
+  
+    return(center.SO3(x,y))
+  
+  }
 }
 
 #' @rdname Arithmetic
@@ -216,7 +286,7 @@ NULL
 
 '+.Q4'<-function(x,y){
 
-  return(Q4(SO3(x)+SO3(y)))
+  return(as.Q4(as.SO3(x)+as.SO3(y)))
 }
 
 #' @rdname Arithmetic
@@ -225,11 +295,13 @@ NULL
 #' @method - Q4
 
 '-.Q4'<-function(x,y=NULL){
-    
+  
+  x<-matrix(x,length(x)/4,4)
   if(is.null(y)){ 
-    x[2:4]<- -1*x[2:4]
+    x[,2:4]<- -1*x[,2:4]
+    class(x)<-'Q4'
     return(x)
   }
 
-  return(Q4(SO3(x)-SO3(y)))
+  return(as.Q4(as.SO3(x)-as.SO3(y)))
 }

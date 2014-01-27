@@ -1,4 +1,4 @@
-#' Confidence and creible regions for the central orientation
+#' Confidence and credible regions for the central orientation
 #'
 #' Find the radius of a \eqn{100(1-\alpha)}\% confidence or credible region for the central orientation based on the projected mean or median.
 #' For more on the currently available methods see \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}},
@@ -6,7 +6,7 @@
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param method character string specifying which type of interval to report, "bayes", "eigen" or "moment" based theory.
-#' @param type characted string, "bootstrap" or "theory" are available.  For Bayes regions, give the type of likelihood: "Cayley","Mises" or "Fisher."
+#' @param type character string, "bootstrap" or "theory" are available.  For Bayes regions, give the type of likelihood: "Cayley","Mises" or "Fisher."
 #' @param estimator character string either "mean" or "median."  Note that not all method/type combinations are available for both estimators.
 #' @param alp the alpha level desired, e.g. 0.05 or 0.10.
 #' @param ... additional arguments that are method specific.
@@ -15,13 +15,17 @@
 #' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}}, \code{\link{zhang}}
 #' @export
 #' @examples
-#' Rs<-ruars(20,rcayley,kappa=100)
-#' region(Rs,method='eigen',type='theory',estimator='mean',alp=0.1)
-#' region(Rs,method='eigen',type='bootstrap',estimator='mean',alp=0.1,symm=TRUE)
-#' region(Rs,method='moment',type='bootstrap',estimator='mean',alp=0.1,m=100)
-#' region(Rs,method='moment',type='theory',estimator='mean',alp=0.1)
-#' region(Rs,method='Bayes',type='Cayley',estimator='mean',
-#' S0=mean(Rs),kappa0=2,tuneS=39,tuneK=.8,burn_in=100,alp=.01)
+#' Rs <- ruars(20, rvmises, kappa = 10)
+#' 
+#' #Compare the region sizes that are currently available
+#' 
+#' region(Rs, method = 'eigen', type = 'theory', estimator = 'mean', alp = 0.1)
+#' region(Rs, method = 'eigen', type = 'bootstrap', estimator = 'mean', alp = 0.1, symm = TRUE)
+#' region(Rs, method = 'moment', type = 'bootstrap', estimator = 'mean', alp = 0.1, m = 100)
+#' region(Rs, method = 'moment', type = 'theory', estimator = 'mean', alp = 0.1)
+#' \dontrun{
+#' region(Rs, method = 'Bayes', type = 'Mises', estimator = 'mean',
+#'        S0 = mean(Rs), kappa0 = 10, tuneS = 5000, tuneK = 1, burn_in = 1000, alp = .01, m = 5000)}
 
 region<-function(x,method, type, estimator,alp,...){
 	UseMethod("region")
@@ -151,7 +155,7 @@ region.SO3<-function(x,method,type,estimator,alp=NULL,...){
 	  
 	}else{
 		
-	  stop("Please choose a correct combination of method, type and estimator.  See help file.")
+	  stop("Please choose a correct combination of method, type and estimator.  See ?region for more details.")
 		
 	}
 	
@@ -162,7 +166,7 @@ region.SO3<-function(x,method,type,estimator,alp=NULL,...){
 #' Find the radius of a \eqn{100(1-\alpha)}\% confidence region for the projected mean based on eigenvector based result.
 #'
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean
-#' estimator using the method due to \cite{prentice1986}.  For a rotation specific version see \cite{rancourt2000}. The variablity
+#' estimator using the method due to \cite{prentice1986}.  For a rotation specific version see \cite{rancourt2000}. The variability
 #' in each axis is different so each axis will have its own radius. 
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
@@ -172,8 +176,11 @@ region.SO3<-function(x,method,type,estimator,alp=NULL,...){
 #' @cite prentice1986, rancourt2000
 #' @export
 #' @examples
-#' Qs<-ruars(20,rcayley,kappa=100,space='Q4')
-#' region(Qs,method='eigen',type='theory',alp=0.1,estimator='mean')
+#' Qs<-ruars(20, rcayley, kappa = 100, space = 'Q4')
+#' 
+#' #The prentice method can be accesed from the "region" function or the "prentice" function
+#' region(Qs, method = 'eigen', type = 'theory', alp = 0.1, estimator='mean')
+#' prentice(Qs, alp = 0.1)
 
 prentice<-function(x,alp){
 	UseMethod("prentice")
@@ -221,14 +228,14 @@ prentice.Q4<-function(x,alp=NULL){
 #' @S3method prentice SO3
 
 prentice.SO3<-function(x,alp=NULL){
-	Qs<-Q4(x)
+	Qs<-as.Q4(x)
 	r<-prentice.Q4(Qs,alp)
 	return(r)
 }
 
-#' M-estimator theory pivotal boostrap confidence region
+#' M-estimator theory pivotal bootstrap confidence region
 #'
-#' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on M-estiamtor theory.
+#' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on M-estimator theory.
 #' 
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean
 #' estimator using the method due to Zhang & Nordman (2009) (unpublished MS thesis).  By construction each axis will have the same
@@ -238,13 +245,17 @@ prentice.SO3<-function(x,alp=NULL){
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param estimator character string either "mean" or "median."
 #' @param alp alpha level desired, e.g. 0.05 or 0.10.
-#' @param m number of replicates to use to estiamte the critical value.
+#' @param m number of replicates to use to estimate the critical value.
 #' @return Radius of the confidence region centered at the specified estimator.
 #' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{chang}}
 #' @export
 #' @examples
-#' Rs<-ruars(20,rcayley,kappa=100)
-#' region(Rs,method='moment',type='bootstrap',alp=0.1,estimator='mean')
+#' Rs <- ruars(20, rcayley, kappa = 100)
+#' 
+#' #The zhang method can be accesed from the "region" function or the "zhang" function
+#' #They will be different because it is a bootstrap.
+#' region(Rs, method = 'moment', type = 'bootstrap', alp = 0.1, estimator = 'mean')
+#' zhang(Rs, estimator = 'mean', alp = 0.1)
 
 zhang<-function(x,estimator,alp,m){
 	UseMethod("zhang")
@@ -279,7 +290,7 @@ zhang.SO3<-function(x,estimator,alp=NULL,m=300){
   	
   }else if(estimator=='mean'){
   
-  	Qs<-Q4(Rs)
+  	Qs<-as.Q4(Rs)
   	rad<-zhang.Q4(Qs,estimator,alp,m)
   	
   }else{
@@ -312,7 +323,7 @@ zhang.Q4<-function(x,estimator,alp=NULL,m=300){
 		
 	}else if(estimator=='median'){
 		
-		Rs<-SO3(Qs)
+		Rs<-as.SO3(Qs)
 		rad<-zhang.SO3(Rs,estimator,alp,m)
 		
 	}else{
@@ -347,7 +358,7 @@ cdfuns<-function(Qs,estimator){
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on M-estimator theory.
 #' 
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation centered at the projected mean
-#' or median based on a result due to \cite{chang2001} amongst others.  By construction each axis will have the same
+#' or median based on a result due to \cite{chang2001} among others.  By construction each axis will have the same
 #' radius so the radius reported is for all three axes.
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
@@ -358,8 +369,11 @@ cdfuns<-function(Qs,estimator){
 #' @seealso \code{\link{bayesCR}}, \code{\link{prentice}}, \code{\link{fisheretal}}, \code{\link{zhang}}
 #' @export
 #' @examples
-#' Rs<-ruars(20,rcayley,kappa=100)
-#' region(Rs,method='moment',type='theory',alp=0.1,estimator='mean')
+#' Rs <- ruars(20, rcayley, kappa = 100)
+#' 
+#' #The chang method can be accesed from the "region" function or the "chang" function
+#' region(Rs, method = 'moment', type = 'theory', alp = 0.1, estimator = 'mean')
+#' chang(Rs, estimator = 'mean', alp = 0.1)
 
 chang<-function(x,estimator,alp){
 	UseMethod("chang")
@@ -377,7 +391,7 @@ chang.SO3<-function(x,estimator,alp=NULL){
 	#pivot logical; should the pivotal (T) bootstrap be used or nonpivotal (F)
 	
 	Rs<-formatSO3(x)
-	Qs<-Q4(Rs)
+	Qs<-as.Q4(Rs)
 	rad<-chang.Q4(Qs,estimator,alp)
 	return(rad)
 }
@@ -411,7 +425,7 @@ chang.Q4<-function(x,estimator,alp=NULL){
 #'
 #' Compute the radius of a \eqn{100(1-\alpha)}\% confidence region for the central orientation based on the projected mean
 #' estimator using the method for the mean polar axis as proposed in \cite{fisher1996}.  To be able to reduce their method
-#' to a radius requires the additonal assumption of rotational symmetry, equation (10) in \cite{fisher1996}. 
+#' to a radius requires the additional assumption of rotational symmetry, equation (10) in \cite{fisher1996}. 
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param alp alpha level desired, e.g. 0.05 or 0.10.
@@ -423,8 +437,11 @@ chang.Q4<-function(x,estimator,alp=NULL){
 #' @cite fisher1996
 #' @export
 #' @examples
-#' Qs<-ruars(20,rcayley,kappa=100,space='Q4')
-#' region(Qs,method='eigen',type='bootstrap',alp=0.1,symm=TRUE,estimator='mean')
+#' Qs<-ruars(20, rcayley, kappa = 100, space = 'Q4')
+#' 
+#' #The Fisher et al. method can be accesed from the "region" function or the "fisheretal" function
+#' region(Qs, method = 'eigen', type = 'bootstrap', alp = 0.1, symm = TRUE, estimator = 'mean')
+#' fisheretal(Qs, alp = 0.1, boot=TRUE, symm = TRUE)
 
 fisheretal<-function(x,alp,boot,m,symm){
 	UseMethod("fisheretal")
@@ -465,7 +482,7 @@ fisheretal.Q4<-function(x,alp=NULL,boot=T,m=300,symm=TRUE){
 
 optimAxis<-function(r,Qs,cut,symm){
 	
-	Shat<-Q4(axis(mean(Qs)),r)
+	Shat<-as.Q4(mis.axis(mean(Qs)),r)
 	if(symm){
 		Tm<-fisherAxisC(Qs,Shat)
 	}else{
@@ -481,7 +498,7 @@ optimAxis<-function(r,Qs,cut,symm){
 
 fisheretal.SO3<-function(x,alp=NULL,boot=T,m=300,symm=T){
 	
-	Qs<-Q4(x)
+	Qs<-as.Q4(x)
 	r<-fisheretal.Q4(Qs,alp,boot,m,symm)
 	
 	return(r)

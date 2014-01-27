@@ -2,7 +2,7 @@
 \alias{zhang}
 \alias{zhang.Q4}
 \alias{zhang.SO3}
-\title{M-estimator theory pivotal boostrap confidence region}
+\title{M-estimator theory pivotal bootstrap confidence region}
 \usage{
   zhang(x, estimator, alp, m)
 
@@ -20,7 +20,7 @@
 
   \item{alp}{alpha level desired, e.g. 0.05 or 0.10.}
 
-  \item{m}{number of replicates to use to estiamte the
+  \item{m}{number of replicates to use to estimate the
   critical value.}
 }
 \value{
@@ -29,7 +29,7 @@
 }
 \description{
   Compute the radius of a \eqn{100(1-\alpha)}\% confidence
-  region for the central orientation based on M-estiamtor
+  region for the central orientation based on M-estimator
   theory.
 }
 \details{
@@ -44,8 +44,12 @@
   option.
 }
 \examples{
-Rs<-ruars(20,rcayley,kappa=100)
-region(Rs,method='moment',type='bootstrap',alp=0.1,estimator='mean')
+Rs <- ruars(20, rcayley, kappa = 100)
+
+#The zhang method can be accesed from the "region" function or the "zhang" function
+#They will be different because it is a bootstrap.
+region(Rs, method = 'moment', type = 'bootstrap', alp = 0.1, estimator = 'mean')
+zhang(Rs, estimator = 'mean', alp = 0.1)
 }
 \seealso{
   \code{\link{bayesCR}}, \code{\link{prentice}},
