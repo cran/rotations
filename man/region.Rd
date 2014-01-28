@@ -2,7 +2,7 @@
 \alias{region}
 \alias{region.Q4}
 \alias{region.SO3}
-\title{Confidence and creible regions for the central orientation}
+\title{Confidence and credible regions for the central orientation}
 \usage{
   region(x, method, type, estimator, alp, ...)
 
@@ -21,7 +21,7 @@
   interval to report, "bayes", "eigen" or "moment" based
   theory.}
 
-  \item{type}{characted string, "bootstrap" or "theory" are
+  \item{type}{character string, "bootstrap" or "theory" are
   available.  For Bayes regions, give the type of
   likelihood: "Cayley","Mises" or "Fisher."}
 
@@ -49,13 +49,17 @@
   \code{\link{zhang}} and \code{\link{bayesCR}}.
 }
 \examples{
-Rs<-ruars(20,rcayley,kappa=100)
-region(Rs,method='eigen',type='theory',estimator='mean',alp=0.1)
-region(Rs,method='eigen',type='bootstrap',estimator='mean',alp=0.1,symm=TRUE)
-region(Rs,method='moment',type='bootstrap',estimator='mean',alp=0.1,m=100)
-region(Rs,method='moment',type='theory',estimator='mean',alp=0.1)
-region(Rs,method='Bayes',type='Cayley',estimator='mean',
-S0=mean(Rs),kappa0=2,tuneS=39,tuneK=.8,burn_in=100,alp=.01)
+Rs <- ruars(20, rvmises, kappa = 10)
+
+#Compare the region sizes that are currently available
+
+region(Rs, method = 'eigen', type = 'theory', estimator = 'mean', alp = 0.1)
+region(Rs, method = 'eigen', type = 'bootstrap', estimator = 'mean', alp = 0.1, symm = TRUE)
+region(Rs, method = 'moment', type = 'bootstrap', estimator = 'mean', alp = 0.1, m = 100)
+region(Rs, method = 'moment', type = 'theory', estimator = 'mean', alp = 0.1)
+\dontrun{
+region(Rs, method = 'Bayes', type = 'Mises', estimator = 'mean',
+       S0 = mean(Rs), kappa0 = 10, tuneS = 5000, tuneK = 1, burn_in = 1000, alp = .01, m = 5000)}
 }
 \seealso{
   \code{\link{bayesCR}}, \code{\link{prentice}},

@@ -18,7 +18,7 @@
   of rows in x giving the weights to use for elements of
   x.}
 
-  \item{type}{string indicating "projectced" or "geometric"
+  \item{type}{string indicating "projected" or "geometric"
   type mean estimator.}
 
   \item{epsilon}{stopping rule for the geometric method.}
@@ -51,11 +51,20 @@
   \cite{Manton (2004)}.
 }
 \examples{
-Rs<-ruars(20,rvmises,kappa=0.01)
-wt<-abs(1/angle(Rs))
-weighted.mean(Rs,wt)
-Qs<-Q4(Rs)
-weighted.mean(Qs,wt)
+Rs <- ruars(20, rvmises, kappa = 0.01)
+mean(Rs)                   #Find the equal-weight projected mean
+wt <- abs(1/mis.angle(Rs)) #Use the rotation misorientation angle as weight
+weighted.mean(Rs, wt)      #as weight
+rot.dist(mean(Rs))
+rot.dist(weighted.mean(Rs, wt)) #usually much smaller than unweighted mean
+
+#Can do the same thing with quaternions
+Qs <- as.Q4(Rs)
+mean(Qs)
+wt <- abs(1/mis.angle(Qs))
+weighted.mean(Qs, wt)
+rot.dist(mean(Qs))
+rot.dist(weighted.mean(Qs, wt))
 }
 \references{
   Moakher M (2002). "Means and averaging in the group of

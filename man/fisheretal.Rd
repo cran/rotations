@@ -42,13 +42,16 @@
   region for the central orientation based on the projected
   mean estimator using the method for the mean polar axis
   as proposed in \cite{Fisher et al. (1996)}.  To be able
-  to reduce their method to a radius requires the additonal
+  to reduce their method to a radius requires the additional
   assumption of rotational symmetry, equation (10) in
   \cite{Fisher et al. (1996)}.
 }
 \examples{
-Qs<-ruars(20,rcayley,kappa=100,space='Q4')
-region(Qs,method='eigen',type='bootstrap',alp=0.1,symm=TRUE,estimator='mean')
+Qs<-ruars(20, rcayley, kappa = 100, space = 'Q4')
+
+#The Fisher et al. method can be accesed from the "region" function or the "fisheretal" function
+region(Qs, method = 'eigen', type = 'bootstrap', alp = 0.1, symm = TRUE, estimator = 'mean')
+fisheretal(Qs, alp = 0.1, boot=TRUE, symm = TRUE)
 }
 \references{
   Fisher N, Hall P, Jing B and Wood A (1996). "Improved

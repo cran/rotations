@@ -1,62 +1,109 @@
 \docType{data}
-\name{SO3}
+\name{as.SO3}
+\alias{SO3}
 \alias{as.SO3}
+\alias{as.SO3.Q4}
+\alias{as.SO3.SO3}
+\alias{as.SO3.data.frame}
+\alias{as.SO3.default}
 \alias{id.SO3}
 \alias{is.SO3}
-\alias{SO3}
-\alias{SO3.default}
-\alias{SO3.Q4}
-\alias{SO3.SO3}
 \title{Rotation matrices}
 \format{\code{id.SO3} is the identity rotation given by the the 3-by-3 identity matrix.}
 \usage{
-  SO3(R, ...)
+  as.SO3(x, ...)
 
-  \method{SO3}{default} (R, theta = NULL, ...)
+  \method{as.SO3}{default} (x, theta = NULL, ...)
 
-  \method{SO3}{Q4} (R, ...)
+  \method{as.SO3}{Q4} (x, ...)
 
-  \method{SO3}{SO3} (R, ...)
+  \method{as.SO3}{SO3} (x, ...)
 
-  as.SO3(R)
+  \method{as.SO3}{data.frame} (x, ...)
 
-  is.SO3(R)
+  is.SO3(x)
 
   id.SO3
 }
 \arguments{
-  \item{R}{object to be coerced or tested.}
+  \item{x}{object to be coerced or tested; see details for
+  possible forms}
 
-  \item{theta}{vector of rotation angles.}
+  \item{theta}{vector or single rotation angle; if
+  \code{length(theta)==1} the same theta is used for all
+  axes}
 
   \item{...}{additional arguments.}
 }
 \value{
-  \item{as.SO3}{coerces its object into an SO3 type.}
+  \item{as.SO3}{coerces provided data into an SO3 type.}
   \item{is.SO3}{returns \code{TRUE} or \code{False}
   depending on whether its argument satifies the conditions
   to be an rotation matrix.  Namely, has determinant one
   and its transpose is its inverse.}
-  \item{SO3.default}{returns an \eqn{n}-by-9 matrix where
-  each row is a rotation matrix constructed from axis
-  \eqn{U} and angle theta.} \item{SO3.Q4}{returns
-  \eqn{n}-by-9 matrix where each row is a rotation matrix
-  constructed from the corresponding quaternion.}
 }
 \description{
   Creates or tests for objects of class "SO3."
 }
 \details{
-  Construct a 3-by-3 matrix to represent a rotation.  Each
-  rotation matrix can be interpreted as a rotation of some
-  reference frame about the axis \eqn{U} (of unit length)
-  through the angle \eqn{\theta}.  For each axis and angle
-  the matrix is formed through
-  \deqn{R=\exp[\Phi(U\theta)]}{R=exp[\Phi(U\theta)].} If no
-  angle of rotation are supplied then the length of each
-  axis is taken to be the angle of rotation theta.  If a
-  \code{\link{Q4}} object is given then this function will
-  return the rotation matrix equivalent.
+  Construct a single or sample of rotations in 3-dimensions
+  in 3-by-3 matrix form.  Several possible inputs for
+  \code{x} are possible and they are differentiated based
+  on their class or dimension.
+
+  For \code{x} an n-by-3 matrix or vector of length 3, the
+  angle-axis representation of rotations is utilized.  More
+  specifically, each rotation matrix can be interpreted as
+  a rotation of some reference frame about the axis \eqn{U}
+  (of unit length) through the angle \eqn{\theta}.  If a
+  single axis (in matrix or vector format) or matrix of
+  axes are provided for \code{x}, then for each axis and
+  angle the matrix is formed through
+  \deqn{R=\exp[\Phi(U\theta)]}{R=exp[\Phi(U\theta)]} where
+  \eqn{U} is replace by \code{x}.  If axes are provided but
+  \code{theta} is not provided then the length of each axis
+  is taken to be the angle of rotation, theta.
+
+  For \code{x} an n-by-4 matrix of quaternions or an object
+  of class \code{"Q4"}, this function will return the
+  rotation matrix equivalent of \code{x}.  See
+  \code{\link{Q4}} or the vignette "rotations-intro" for
+  more details on quaternions.
+
+  For \code{x} an n-by-9 matrix, rows are treated as 3-by-3
+  matrices; rows that don't form matrices in SO(3) are
+  projected into SO(3) and those that are already in SO(3)
+  are returned untouched.  See \code{\link{project.SO3}}
+  for more on projecting arbitrary matrices into SO(3).  A
+  message is printed if any of the rows are not rotation
+  matrices.
+
+  For \code{x} a \code{"data.frame"} it is translated into
+  a matrix of the same dimension and the dimensionality of
+  \code{x} is used to determine what the data type:
+  angle-axis, quaternion or rotation. As demonstrated
+  below, \code{is.SO3} may return \code{TRUE} for a data
+  frame, but the functions defined for objects of class
+  \code{'SO3'} will not be called until \code{as.SO3} has
+  been used.
+}
+\examples{
+data(nickel)                   #Select one location to focus on
+Loc698 <- subset(nickel, location == 698)
+
+is.SO3(Loc698[,5:13])          #Some of the rows are not rotations due to rounding or entry errors
+                               #as.SO3 will project matrices not in SO(3) to SO(3)
+
+Rs <- as.SO3(Loc698[,5:13])    #Translate the Rs data.frame into an object of class 'SO3'
+                               #Rows 4, 6 and 13 are not in SO(3) so they are projected to SO(3)
+
+mean(Rs)                       #Estimate the central orientation with the average
+median(Rs)                     #Re-estimate central orientation robustly
+Qs <- as.Q4(Rs)                #Coerse into "SO3" format, see ?as.SO3 for more
+
+#Visualize the location, there appears to be two groups
+\dontrun{
+plot(Rs, col = c(1, 2, 3))}
 }
 \keyword{datasets}
 

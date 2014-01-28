@@ -17,7 +17,7 @@
   \item{n}{number of observations.  If \code{length(n)>1},
   the length is taken to be the number required.}
 
-  \item{kappa}{concentration paramter.}
+  \item{kappa}{concentration parameter.}
 
   \item{nu}{circular variance, can be used in place of
   \code{kappa}.}
@@ -49,6 +49,22 @@
   r)/[\Gamma(\kappa+1/2)2^(\kappa+1)\sqrt\pi].} The Cayley
   distribution is equivalent to the de la Vallee Poussin
   distribution of \cite{Schaeben (1997)}.
+}
+\examples{
+r <- seq(-pi, pi, length = 500)
+
+#Visualize the Cayley density fucntion with respect to the Haar measure
+plot(r, dcayley(r, kappa = 10), type = 'l', ylab = 'f(r)')
+
+#Visualize the Cayley density fucntion with respect to the Lebesgue measure
+plot(r, dcayley(r, kappa = 10, Haar = FALSE), type = 'l', ylab = 'f(r)')
+
+#Plot the Cayley CDF
+plot(r,pcayley(r,kappa = 10), type = 'l', ylab = 'F(r)')
+
+#Generate random observations from Cayley distribution
+rs <- rcayley(20, kappa = 1)
+hist(rs, breaks = 10)
 }
 \references{
   Schaeben H (1997). "A Simple Standard Orientation Density

@@ -35,7 +35,7 @@ rar <- function(n, f, M, ...) {
 #' @aliases Cayley rcayley dcayley
 #' @param r,q vector of quantiles.
 #' @param n number of observations.  If \code{length(n)>1}, the length is taken to be the number required.
-#' @param kappa concentration paramter.
+#' @param kappa concentration parameter.
 #' @param nu circular variance, can be used in place of \code{kappa}.
 #' @param Haar logical; if TRUE density is evaluated with respect to the Haar measure.
 #' @param lower.tail logical; if TRUE (default) probabilities are \eqn{P(X\leq x)}{P(X\le x)} otherwise, \eqn{P(X>x)}.
@@ -44,6 +44,21 @@ rar <- function(n, f, M, ...) {
 #'          \item{rcayley}{generates a vector of random deviates}
 #' @seealso \link{Angular-distributions} for other distributions in the rotations package.
 #' @cite Schaeben1997 leon2006
+#' @examples
+#' r <- seq(-pi, pi, length = 500)
+#' 
+#' #Visualize the Cayley density fucntion with respect to the Haar measure
+#' plot(r, dcayley(r, kappa = 10), type = 'l', ylab = 'f(r)')
+#' 
+#' #Visualize the Cayley density fucntion with respect to the Lebesgue measure
+#' plot(r, dcayley(r, kappa = 10, Haar = FALSE), type = 'l', ylab = 'f(r)')
+#' 
+#' #Plot the Cayley CDF
+#' plot(r,pcayley(r,kappa = 10), type = 'l', ylab = 'F(r)')
+#' 
+#' #Generate random observations from Cayley distribution
+#' rs <- rcayley(20, kappa = 1)
+#' hist(rs, breaks = 10)
 
 NULL
 
@@ -55,12 +70,9 @@ NULL
 dcayley <- function(r, kappa = 1, nu = NULL, Haar = TRUE) {
   
   if(!is.null(nu))
-    kappa <- cayley_kappa(nu)
+    kappa <- cayley.kappa(nu)
   
  	den <- 0.5 * gamma(kappa + 2)/(sqrt(pi) * 2^kappa * gamma(kappa + 0.5)) * (1 + cos(r))^kappa * (1 - cos(r))
-  
-  #if(!lower.tail)
-  #	den<-1-den
   
   if (Haar) 
     return(den/(1 - cos(r))) else return(den)
@@ -93,7 +105,7 @@ pcayley<-function(q,kappa=1,nu=NULL,lower.tail=TRUE){
 rcayley <- function(n, kappa = 1, nu = NULL) {
   
   if(!is.null(nu))
-    kappa <- cayley_kappa(nu)
+    kappa <- cayley.kappa(nu)
   
   lenn<-length(n)
   if(lenn>1)
@@ -117,7 +129,7 @@ rcayley <- function(n, kappa = 1, nu = NULL) {
 #' @aliases Fisher dfisher rfisher pfisher
 #' @param r,q vector of quantiles.
 #' @param n number of observations.  If \code{length(n)>1}, the length is taken to be the number required.
-#' @param kappa concentration paramter.
+#' @param kappa concentration parameter.
 #' @param nu circular variance, can be used in place of \code{kappa}.
 #' @param Haar logical; if TRUE density is evaluated with respect to the Haar measure.
 #' @param lower.tail  logical; if TRUE (default), probabilities are \eqn{P(X \le x)} otherwise, \eqn{P(X > x)}.
@@ -125,6 +137,21 @@ rcayley <- function(n, kappa = 1, nu = NULL) {
 #'          \item{pfisher}{gives the distribution function}
 #'          \item{rfisher}{generates random deviates}
 #' @seealso \link{Angular-distributions} for other distributions in the rotations package.
+#' @examples
+#' r <- seq(-pi, pi, length = 500)
+#' 
+#' #Visualize the matrix Fisher density fucntion with respect to the Haar measure
+#' plot(r, dfisher(r, kappa = 10), type = 'l', ylab = 'f(r)')
+#' 
+#' #Visualize the matrix Fisher density fucntion with respect to the Lebesgue measure
+#' plot(r, dfisher(r, kappa = 10, Haar = FALSE), type = 'l', ylab = 'f(r)')
+#' 
+#' #Plot the matrix Fisher CDF
+#' plot(r,pfisher(r,kappa = 10), type = 'l', ylab = 'F(r)')
+#' 
+#' #Generate random observations from matrix Fisher distribution
+#' rs <- rfisher(20, kappa = 1)
+#' hist(rs, breaks = 10)
 
 NULL
 
@@ -135,15 +162,12 @@ NULL
 dfisher <- function(r, kappa = 1, nu = NULL, Haar = TRUE) {
   
   if(!is.null(nu))
-    kappa <- fisher_kappa(nu)
+    kappa <- fisher.kappa(nu)
   
   n<-length(r)
   den<-rep(0,n)
   
  	den <- exp(2 * kappa * cos(r)) * (1 - cos(r))/(2 * pi * (besselI(2 * kappa, 0) - besselI(2 * kappa, 1)))
-  
-  #if(!lower.tail)
-  #	den<-1-den
   
   if (Haar) 
     return(den/(1 - cos(r))) else return(den)
@@ -154,7 +178,7 @@ dfisher <- function(r, kappa = 1, nu = NULL, Haar = TRUE) {
 #' @aliases Fisher dfisher pfisher rfisher
 #' @export
 
-pfisher<-function(q,kappa=1, nu= NULL, lower.tail=TRUE){
+pfisher<-function(q,kappa=1, nu=NULL, lower.tail=TRUE){
   
   n<-length(q)
   cdf<-rep(NA,n)
@@ -174,7 +198,7 @@ pfisher<-function(q,kappa=1, nu= NULL, lower.tail=TRUE){
 rfisher <- function(n, kappa = 1, nu = NULL) {
   
   if(!is.null(nu))
-    kappa <- fisher_kappa(nu)
+    kappa <- fisher.kappa(nu)
   
   lenn<-length(n)
   if(lenn>1)
@@ -184,12 +208,17 @@ rfisher <- function(n, kappa = 1, nu = NULL) {
   return(rar(n, dfisher, M, kappa = kappa, Haar=F))
 }
 
-#' Uniform distribution on \eqn{SO(3)}
+#' Uniform distribution
 #'
-#' Density, distribution function and random generation for the uniform distribution on \eqn{SO(3)}.
+#' Density, distribution function and random generation for the uniform distribution on the circle.
 #'
-#' The uniform distribution on the space \eqn{SO(3)}  (also referred to as the Haar measure)
-#' has density \deqn{C_U(r)=\frac{[1-cos(r)]}{2\pi}.}{C(r)=[1-cos(r)]/2\pi.}
+#' The uniform distribution on the interval \eqn{[-\pi,\pi)}
+#' has density \deqn{C_U(r)=\frac{[1-cos(r)]}{2\pi}}{C(r)=[1-cos(r)]/2\pi} with respect to the Lebesgue
+#'  measure.  The Haar measure is a volume invariance measure for spaces such as SO(3) that plays the role
+#'  of the uniform measure on SO(3).  The uniform distribution with respect to the Haar measure is given
+#'  by \deqn{C_U(r)=\frac{1}{2\pi}}{C(r)=1/(2\pi)}.  Because the uniform distribution on the circle
+#'  with respect to the Haar measure gives a horizontal line at 1 
+#'  with respect to the Lebesgue measure, we called this distribution 'Haar.'
 #'
 #' @name Haar
 #' @aliases Haar dhaar phaar rhaar
@@ -200,6 +229,26 @@ rfisher <- function(n, kappa = 1, nu = NULL) {
 #'          \item{phaar}{gives the distribution function}
 #'          \item{rhaar}{generates random deviates}
 #' @seealso \link{Angular-distributions} for other distributions in the rotations package.
+#' @examples
+#' r <- seq(-pi, pi, length = 1000)
+#' 
+#' #Visualize the uniform distribution on the circle with respect to Lebesgue measure
+#' plot(r, dhaar(r), type = 'l', ylab = 'f(r)')
+#' 
+#' #Visualize the uniform distribution on the circle with respect to Haar measure, which is
+#' #a horizontal line at 1
+#' plot(r, 2*pi*dhaar(r)/(1-cos(r)), type = 'l', ylab = 'f(r)')
+#' 
+#' #Plot the uniform CDF
+#' plot(r,phaar(r), type = 'l', ylab = 'F(r)')
+#' 
+#' #Generate random observations from uniform circular distribution
+#' rs <- rhaar(50)
+#' 
+#' #Visualize on the real line
+#' hist(rs, breaks = 10)
+#' 
+
 
 NULL
 
@@ -251,13 +300,13 @@ rhaar<-function(n){
 #' 
 #' The circular von Mises distribution with concentration \eqn{\kappa} has density
 #' \deqn{C_\mathrm{M}(r|\kappa)=\frac{1}{2\pi \mathrm{I_0}(\kappa)}e^{\kappa cos(r)}.}{C(r|\kappa)=exp[\kappa cos(r)]/[2\pi I(\kappa)]}
-#' where \eqn{\mathrm{I_0}(\kappa)}{I(\kappa)} is the modified bessel function of order 0.
+#' where \eqn{\mathrm{I_0}(\kappa)}{I(\kappa)} is the modified Bessel function of order 0.
 #'
 #' @name Mises
 #' @aliases Mises dvmises rvmises pvmises
 #' @param r,q vector of quantiles
 #' @param n number of observations.  If \code{length(n)>1}, the length is taken to be the number required.
-#' @param kappa concentration paramter.
+#' @param kappa concentration parameter.
 #' @param nu circular variance, can be used in place of \code{kappa}.
 #' @param Haar logical; if TRUE density is evaluated with respect to the Haar measure.
 #' @param lower.tail  logical; if TRUE (default), probabilities are \eqn{P(X \le x)} otherwise, \eqn{P(X > x)}.
@@ -265,6 +314,21 @@ rhaar<-function(n){
 #'          \item{pvmises}{gives the distribution function}
 #'          \item{rvmises}{generates random deviates}
 #' @seealso \link{Angular-distributions} for other distributions in the rotations package.
+#' @examples
+#' r <- seq(-pi, pi, length = 500)
+#' 
+#' #Visualize the von Mises density fucntion with respect to the Haar measure
+#' plot(r, dvmises(r, kappa = 10), type = 'l', ylab = 'f(r)', ylim = c(0, 100))
+#' 
+#' #Visualize the von Mises density fucntion with respect to the Lebesgue measure
+#' plot(r, dvmises(r, kappa = 10, Haar = FALSE), type = 'l', ylab = 'f(r)')
+#'
+#' #Plot the von Mises CDF
+#' plot(r,pvmises(r,kappa = 10), type = 'l', ylab = 'F(r)')
+#'   
+#' #Generate random observations from von Mises distribution
+#' rs <- rvmises(20, kappa = 1)
+#' hist(rs, breaks = 10)
 
 NULL
 
@@ -275,7 +339,7 @@ NULL
 dvmises <- function(r, kappa = 1, nu = NULL, Haar = T) {
   
   if(!is.null(nu))
-    kappa <- vmises_kappa(nu)
+    kappa <- vmises.kappa(nu)
   
   den <- 1/(2 * pi * besselI(kappa, 0)) * exp(kappa * cos(r))
   
@@ -312,7 +376,7 @@ pvmises<-function(q,kappa=1,nu=NULL,lower.tail=TRUE){
 rvmises <- function(n, kappa = 1, nu = NULL) {
   
   if(!is.null(nu))
-    kappa <- vmises_kappa(nu)
+    kappa <- vmises.kappa(nu)
   
   lenn<-length(n)
   if(lenn>1)
@@ -367,18 +431,33 @@ rvmises <- function(n, kappa = 1, nu = NULL) {
 #' @aliases UARS puars duars ruars
 #' @param R Value at which to evaluate the UARS density.
 #' @param n number of observations. If \code{length(n)>1}, the length is taken to be the number required.
-#' @param dangle The function to evaulate the angles from e.g. dcayley, dvmises, dfisher, dhaar.
-#' @param pangle The form of the angular density e.g. pcayley, pvmises, pfisher, phaar.
-#' @param rangle The function from which to simulate angles e.g. rcayley, rvmises, rhaar, rfisher.
+#' @param dangle The function to evaluate the angles from, e.g. dcayley, dvmises, dfisher, dhaar.
+#' @param pangle The form of the angular density, e.g. pcayley, pvmises, pfisher, phaar.
+#' @param rangle The function from which to simulate angles, e.g. rcayley, rvmises, rhaar, rfisher.
 #' @param S central orientation of the distribution.
 #' @param kappa concentration parameter.
 #' @param space indicates the desired representation: matrix ("SO3") or quaternion ("Q4").
 #' @param ... additional arguments.
 #' @return  \item{duars}{gives the density}
-#'          \item{puars}{gives the distribution function}
+#'          \item{puars}{gives the distribution function.  If pangle is left empty, the empirical CDF is returned.}
 #'          \item{ruars}{generates random deviates}
 #' @seealso For more on the angular distribution options see \link{Angular-distributions}.
 #' @cite bingham09
+#' @examples
+#' #Generate random rotations from the Cayley-UARS distribution with central orientation 
+#' #rotated about the y-axis through pi/2 radians
+#' S <- as.SO3(c(0, 1, 0), pi/2)
+#' Rs <- ruars(20, rangle = rcayley, kappa = 1, S = S)
+#' 
+#' rs <- mis.angle(Rs-S)                          #Find the associated misorientation angles
+#' frs <- duars(Rs, dcayley, kappa = 10, S = S)   #Compute UARS density evaluated at each rotations
+#' plot(rs, frs) 
+#' 
+#' cdf <- puars(Rs, pcayley, S = S)               #By supplying 'pcayley', it is used to compute the
+#' plot(rs, cdf)                                  #the CDF
+#' 
+#' ecdf <- puars(Rs, S=S)                         #No 'puars' arguement is supplied so the empirical
+#' plot(rs, ecdf)                                 #cdf is returned
 
 NULL
 
@@ -390,7 +469,7 @@ NULL
 duars<-function(R,dangle,S=id.SO3,kappa=1,...){
 	
 	R<-formatSO3(R)
-	rs<-angle(R)
+	rs<-mis.angle(R-S)
 	cr<-dangle(rs,kappa,...)	
 	trStO<-2*cos(rs)+1
 	
@@ -403,12 +482,12 @@ duars<-function(R,dangle,S=id.SO3,kappa=1,...){
 #' @aliases UARS duars puars ruars
 #' @export
 
-puars<-function(R,pangle,S=id.SO3,kappa=1,...){
+puars<-function(R,pangle=NULL,S=id.SO3,kappa=1,...){
 	
 	#This is not a true CDF, but it will work for now
 	R<-formatSO3(R)
-	rs<-angle(R)
-	
+	rs<-mis.angle(R-S)
+  
 	if(is.null(pangle)){
 		
 		n<-length(rs)
@@ -418,12 +497,10 @@ puars<-function(R,pangle,S=id.SO3,kappa=1,...){
 			cr[i]<-length(which(rs<=rs[i]))/n
 		
 	}else{		
-		cr<-pangle(rs,kappa,...)
+		cr<-2*(pangle(rs,kappa,...)-.5)
 	}
 	
-	#trStO<-2*cos(rs)+1
-	
-	#den<-4*pi*cr/(3-trStO)
+  
 	
 	return(cr)
 	

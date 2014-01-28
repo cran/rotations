@@ -39,9 +39,9 @@
   distribution}
 }
 \value{
-  list of \item{Shat}{Draws from the posterior distribution for
-  central orientation S} \item{kappa}{Draws from the
-  posterior distribution for concentration parameter kappa}
+  list of \item{Shat}{Mode of the posterior distribution
+  for the central orientation S} \item{kappa}{Mean of the
+  posterior distribution for the concentration kappa}
 }
 \description{
   Use non-informative Bayes to estimate the central
@@ -58,8 +58,21 @@
   used for the concentration parameter.
 }
 \examples{
-Rs<-ruars(20,rcayley,kappa=4)
-ests<-bayes.mean(Rs,type='Cayley',S0=mean(Rs),kappa0=4,tuneS=39,tuneK=.8,burn_in=100,m=5000)
+Rs <- ruars(20, rvmises, kappa = 10)
+
+Shat <- mean(Rs)               #Estimate the central orientation using the projected mean
+rotdist.sum(Rs, Shat, p = 2)   #The projected mean minimizes the sum of squared Euclidean
+rot.dist(Shat)                 #distances, compute the minimized sum and estimator bias
+
+#Estimate the central orientation using the posterior mode (it isn't run because it takes some time)
+#Compare it to the projected mean in terms of the squared Euclidean distance and bias
+\dontrun{
+ests <- bayes.mean(Rs, type = 'Mises', S0 = mean(Rs), kappa0 = 10, tuneS = 5000,
+                   tuneK = 1, burn_in = 1000, m = 5000)
+
+Shat2 <- ests$Shat             #The posterior mode is the 'Shat' object
+rotdist.sum(Rs, Shat2, p = 2)  #Compute sum of squared Euclidean distances
+rot.dist(Shat2)                #Bayes estimator bias}
 }
 \references{
   Bingham MA, Vardeman SB and Nordman DJ (2009). "Bayes

@@ -39,10 +39,10 @@
   distribution}
 }
 \value{
-  list of \item{S}{Draws from the posterior distribution for
-  central orientation S} \item{kappa}{Draws from the
+  list of \item{S}{Draws from the posterior distribution
+  for central orientation S} \item{kappa}{Draws from the
   posterior distribution for concentration parameter kappa}
-  \item{Saccept}{Acceptance rate for cenral orientaion
+  \item{Saccept}{Acceptance rate for central orientation
   draws} \item{Kaccept}{Acceptance rate for concentration
   draws}
 }
@@ -61,8 +61,10 @@
   used for the concentration parameter.
 }
 \examples{
-Rs<-ruars(20,rcayley,kappa=4)
-draws<-MCMCSO3(Rs,type='Cayley',S0=mean(Rs),kappa0=2,tuneS=39,tuneK=.8,burn_in=100,m=5000)
+\dontrun{
+Rs <- ruars(20, rvmises, kappa = 10)
+draws <- MCMCSO3(Rs, type = 'Mises', S0 = mean(Rs), kappa0 = 10, tuneS = 5000,
+                 tuneK = 1,burn_in = 1000, m = 5000)}
 }
 \references{
   Bingham MA, Vardeman SB and Nordman DJ (2009). "Bayes

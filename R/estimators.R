@@ -21,10 +21,19 @@
 #' @S3method mean SO3
 #' @method mean SO3
 #' @examples
-#' Rs<-ruars(20,rvmises,kappa=0.01)
-#' mean(Rs)
-#' Qs<-Q4(Rs)
-#' mean(Qs)
+#' Rs <- ruars(20, rvmises, kappa = 0.01)
+#' mean(Rs)                               #Projected mean
+#' project.SO3(colMeans(Rs))              #Same as mean(Rs)
+#' 
+#' mean(Rs, type = 'geometric')           #Geometric mean
+#' rot.dist(mean(Rs))                     #Bias of the projected mean
+#' rot.dist(mean(Rs, type = 'geometric')) #Bias of the geometric mean
+#' 
+#' Qs <- as.Q4(Rs)
+#' mean(Qs)                               #Projected mean
+#' mean(Qs, type = 'geometric')           #Geometric mean
+#' rot.dist(mean(Qs))                     #Bias of the projected mean
+#' rot.dist(mean(Qs, type = 'geometric')) #Bias of the geometric mean
 
 mean.SO3 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000, ...) {
 	
@@ -65,9 +74,9 @@ mean.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...) 
 		
 	}else{
 		
-		Rs<-SO3.Q4(Qs)
+		Rs<-as.SO3.Q4(Qs)
   	R<-gmeanSO3C(Rs,maxIter,epsilon)
-		R<-Q4.SO3(R)
+		R<-as.Q4.SO3(R)
 	}
 	
 	class(R)<-'Q4'
@@ -97,6 +106,18 @@ mean.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...) 
 #' @seealso \code{\link{mean.SO3}}, \code{\link{bayes.mean}}, \code{\link{weighted.mean.SO3}}
 #' @cite hartley11 stanfill2013
 #' @export
+#' @examples
+#' Rs <- ruars(20, rvmises, kappa = 0.01)
+#' median(Rs)                               #Projected median
+#' median(Rs, type = 'geometric')           #Geometric median
+#' rot.dist(median(Rs))                     #Bias of the projected median
+#' rot.dist(median(Rs, type = 'geometric')) #Bias of the geometric median
+#' 
+#' Qs <- as.Q4(Rs)
+#' median(Qs)                               #Projected median
+#' median(Qs, type = 'geometric')           #Geometric median
+#' rot.dist(median(Qs))                     #Bias of the projected median
+#' rot.dist(median(Qs, type = 'geometric')) #Bias of the geometric median
 
 median<-function(x,...){
   UseMethod("median")
@@ -144,11 +165,11 @@ median.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...
 	if(length(Qs)==4)
 		return(Qs)
 
-  Rs<-SO3.Q4(Qs)
+  Rs<-as.SO3.Q4(Qs)
   
   R<-median.SO3(Rs,type,epsilon,maxIter,...)
 
-  return(Q4.SO3(R))
+  return(as.Q4.SO3(R))
 }
 
 
@@ -164,7 +185,7 @@ median.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...
 #'
 #' @param x \eqn{n\times p}{n-by-p} matrix where each row corresponds to a random rotation in matrix form (\eqn{p=9}) or quaternion (\eqn{p=4}) form.
 #' @param w vector of weights the same length as the number of rows in x giving the weights to use for elements of x.
-#' @param type string indicating "projectced" or "geometric" type mean estimator.
+#' @param type string indicating "projected" or "geometric" type mean estimator.
 #' @param epsilon stopping rule for the geometric method.
 #' @param maxIter maximum number of iterations allowed before returning most recent estimate.
 #' @param ... only used for consistency with mean.default.
@@ -175,11 +196,20 @@ median.Q4 <- function(x, type = "projected", epsilon = 1e-05, maxIter = 2000,...
 #' @S3method weighted.mean SO3
 #' @method weighted.mean SO3
 #' @examples
-#' Rs<-ruars(20,rvmises,kappa=0.01)
-#' wt<-abs(1/angle(Rs))
-#' weighted.mean(Rs,wt)
-#' Qs<-Q4(Rs)
-#' weighted.mean(Qs,wt)
+#' Rs <- ruars(20, rvmises, kappa = 0.01)
+#' mean(Rs)                   #Find the equal-weight projected mean
+#' wt <- abs(1/mis.angle(Rs)) #Use the rotation misorientation angle as weight
+#' weighted.mean(Rs, wt)      #as weight
+#' rot.dist(mean(Rs))
+#' rot.dist(weighted.mean(Rs, wt)) #usually much smaller than unweighted mean
+#' 
+#' #Can do the same thing with quaternions
+#' Qs <- as.Q4(Rs)
+#' mean(Qs) 
+#' wt <- abs(1/mis.angle(Qs)) 
+#' weighted.mean(Qs, wt)      
+#' rot.dist(mean(Qs))
+#' rot.dist(weighted.mean(Qs, wt)) 
 
 weighted.mean.SO3 <- function(x, w, type = "projected", epsilon = 1e-05, maxIter = 2000, ...) {
 	
@@ -211,7 +241,7 @@ weighted.mean.SO3 <- function(x, w, type = "projected", epsilon = 1e-05, maxIter
 		
 		while (d >= epsilon) {
 			
-			R <- R %*% exp_skew(s)
+			R <- R %*% skew.exp(s)
 			
 			s <- matrix(colSums(w*t(apply(Rs, 1, tLogMat, S = R))), 3, 3)
 			
@@ -221,10 +251,12 @@ weighted.mean.SO3 <- function(x, w, type = "projected", epsilon = 1e-05, maxIter
 			
 			if (iter >= maxIter) {
 				warning(paste("No convergence in ", iter, " iterations."))
-				return(as.SO3(R))
+        class(R)<-"SO3"
+				return(R)
 			}
 		}
-		R<-as.SO3(R)	
+    class(R)<-"SO3"
+		#R<-as.SO3(R)	
 	}
 	
 	return(R)
@@ -243,10 +275,10 @@ weighted.mean.Q4 <- function(x, w, type = "projected", epsilon = 1e-05, maxIter 
 	if(nrow(Qs)==1)
 		return(Qs)
 	
-	Rs<-SO3(Qs)
+	Rs<-as.SO3(Qs)
 	
 	R<-weighted.mean.SO3(Rs,w,type,epsilon,maxIter)
 	
-	return(Q4.SO3(R))
+	return(as.Q4.SO3(R))
 	
 }

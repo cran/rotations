@@ -1,4 +1,4 @@
-// [[Rcpp::depends(RcppArmadillo)]]
+
 #include <RcppArmadillo.h>  
 #include "../inst/include/rotations.h"
 
@@ -131,6 +131,11 @@ double lpcayley(arma::mat Rs, arma::mat S, double kappa){
   }
   return p1*p2*p4;*/
  
+  /*kappa >= 172.5 is out of range for gammafn*/
+  if(kappa>169.5){
+    kappa = 169.5;
+  }
+ 
   //Log-scale calculation
   double p1 = n*log(sqrt(PI)*R::gammafn(kappa+2)/R::gammafn(kappa+0.5));
   double p2 = 0.5*log(R::trigamma(kappa+0.5)-R::trigamma(kappa+2));
@@ -169,21 +174,33 @@ arma::mat genrC(arma::mat S,double r) {
   NumericVector ta = runif(1,-1,1);
   double theta = ta[0];
   theta = acos(theta);
+  double cosr = cos(r);
+  double sinr = sin(r);
     
   NumericVector ph = runif(1, -M_PI, M_PI);
   double phi = ph[0];
   
   arma::rowvec u(3);
+  arma::colvec ut(3);
   
   u(0)=sin(theta) * cos(phi);
   u(1)=sin(theta) * sin(phi);
   u(2)=cos(theta);
-
-  arma::mat Ri, I(3,3), SS;
+  
+  ut = u.t();
+  
+  arma::mat Ri, I(3,3), SS, step(3,3);
   I.eye();
-  Ri = u.t() * u;
+  Ri = ut * u;
+  
+  step = (I - Ri);
+  step *= cosr;
+  Ri += step;
+  
   SS = rotations::eskewC(u);
-  Ri = Ri + (I - Ri) * cos(r) +  SS * sin(r);
+  
+  step = SS * sinr;
+  Ri +=  step;
   Ri = S * Ri;
   return Ri;
 

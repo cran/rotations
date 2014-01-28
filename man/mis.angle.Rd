@@ -1,14 +1,14 @@
-\name{angle}
-\alias{angle}
-\alias{angle.Q4}
-\alias{angle.SO3}
+\name{mis.angle}
+\alias{mis.angle}
+\alias{mis.angle.Q4}
+\alias{mis.angle.SO3}
 \title{Misorientation angle}
 \usage{
-  angle(x)
+  mis.angle(x)
 
-  \method{angle}{SO3} (x)
+  \method{mis.angle}{SO3} (x)
 
-  \method{angle}{Q4} (x)
+  \method{mis.angle}{Q4} (x)
 }
 \arguments{
   \item{x}{\eqn{n\times p}{n-by-p} matrix where each row
@@ -24,13 +24,25 @@
 \details{
   Every rotation can be thought of as some reference
   coordinate system rotated about an axis through an angle.
-  These quantites are referred to as the misorientation
+  These quantities are referred to as the misorientation
   axis and misorientation angle, respectively, in the
   material sciences literature. This function returns the
   misorentation angle associated with a rotation assuming
   the reference coordinate system is the identity.
 }
+\examples{
+rs <- rcayley(20, kappa = 20)
+Rs <- genR(rs, S = id.SO3)
+mis.angle(Rs)
+
+#If the central orientation is id.SO3 then mis.angle(Rs) and abs(rs) are equal
+all.equal(mis.angle(Rs), abs(rs))  #TRUE
+
+#If the central orientation is NOT id.SO3 then mis.angle(Rs) and abs(rs) are usual unequal
+Rs <- genR(rs, S = genR(pi/8))
+all.equal(mis.angle(Rs), abs(rs))  #Mean relative difference > 0
+}
 \seealso{
-  \code{\link{axis}}
+  \code{\link{mis.axis}}
 }
 

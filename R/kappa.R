@@ -14,12 +14,17 @@
 #'  @cite mardia2000
 #'  @seealso \code{\link{Cayley}}
 #'  @export
+#'  @examples
+#'  #Find the concentration parameter for circular variances 0.25, 0.5, 0.75
+#'  cayley.kappa(0.25)
+#'  cayley.kappa(0.5)
+#'  cayley.kappa(0.75)
 
-cayley_kappa<-function(nu){
+cayley.kappa<-function(nu){
   (3/nu)-2
 }
 
-fisher_nu_kappa<-function(kappa,nu){
+fisher.nu.kappa<-function(kappa,nu){
   (1-(besselI(2*kappa,1)-.5*besselI(2*kappa,2)-.5*besselI(2*kappa,0))/(besselI(2*kappa,0)-besselI(2*kappa,1))-nu)^2
 }
 
@@ -39,19 +44,24 @@ fisher_nu_kappa<-function(kappa,nu){
 #'  @seealso \code{\link{Fisher}}
 #'  @cite mardia2000
 #'  @export
+#'  @examples
+#'  #Find the concentration parameter for circular variances 0.25, 0.5, 0.75
+#'  fisher.kappa(0.25)
+#'  fisher.kappa(0.5)
+#'  fisher.kappa(0.75)
 
-fisher_kappa<-function(nu){
+fisher.kappa<-function(nu){
   
   kappa<-rep(0,length(nu))
   
   for(i in 1:length(nu))
-    kappa[i]<-optimize(fisher_nu_kappa,interval=c(0,10),tol=.00001,nu=nu[i])$minimum
+    kappa[i]<-optimize(fisher.nu.kappa,interval=c(0,10),tol=.00001,nu=nu[i])$minimum
   
   return(kappa)
 }
 
 
-mises_nu_kappa<-function(kappa,nu){
+mises.nu.kappa<-function(kappa,nu){
   (1-besselI(kappa,1)/besselI(kappa,0)-nu)^2
 }
 
@@ -71,13 +81,18 @@ mises_nu_kappa<-function(kappa,nu){
 #'  @seealso \code{\link{Mises}}
 #'  @cite mardia2000
 #'  @export
+#'  @examples
+#'  #Find the concentration parameter for circular variances 0.25, 0.5, 0.75
+#'  vmises.kappa(0.25)
+#'  vmises.kappa(0.5)
+#'  vmises.kappa(0.75)
 
-vmises_kappa<-function(nu){
+vmises.kappa<-function(nu){
   
   kappa<-rep(0,length(nu))
   
   for(i in 1:length(nu))
-    kappa[i]<-optimize(mises_nu_kappa,interval=c(0,10),tol=.00001,nu=nu[i])$minimum
+    kappa[i]<-optimize(mises.nu.kappa,interval=c(0,10),tol=.00001,nu=nu[i])$minimum
   
   return(kappa)
 }

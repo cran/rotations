@@ -1,6 +1,6 @@
 \name{Fisher}
-\alias{dfisher}
 \alias{Fisher}
+\alias{dfisher}
 \alias{pfisher}
 \alias{rfisher}
 \title{The matrix-Fisher distribution}
@@ -17,7 +17,7 @@
   \item{n}{number of observations.  If \code{length(n)>1},
   the length is taken to be the number required.}
 
-  \item{kappa}{concentration paramter.}
+  \item{kappa}{concentration parameter.}
 
   \item{nu}{circular variance, can be used in place of
   \code{kappa}.}
@@ -49,6 +49,22 @@
   function of order \eqn{p} defined as
   \eqn{\mathrm{I}_p(\kappa)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\cos(pr)e^{\kappa\cos
   r}dr}{Ip(\kappa)}.
+}
+\examples{
+r <- seq(-pi, pi, length = 500)
+
+#Visualize the matrix Fisher density fucntion with respect to the Haar measure
+plot(r, dfisher(r, kappa = 10), type = 'l', ylab = 'f(r)')
+
+#Visualize the matrix Fisher density fucntion with respect to the Lebesgue measure
+plot(r, dfisher(r, kappa = 10, Haar = FALSE), type = 'l', ylab = 'f(r)')
+
+#Plot the matrix Fisher CDF
+plot(r,pfisher(r,kappa = 10), type = 'l', ylab = 'F(r)')
+
+#Generate random observations from matrix Fisher distribution
+rs <- rfisher(20, kappa = 1)
+hist(rs, breaks = 10)
 }
 \seealso{
   \link{Angular-distributions} for other distributions in

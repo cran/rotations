@@ -1,8 +1,8 @@
-\name{cayley_kappa}
-\alias{cayley_kappa}
+\name{fisher.kappa}
+\alias{fisher.kappa}
 \title{Circular variance and concentration parameter}
 \usage{
-  cayley_kappa(nu)
+  fisher.kappa(nu)
 }
 \arguments{
   \item{nu}{circular variance}
@@ -24,13 +24,19 @@
   See \cite{Mardia et al. (2000)} for more details.  This
   function translates the circular variance \eqn{\nu} into
   the corresponding concentration parameter \eqn{\kappa}
-  for the Cayley distribution.
+  for the matrix-Fisher distribution.
+}
+\examples{
+#Find the concentration parameter for circular variances 0.25, 0.5, 0.75
+ fisher.kappa(0.25)
+ fisher.kappa(0.5)
+ fisher.kappa(0.75)
 }
 \references{
   Mardia K and Jupp P (2000). Directional statistics.
   John Wiley & Sons, Chichester, England.
 }
 \seealso{
-  \code{\link{Cayley}}
+  \code{\link{Fisher}}
 }
 
