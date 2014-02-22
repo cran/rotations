@@ -79,6 +79,25 @@ roteye <- function(origin, center, column=1) {
 pointsXYZ <- function(data, center=id.SO3, column=1) {
   
   data<-as.SO3(data)
+  #data<-matrix(data,ncol=9)
+  center<-as.SO3(center)
+  data<-data-center
+  data<-matrix(data,ncol=9)
+  
+  idx <- list(1:3,4:6,7:9)[[column]]
+  data <- matrix(data[,idx],ncol=3)
+  
+  psample1 <- data.frame(data)
+  names(psample1) <- c("X","Y","Z")
+  
+  #  psample1 <- data.frame(psample1, data)
+  #  psample1 <- psample1[order(psample1$Z, decreasing=FALSE),]
+  psample1  
+}
+
+pointsXYZ_plot <- function(data, center=id.SO3, column=1) {
+  
+  data<-as.SO3(data)
   data<-matrix(data,length(data)/9,9)
   center<-matrix(as.SO3(center),3,3)
   
@@ -94,28 +113,70 @@ pointsXYZ <- function(data, center=id.SO3, column=1) {
 	psample1  
 }
 
+#This is a modified rgl.sphgrid that I use to create interactive plots
+rgl.sphgrid2<-function (radius = 1, col.long = "red", col.lat = "blue", deggap = 15, 
+                        longtype = "H", add = FALSE) {
+  if (add == F) {
+    open3d()
+  }
+  for (lat in seq(-90, 90, by = deggap)) {
+    if (lat == 0) {
+      col.grid = "grey50"
+    }
+    else {
+      col.grid = "grey"
+    }
+    plot3d(sph2car(long = seq(0, 360, len = 100), lat = lat, 
+                   radius = radius, deg = T), col = col.grid, add = T, 
+           type = "l")
+  }
+  for (long in seq(0, 360 - deggap, by = deggap)) {
+    if (long == 0) {
+      col.grid = "grey50"
+    }
+    else {
+      col.grid = "grey"
+    }
+    plot3d(sph2car(long = long, lat = seq(-90, 90, len = 100), 
+                   radius = radius, deg = T), col = col.grid, add = T, 
+           type = "l")
+  }
+  if (longtype == "H") {
+    scale = 15
+  }
+  if (longtype == "D") {
+    scale = 1
+  }
+  #Remove logitude and latitude signifiers
+  #rgl.sphtext(long = 0, lat = seq(-90, 90, by = deggap), radius = radius, 
+  #            text = seq(-90, 90, by = deggap), deg = TRUE, col = col.lat)
+  #rgl.sphtext(long = seq(0, 360 - deggap, by = deggap), lat = 0, 
+  #            radius = radius, text = seq(0, 360 - deggap, by = deggap)/scale, 
+  #            deg = TRUE, col = col.long)
+}
 
-#' Visualizing random rotations.
+#' Visualizing random rotations
 #'
-#' This function produces a three-dimensional globe onto which  one of the  columns of the provided sample of rotations is drawn.  The data are centered around a provided
-#' matrix and the user can choose to display this center or not.  Based on \code{ggplot2} package by \cite{wickham09}.
+#' This function produces an interactive or static three-dimensional globe onto which  one of the  columns of the provided sample of rotations is projected.  The data are centered around a user-specified
+#' rotation matrix.  The interactive plot is based on the \code{sphereplot} package and the static plot uses \code{\link{ggplot2}}.
 #'
-#' @param x n rotations in \code{SO3} format.
+#' @param x n rotations in \code{SO3} or \code{Q4} format.
 #' @param center rotation about which to center the observations.
-#' @param col integer or vector 1 to 3 indicating which column(s) to display.  If \code{length(col)>1} then each eyeball is labelled with the corresponding axis.
+#' @param col integer or vector comprised of 1, 2, 3 indicating which column(s) to display.  If \code{length(col)>1} then each eyeball is labelled with the corresponding axis.
 #' @param to_range logical; if \code{TRUE} only part of the globe relevant to the data is displayed
-#' @param show_estimates character vector to specify  which of the four estimates of the principal direction to show. Possibilities are "all", "proj.mean", "proj.median", "geom.mean", "geom.median."
+#' @param show_estimates character vector to specify  which of the four estimates of the principal direction to show. Possibilities are "all", "proj.mean", "proj.median", "geom.mean", "geom.median".
 #' @param label_points  vector of labels.
-#' @param mean_regions character vector to specify which of the three confidence regions to show for the projected mean.  Possibilities are "all", "eigen theory","eigen bootstrap, "moment theory", "moment bootstrap."
+#' @param mean_regions character vector to specify which of the three confidence regions to show for the projected mean.  Possibilities are "all", "trans.theory","trans.bootstrap, "direct.theory", "direct.bootstrap".
 #' @param median_regions character vector to specify which of the three confidence regions to show for the projected median.  Possibilities are "all", "theory", "bootstrap."
-#' @param alp alpha level to be used for confidence regions.
-#' @param m number of bootstrap replicates to use in Zhang confidence region.
+#' @param alp alpha level to be used for confidence regions.  See \code{\link{region}} for more details.
+#' @param m number of bootstrap replicates to use in bootstrap confidence regions.
+#' @param interactive logical; if \code{TRUE} \code{sphereplot} is used to create an interactive 3D plot, otherwise \code{\link{ggplot2}} is used
 #' @param ... parameters passed onto the points layer.
-#' @return  A \code{ggplot2} object with the data displayed on spherical grid.
+#' @note The option \code{interactive=TRUE} requires the \code{sphereplot} package.  If \code{sphereplot} is not available then the static plot is created.
+#' @return  A visualization of rotation data.
 #' @aliases plot.Q4
 #' @S3method plot SO3
 #' @method plot SO3
-#' @cite wickham09
 #' @export
 #' @examples
 #' r <- rvmises(200, kappa = 1.0)
@@ -127,12 +188,30 @@ pointsXYZ <- function(data, center=id.SO3, column=1) {
 #' # Z is computed internally and contains information on depth
 #' plot(Rs, center = mean(Rs), show_estimates = c("proj.mean", "geom.mean"), 
 #'  label_points = sample(LETTERS, 200, replace = TRUE)) + aes(size = Z, alpha = Z) + 
-#'  scale_size(limits = c(-1, 1), range = c(0.5, 2.5))}
+#'  scale_size(limits = c(-1, 1), range = c(0.5, 2.5))
+#'  
+#' plot(Rs, center = mean(Rs), interactive = TRUE)}
 
-plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...) {
-
+plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300, interactive=FALSE,  ...) {
+  
+  if(interactive){
+    
+    reqSph<-suppressWarnings(require(sphereplot))
+    
+    if(reqSph){
+      
+      col<-col[1]   #For interactive plots only one column can be displayed at a time
+      
+    }else{
+      
+      warning("The package sphereplot is required for interactive plots, a static plot will be returned.")
+      interactive<-FALSE
+      
+    }
+  }
+  
   if(length(col)>1){
-    mplotSO3(x, center=center, col=col, to_range=to_range, show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,...)
+    mplotSO3(x, center=center, col=col, to_range=to_range, show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,interactive=FALSE,...)
   }else{
   
   Rs <- as.SO3(x)
@@ -141,7 +220,13 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
 	
 	X <- Y <- Est <- NULL
   center<-matrix(center,3,3)
-	proj2d <- pointsXYZ(Rs, center=center, column=col)
+  
+  if(interactive){
+    proj2d <- pointsXYZ(Rs, center=center, column=col)
+  }else{
+	  proj2d <- pointsXYZ_plot(Rs, center=center, column=col)
+  }
+  
 	if(to_range) {
 		xlimits <- range(proj2d$X)
 		ylimits <- range(proj2d$Y)
@@ -151,10 +236,18 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
 		ylimits <- ybar + 1.1*(ylimits-ybar)
 	}
 	
+  #Static plot objects
 	estimates <- NULL
   regs<-NULL
 	regsMed<-NULL
-	
+  
+  #Interactive plot objects
+  estDF<-NULL
+  meanregDF<-NULL
+  medianregDF<-NULL
+  MedRegions<-NULL
+  Regions<-NULL
+  
 	if (!is.null(show_estimates)) {
 		ShatP <- StildeP <- ShatG <- StildeG <- NA
 		if(any(show_estimates%in%c('all','All'))) show_estimates<-c("proj.mean","proj.median","geom.mean","geom.median")
@@ -170,35 +263,58 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
 		
 		levels(Shats$Est) <- Estlabels
 		
-		
 		rmNA<-which(!is.na(Shats$X1))
 		NAs<-c(1:4)[-rmNA]
 		Shats<-na.omit(Shats)
-		
+    
+		if(nrow(Shats)==0){
+      warning("Incorrect input to show_estimates")
+      show_estimates<-NULL
+		}
+    
 		#Shats <- Shats[rmNA,]
 		Estlabels<-Estlabels[c(rmNA,NAs)]
 		
 		if(!is.null(mean_regions) || !is.null(median_regions)){
 			vals<-3:(2+nrow(Shats)) #Make the shapes noticable, 15:18
-			estimates <- list(geom_point(aes(x=X, y=Y, shape=Est),size=3.5, data=data.frame(pointsXYZ(Shats[,1:9], center=center, column=col), Shats)),
+      
+      if(interactive){
+        estDF<-pointsXYZ(Shats[,1:9],center=center,column=col)
+        estDF$lab<-c("Proj. Mean","Proj. Median","Geom. Mean","Geom. Median")[rmNA]
+      }else{
+        estDF<-pointsXYZ_plot(Shats[,1:9], center=center, column=col)
+			  estimates <- list(geom_point(aes(x=X, y=Y, shape=Est),size=3.5, data=data.frame(estDF, Shats)),
 												scale_shape_manual(name="Estimates", labels=Estlabels,values=vals))
+      }
 		}else{
-			estimates <- list(geom_point(aes(x=X, y=Y, colour=Est),size=3.5, data=data.frame(pointsXYZ(Shats[,1:9], center=center, column=col), Shats)),
+      if(interactive){
+        estDF<-pointsXYZ(Shats[,1:9],center=center,column=col)
+        estDF$lab<-c("Proj. Mean","Proj. Median","Geom. Mean","Geom. Median")[rmNA]
+      }else{
+		    estDF<-pointsXYZ_plot(Shats[,1:9], center=center, column=col)
+			  estimates <- list(geom_point(aes(x=X, y=Y, colour=Est),size=3.5, data=data.frame(estDF, Shats)),
 												scale_colour_brewer(name="Estimates", palette="Paired", labels=Estlabels))
+      }
 		}
 	}
   
 	if (!is.null(mean_regions)) {
 	  prentr <- fishr <- changr <- zhangr  <- NA
-	  if(any(mean_regions%in%c('all','All'))) mean_regions<-c("eigen theory","eigen bootstrap","moment theory","moment bootstrap")
-	  if (length(grep("eigen theory", mean_regions)) > 0) prentr<-region(Rs,estimator='mean',method='eigen',type='theory',alp=alp)[col]
-	  if (length(grep("eigen bootstrap", mean_regions)) > 0) fishr<-region(Rs,estimator='mean',method='eigen',type='bootstrap',alp=alp,m=m)
-    if (length(grep("moment theory", mean_regions)) >0)    changr<-region(Rs,estimator='mean',method='moment',type='theory',alp=alp)
-	  if (length(grep("moment bootstrap", mean_regions)) > 0)    zhangr<-region(Rs,estimator='mean',method='moment',type='bootstrap',alp=alp,m=m)
+	  if(any(mean_regions%in%c('all','All'))) mean_regions<-c("trans.theory","trans.bootstrap","direct.theory","direct.bootstrap")
+	  if (length(grep("trans.theory", mean_regions)) > 0) prentr<-region(Rs,estimator='mean',method='trans',type='theory',alp=alp)[col]
+	  if (length(grep("trans.bootstrap", mean_regions)) > 0) fishr<-region(Rs,estimator='mean',method='trans',type='bootstrap',alp=alp,m=m)
+    if (length(grep("direct.theory", mean_regions)) >0)    changr<-region(Rs,estimator='mean',method='direct',type='theory',alp=alp)
+	  if (length(grep("direct.bootstrap", mean_regions)) > 0)    zhangr<-region(Rs,estimator='mean',method='direct',type='bootstrap',alp=alp,m=m)
 
-	  Regions<-data.frame(X1=c(prentr,fishr,changr,zhangr),Meth=c('Mean\nEigen Theory','Mean\nEigen Bootstrap','Mean\nMoment Theory','Mean\nMoment Bootstrap'))
+	  Regions<-data.frame(X1=c(prentr,fishr,changr,zhangr),Meth=c('Mean\nTrans. Theory','Mean\nTrans. Bootstrap','Mean\nDirect Theory','Mean\nDirect Bootstrap'),
+                        Meth2=c('Mean Trans. Theory','Mean Trans. Boot.','Mean Direct Theory','Mean Direct Boot.'))
 	  Regions <- na.omit(Regions)
 	  
+	  if(nrow(Regions)==0){
+	    warning("Incorrect input to mean_regions")
+	    mean_regions<-NULL
+	  }
+    
     cisp.boot<-NULL
     
     for(i in 1:nrow(Regions)){
@@ -211,20 +327,28 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
       if(col==3)
 	      cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(runif(2,-1,1),0), Regions$X1[i]),simplify="matrix")))
     }
-	  
-	  regs <- geom_point(aes(x=X, y=Y,colour=Regions), data=data.frame(pointsXYZ(cisp.boot, center=t(mean(Rs))%*%center, column=col),Regions=rep(Regions$Meth,each=500)))
-
+    if(interactive){
+      meanregDF<-pointsXYZ(cisp.boot, center=t(mean(Rs))%*%center, column=col)
+    }else{
+	    meanregDF<-pointsXYZ_plot(cisp.boot, center=t(mean(Rs))%*%center, column=col)
+	    regs <- geom_point(aes(x=X, y=Y,colour=Regions), data=data.frame(meanregDF,Regions=rep(Regions$Meth,each=500)))
+    }
 	}
   
 	if (!is.null(median_regions)) {
 		changr <- zhangr  <- NA
 		if(any(median_regions%in%c('all','All'))) median_regions<-c("bootstrap","theory")
-		if (length(grep("heory", median_regions)) >0)    changr<-region(Rs,method='moment',type='theory',estimator='median',alp=alp)
-		if (length(grep("ootstrap", median_regions)) > 0)    zhangr<-region(Rs,method='moment',type='bootstrap',estimator='median',alp=alp,m=m)
+		if (length(grep("heory", median_regions)) >0)    changr<-region(Rs,method='direct',type='theory',estimator='median',alp=alp)
+		if (length(grep("ootstrap", median_regions)) > 0)    zhangr<-region(Rs,method='direct',type='bootstrap',estimator='median',alp=alp,m=m)
 		
-		MedRegions<-data.frame(X1=c(changr,zhangr),Meth=c('Median\nMoment Theory','Median\nMoment Bootstrap'))
+		MedRegions<-data.frame(X1=c(changr,zhangr),Meth=c('Median Theory','Median Bootstrap'))
 		MedRegions <- na.omit(MedRegions)
-		
+    
+		if(nrow(MedRegions)==0){
+		  warning("Incorrect input to median_regions")
+		  median_regions<-NULL
+		}
+    
 		cisp.boot<-NULL
 		
 		for(i in 1:nrow(MedRegions)){
@@ -237,22 +361,76 @@ plot.SO3 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NU
 			if(col==3)
 				cisp.boot <- rbind(cisp.boot,t(replicate(500, as.SO3(c(runif(2,-1,1),0), MedRegions$X1[i]),simplify="matrix")))
 		}
-		
-		regsMed <- geom_point(aes(x=X, y=Y,colour=Regions), data=data.frame(pointsXYZ(cisp.boot, center=t(median(Rs))%*%center, column=col),Regions=rep(MedRegions$Meth,each=500)))
-		
+    if(interactive){
+      medianregDF<-pointsXYZ(cisp.boot, center=t(median(Rs))%*%center, column=col)
+    }else{
+		  medianregDF<-pointsXYZ_plot(cisp.boot, center=t(median(Rs))%*%center, column=col)
+		  regsMed <- geom_point(aes(x=X, y=Y,colour=Regions), data=data.frame(medianregDF,Regions=rep(MedRegions$Meth,each=500)))
+    }
 	}
 	
-	labels <- NULL
-	if (!is.null(label_points)) {
-		proj2d$labels <- label_points
-		labels <- geom_text(aes(x=X+0.05, y=Y, label=labels), size=3.25, data=proj2d, ...) 
-	}
-	base + geom_point(aes(x=X, y=Y), data=proj2d, ...) + 
-		labels + 
-		estimates +
-    regs+
-		regsMed+
-		xlim(xlimits) + ylim(ylimits)
+  if(interactive){
+    #require(sphereplot)
+    rgl.sphgrid2(deggap=22.5)
+    pts <- car2sph(proj2d)
+    rgl.sphpoints(pts,deg=T,size=4)
+    
+    if(!is.null(estDF)||!is.null(meanregDF)||!is.null(medianregDF))
+      plot.new()
+    
+    if(!is.null(estDF)){
+      estpts <- car2sph(estDF[,-4])
+      
+      rgl.sphpoints(estpts,deg=T,col=c(2:(nrow(estDF)+1)),size=5)
+      
+      #Legend
+      #text3d(x=1, y=c(.8,1,1.2,1.4)[rmNA], z=1, estDF$lab ,col=c(2:(nrow(estDF)+1)))
+      legend('topleft',estDF$lab,col=c(2:(nrow(estDF)+1)),pch=19,title='Estimators')
+    }
+    
+    if(!is.null(label_points)){
+      label_points<-c(label_points,rep("",nrow(pts)-length(label_points)))
+      rgl.sphtext(pts,text=label_points)
+    }
+    
+    numRegs<-0
+    
+    if(!is.null(meanregDF)||!is.null(medianregDF)){
+      regDF<-rbind(meanregDF,medianregDF)
+      
+      regpts <- car2sph(regDF)
+      numRegs<-nrow(regpts)/500
+      rgl.sphpoints(regpts,deg=T,col=rep((1:numRegs)+1,each=500))
+      
+      #Confidence region legend
+      legend('topright',c(as.character(Regions$Meth2),as.character(MedRegions$Meth)),
+             col=c((1:numRegs)+1),lty=19,title='Confidence Regions',lwd=2)
+      
+    }
+    
+    #if(!is.null(medianregDF)){
+    #  medregpts <- car2sph(medianregDF)
+    #  numRegs2<-nrow(MedRegions)
+    #  rgl.sphpoints(medregpts,deg=T,col=rep((1:numRegs2)+1+numRegs,each=500))
+      
+    #  legend(.66,1,MedRegions$Meth,col=c((1:numRegs2)+1+numRegs),lty=19,title='Median Regions')
+      
+    #}
+    
+  }else{
+    labels <- NULL
+    if (!is.null(label_points)) {
+      proj2d$labels <- label_points
+      labels <- geom_text(aes(x=X+0.05, y=Y, label=labels), size=3.25, data=proj2d, ...) 
+    }
+    
+	  base + geom_point(aes(x=X, y=Y), data=proj2d, ...) + 
+		  labels + 
+		  estimates +
+      regs+
+		  regsMed+
+	    xlim(xlimits) + ylim(ylimits)
+    }
   }
 }
 
@@ -270,7 +448,7 @@ g_legend<-function(a.gplot){
 
 #If more then one column is called in plot.SO3 then this is called to independencly create an eyeball for each column
 #and print them in a single row with the legend at the end, if applicable.
-mplotSO3<-function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...){
+mplotSO3<-function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,interactive=FALSE,  ...){
   
   p4<-NULL
   if(1 %in% col){
@@ -326,9 +504,9 @@ mplotSO3<-function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL
 #' @method plot Q4
 #' @export
 
-plot.Q4 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300,  ...) {
+plot.Q4 <- function(x, center=mean(x), col=1, to_range=FALSE, show_estimates=NULL, label_points=NULL, mean_regions=NULL, median_regions=NULL, alp=NULL, m=300, interactive=FALSE,  ...) {
   Rs<-as.SO3(x)
   center<-as.SO3(center)
-  plot(Rs, center=center, col=col, to_range=to_range, show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m,  ...)
+  plot(Rs, center=center, col=col, to_range=to_range, show_estimates=show_estimates, label_points=label_points, mean_regions=mean_regions, median_regions=median_regions, alp=alp, m=m, interactive=interactive,  ...)
 }
   
