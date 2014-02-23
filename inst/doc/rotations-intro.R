@@ -52,10 +52,10 @@ rot.dist(S, SL1$Shat)
 
 ## ----ex6-----------------------------------------------------------------
 Rs <- ruars(50, rcayley, kappa = 10)
-region(Rs, method="moment", type="theory", estimator="mean", alp=0.05)
-region(Rs, method="moment", type="bootstrap", estimator="mean", alp=0.05, m=300)
-region(Rs, method="moment", type="theory", estimator="median", alp=0.05)
-region(Rs, method="moment", type="bootstrap", estimator="median", alp=0.05, m=300)
+region(Rs, method="direct", type="theory", estimator="mean", alp=0.05)
+region(Rs, method="direct", type="bootstrap", estimator="mean", alp=0.05, m=300)
+region(Rs, method="direct", type="theory", estimator="median", alp=0.05)
+region(Rs, method="direct", type="bootstrap", estimator="median", alp=0.05, m=300)
 
 
 ## ----ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\kappa=1$, $n=50$.  All for point estimates are displayed in the left sub-figure and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\\textwidth",fig.pos="h",dev='png'----
@@ -70,6 +70,9 @@ head(drill)
 Subj1Wrist<-subset(drill, Subject == '1' & Joint == 'Wrist')
 Subj1Wdata <- as.Q4(Subj1Wrist[,5:8])
 mean(Subj1Wdata)
+
+
+## ----ex21----------------------------------------------------------------
 data(nickel)
 head(nickel[,1:6])
 Location1<-subset(nickel,location==1)
