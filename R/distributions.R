@@ -111,6 +111,8 @@ rcayley <- function(n, kappa = 1, nu = NULL) {
   if(lenn>1)
   	n<-lenn
   
+  #This has also been coded in C++ but the gains aren't worth the pains so
+  #I will keep it in R for now
   bet <- rbeta(n, kappa + 0.5, 3/2)
   theta <- acos(2 * bet - 1) * (1 - 2 * rbinom(n, 1, 0.5))
   return(theta)
@@ -123,7 +125,9 @@ rcayley <- function(n, kappa = 1, nu = NULL) {
 #' The matrix-Fisher distribution with concentration \eqn{\kappa} has density
 #' \deqn{C_\mathrm{{F}}(r|\kappa)=\frac{1}{2\pi[\mathrm{I_0}(2\kappa)-\mathrm{I_1}(2\kappa)]}e^{2\kappa\cos(r)}[1-\cos(r)]}{C(r|\kappa)=exp[2\kappa cos(r)][1-cos(r)]/(2\pi[I0(2\kappa)-I1(2\kappa)])}
 #' with respect to Lebesgue measure where \eqn{\mathrm{I}_p(\cdot)}{Ip()} denotes the Bessel function of order \eqn{p} defined as  
-#' \eqn{\mathrm{I}_p(\kappa)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\cos(pr)e^{\kappa\cos r}dr}{Ip(\kappa)}.
+#' \eqn{\mathrm{I}_p(\kappa)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\cos(pr)e^{\kappa\cos r}dr}{Ip(\kappa)}.  If \code{kappa>354} then random deviates
+#' are generated from the \code{\link{Cayley}} distribution because they agree closely for large \code{kappa} and generation is 
+#' more stable from the Cayley distribution.
 #'
 #' @name Fisher
 #' @aliases Fisher dfisher rfisher pfisher
@@ -198,14 +202,14 @@ pfisher<-function(q,kappa=1, nu=NULL, lower.tail=TRUE){
 rfisher <- function(n, kappa = 1, nu = NULL) {
   
   if(!is.null(nu))
-    kappa <- fisher.kappa(nu)
+    kappa <- vmises.kappa(nu)
   
   lenn<-length(n)
   if(lenn>1)
-  	n<-lenn
+    n<-lenn
   
-  M <- max(dfisher(seq(-pi, pi, length = 1000), kappa,Haar=F))
-  return(rar(n, dfisher, M, kappa = kappa, Haar=F))
+  theta<-rfisherCpp(n,kappa)
+  return(theta)
 }
 
 #' Uniform distribution
@@ -383,38 +387,7 @@ rvmises <- function(n, kappa = 1, nu = NULL) {
   if(lenn>1)
   	n<-lenn
   
-  u <- runif(3, 0, 1)
-  a <- 1 + sqrt(1 + 4 * kappa^2)
-  b <- (a - sqrt(2 * a))/(2 * kappa)
-  r <- (1 + b^2)/(2 * b)
-  theta <- rep(10, n)
-  
-  for (i in 1:n) {
-    
-    while (theta[i] == 10) {
-      # Step 1
-      u <- runif(3, 0, 1)
-      z <- cos(pi * u[1])
-      f <- (1 + r * z)/(r + z)
-      c <- kappa * (r - f)
-      
-      # Step 2
-      u <- runif(3, 0, 1)
-      if ((c * (2 - c) - u[2]) > 0) {
-        
-        theta[i] = sign(u[3] - 0.5) * acos(f)
-        
-      } else {
-        
-        if (log(c/u[2]) + 1 - c < 0) {
-          u <- runif(3, 0, 1)
-        } else {
-          u <- runif(3, 0, 1)
-          theta[i] = sign(u[3] - 0.5) * acos(f)
-        }
-      }
-    }
-  }
+  theta<-rvmisesCPP(n,kappa)
   return(theta)
 }
 

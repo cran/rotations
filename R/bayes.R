@@ -28,8 +28,8 @@
 #' @examples
 #' #Not run due to time constraints
 #' \dontrun{
-#' Rs <- ruars(20, rvmises, kappa = 10)
-#' draws <- MCMCSO3(Rs, type = "Mises", S0 = mean(Rs), kappa0 = 10, tuneS = 5000, 
+#' Rs <- ruars(20, rfisher, kappa = 10)
+#' draws <- MCMCSO3(Rs, type = "Fisher", S0 = mean(Rs), kappa0 = 10, tuneS = 5000, 
 #'                  tuneK = 1,burn_in = 1000, m = 5000)}
 
 MCMCSO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
@@ -45,15 +45,15 @@ MCMCSO3.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   
   if(type %in% c("Cayley","cayley")){
     
-    lpangle <- lpcayley
+    lpangle <- 1
     
   }else if(type %in% c("Fisher","fisher")){
     
-    lpangle <- lpfisher
+    lpangle <- 2
     
   }else if(type %in% c("Mises","mises")){
     
-    lpangle <- lpvmises
+    lpangle <- 3
     
   }else{
     stop("Invalid choise of type: please choose Cayley, Fisher or Mises.")
@@ -114,7 +114,7 @@ MCMCSO3.Q4<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
 #' #Compare the region size of the moment based theory mean estimator to the 
 #' #Bayes region.
 #' 
-#' region(Rs, method = "moment", type = "theory", estimator = "mean", alp=0.1, m = 100)
+#' region(Rs, method = "direct", type = "theory", estimator = "mean", alp=0.1, m = 100)
 #' bayesCR <- region(Rs, type = "Mises", method = "Bayes", estimator = "mean", S0 = mean(Rs),
 #'                    kappa0 = 10, tuneS = 5000, tuneK = 1, burn_in = 1000, alp = .01, m = 5000)
 #'                    
@@ -135,15 +135,18 @@ bayesCR.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000,alp=0.1){
   
   if(type %in% c("Cayley","cayley")){
     
-    lpangle <- lpcayley
+    #lpangle <- lpcayley
+    lpangle <- 1
     
   }else if(type %in% c("Fisher","fisher")){
     
-    lpangle <- lpfisher
+    #lpangle <- lpfisher
+    lpangle <- 2
     
   }else if(type %in% c("Mises","mises")){
     
-    lpangle <- lpvmises
+    #lpangle <- lpvmises
+    lpangle <- 3
     
   }else{
     stop("Invalid choise of type: please choose Cayley, Fisher or Mises.")
@@ -226,15 +229,18 @@ bayes.mean.SO3<-function(x,type,S0,kappa0,tuneS,tuneK,burn_in,m=5000){
   
   if(type %in% c("Cayley","cayley")){
     
-    lpangle <- lpcayley
+    #lpangle <- lpcayley
+    lpangle <- 1
     
   }else if(type %in% c("Fisher","fisher")){
     
-    lpangle <- lpfisher
+    #lpangle <- lpfisher
+    lpangle <- 2
     
   }else if(type %in% c("Mises","mises")){
     
-    lpangle <- lpvmises
+    #lpangle <- lpvmises
+    lpangle <- 3
     
   }else{
     stop("Invalid choise of type: please choose Cayley, Fisher or Mises.")

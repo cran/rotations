@@ -184,3 +184,4 @@ arma::mat genrC(arma::vec r, arma::mat S , int SO3, arma::mat u) {
   }
 
 }
+

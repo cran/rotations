@@ -37,6 +37,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_eskewC(Rcpp::wrap(U));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -54,6 +56,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_SO3defaultC(Rcpp::wrap(U), Rcpp::wrap(theta));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -71,6 +75,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_Q4defaultC(Rcpp::wrap(U), Rcpp::wrap(theta));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -88,6 +94,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_pMatC(Rcpp::wrap(p));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -105,9 +113,49 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_genrC(Rcpp::wrap(r), Rcpp::wrap(S), Rcpp::wrap(SO3), Rcpp::wrap(u));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
+    }
+
+    inline NumericVector rfisherCpp(int n, double kappa) {
+        typedef SEXP(*Ptr_rfisherCpp)(SEXP,SEXP);
+        static Ptr_rfisherCpp p_rfisherCpp = NULL;
+        if (p_rfisherCpp == NULL) {
+            validateSignature("NumericVector(*rfisherCpp)(int,double)");
+            p_rfisherCpp = (Ptr_rfisherCpp)R_GetCCallable("rotations", "rotations_rfisherCpp");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_rfisherCpp(Rcpp::wrap(n), Rcpp::wrap(kappa));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<NumericVector >(__result);
+    }
+
+    inline NumericVector rvmisesCPP(int n, double kappa) {
+        typedef SEXP(*Ptr_rvmisesCPP)(SEXP,SEXP);
+        static Ptr_rvmisesCPP p_rvmisesCPP = NULL;
+        if (p_rvmisesCPP == NULL) {
+            validateSignature("NumericVector(*rvmisesCPP)(int,double)");
+            p_rvmisesCPP = (Ptr_rvmisesCPP)R_GetCCallable("rotations", "rotations_rvmisesCPP");
+        }
+        RObject __result;
+        {
+            RNGScope __rngScope;
+            __result = p_rvmisesCPP(Rcpp::wrap(n), Rcpp::wrap(kappa));
+        }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (__result.inherits("try-error"))
+            throw Rcpp::exception(as<std::string>(__result).c_str());
+        return Rcpp::as<NumericVector >(__result);
     }
 
     inline arma::mat centerCpp(arma::mat Rs, arma::mat S) {
@@ -122,6 +170,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_centerCpp(Rcpp::wrap(Rs), Rcpp::wrap(S));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -139,6 +189,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_lpvmises(Rcpp::wrap(Rs), Rcpp::wrap(S), Rcpp::wrap(kappa));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
@@ -156,6 +208,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_lpfisher(Rcpp::wrap(Rs), Rcpp::wrap(S), Rcpp::wrap(kappa));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
@@ -173,40 +227,46 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_lpcayley(Rcpp::wrap(Rs), Rcpp::wrap(S), Rcpp::wrap(kappa));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
     }
 
-    inline arma::mat S_MCMC_CPP(arma::mat Rs, arma::mat oldS, double rho, double kappa, Function f) {
+    inline arma::mat S_MCMC_CPP(arma::mat Rs, arma::mat oldS, double rho, double kappa, int Dist) {
         typedef SEXP(*Ptr_S_MCMC_CPP)(SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_S_MCMC_CPP p_S_MCMC_CPP = NULL;
         if (p_S_MCMC_CPP == NULL) {
-            validateSignature("arma::mat(*S_MCMC_CPP)(arma::mat,arma::mat,double,double,Function)");
+            validateSignature("arma::mat(*S_MCMC_CPP)(arma::mat,arma::mat,double,double,int)");
             p_S_MCMC_CPP = (Ptr_S_MCMC_CPP)R_GetCCallable("rotations", "rotations_S_MCMC_CPP");
         }
         RObject __result;
         {
             RNGScope __rngScope;
-            __result = p_S_MCMC_CPP(Rcpp::wrap(Rs), Rcpp::wrap(oldS), Rcpp::wrap(rho), Rcpp::wrap(kappa), Rcpp::wrap(f));
+            __result = p_S_MCMC_CPP(Rcpp::wrap(Rs), Rcpp::wrap(oldS), Rcpp::wrap(rho), Rcpp::wrap(kappa), Rcpp::wrap(Dist));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
     }
 
-    inline double kap_MCMC_CPP(arma::mat Rs, double oldKappa, double sigma, arma::mat S, Function f) {
+    inline double kap_MCMC_CPP(arma::mat Rs, double oldKappa, double sigma, arma::mat S, int Dist) {
         typedef SEXP(*Ptr_kap_MCMC_CPP)(SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_kap_MCMC_CPP p_kap_MCMC_CPP = NULL;
         if (p_kap_MCMC_CPP == NULL) {
-            validateSignature("double(*kap_MCMC_CPP)(arma::mat,double,double,arma::mat,Function)");
+            validateSignature("double(*kap_MCMC_CPP)(arma::mat,double,double,arma::mat,int)");
             p_kap_MCMC_CPP = (Ptr_kap_MCMC_CPP)R_GetCCallable("rotations", "rotations_kap_MCMC_CPP");
         }
         RObject __result;
         {
             RNGScope __rngScope;
-            __result = p_kap_MCMC_CPP(Rcpp::wrap(Rs), Rcpp::wrap(oldKappa), Rcpp::wrap(sigma), Rcpp::wrap(S), Rcpp::wrap(f));
+            __result = p_kap_MCMC_CPP(Rcpp::wrap(Rs), Rcpp::wrap(oldKappa), Rcpp::wrap(sigma), Rcpp::wrap(S), Rcpp::wrap(Dist));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
@@ -224,23 +284,27 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_afun_CPP(Rcpp::wrap(R1), Rcpp::wrap(R2));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::rowvec >(__result);
     }
 
-    inline List both_MCMC_CPP(arma::mat Rs, arma::mat S0, double kappa0, double rho, double sigma, int burnin, int B, Function f) {
+    inline List both_MCMC_CPP(arma::mat Rs, arma::mat S0, double kappa0, double rho, double sigma, int burnin, int B, int Dist) {
         typedef SEXP(*Ptr_both_MCMC_CPP)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_both_MCMC_CPP p_both_MCMC_CPP = NULL;
         if (p_both_MCMC_CPP == NULL) {
-            validateSignature("List(*both_MCMC_CPP)(arma::mat,arma::mat,double,double,double,int,int,Function)");
+            validateSignature("List(*both_MCMC_CPP)(arma::mat,arma::mat,double,double,double,int,int,int)");
             p_both_MCMC_CPP = (Ptr_both_MCMC_CPP)R_GetCCallable("rotations", "rotations_both_MCMC_CPP");
         }
         RObject __result;
         {
             RNGScope __rngScope;
-            __result = p_both_MCMC_CPP(Rcpp::wrap(Rs), Rcpp::wrap(S0), Rcpp::wrap(kappa0), Rcpp::wrap(rho), Rcpp::wrap(sigma), Rcpp::wrap(burnin), Rcpp::wrap(B), Rcpp::wrap(f));
+            __result = p_both_MCMC_CPP(Rcpp::wrap(Rs), Rcpp::wrap(S0), Rcpp::wrap(kappa0), Rcpp::wrap(rho), Rcpp::wrap(sigma), Rcpp::wrap(burnin), Rcpp::wrap(B), Rcpp::wrap(Dist));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<List >(__result);
@@ -258,6 +322,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_checkQ4(Rcpp::wrap(Q));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<int >(__result);
@@ -275,6 +341,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_checkSO3(Rcpp::wrap(Rs));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<int >(__result);
@@ -292,6 +360,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_expskewC(Rcpp::wrap(M));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -309,6 +379,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_expskewCMulti(Rcpp::wrap(M));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -326,6 +398,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_logSO3C(Rcpp::wrap(R));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -343,6 +417,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_logSO3CMulti(Rcpp::wrap(R));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -360,6 +436,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_projectSO3C(Rcpp::wrap(M));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -377,6 +455,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_meanSO3C(Rcpp::wrap(Rs));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -394,6 +474,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_meanQ4C(Rcpp::wrap(Q));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::rowvec >(__result);
@@ -411,6 +493,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_medianSO3C(Rcpp::wrap(Rs), Rcpp::wrap(maxIterations), Rcpp::wrap(maxEps));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -428,6 +512,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_HartmedianSO3C(Rcpp::wrap(Rs), Rcpp::wrap(maxIterations), Rcpp::wrap(maxEps));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -445,6 +531,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_gmeanSO3C(Rcpp::wrap(Rs), Rcpp::wrap(maxIterations), Rcpp::wrap(maxEps));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::mat >(__result);
@@ -462,6 +550,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_fisherAxisC(Rcpp::wrap(Qs), Rcpp::wrap(Qhat));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
@@ -479,6 +569,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_fisherAxisCSymmetric(Rcpp::wrap(Qs), Rcpp::wrap(Qhat));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
@@ -496,6 +588,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_fisherBootC(Rcpp::wrap(Qs), Rcpp::wrap(m), Rcpp::wrap(symm));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::vec >(__result);
@@ -513,6 +607,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_RdistC(Rcpp::wrap(Q1), Rcpp::wrap(Q2));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);
@@ -530,6 +626,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_rdistSO3C(Rcpp::wrap(Rs), Rcpp::wrap(R2));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<arma::rowvec >(__result);
@@ -547,6 +645,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_EdistC(Rcpp::wrap(Q1), Rcpp::wrap(Q2));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);
@@ -564,6 +664,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_oneRdistC(Rcpp::wrap(Q1), Rcpp::wrap(Q2));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<double >(__result);
@@ -581,6 +683,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_cdfunsC(Rcpp::wrap(Qs), Rcpp::wrap(Qhat));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);
@@ -598,6 +702,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_cdfunsCMedian(Rcpp::wrap(Qs), Rcpp::wrap(Qhat));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);
@@ -615,6 +721,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_zhangQ4(Rcpp::wrap(Q), Rcpp::wrap(m));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);
@@ -632,6 +740,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_cdfunsCSO3(Rcpp::wrap(Rs), Rcpp::wrap(Rhat));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);
@@ -649,6 +759,8 @@ namespace rotations {
             RNGScope __rngScope;
             __result = p_zhangMedianC(Rcpp::wrap(Rs), Rcpp::wrap(m));
         }
+        if (__result.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
         if (__result.inherits("try-error"))
             throw Rcpp::exception(as<std::string>(__result).c_str());
         return Rcpp::as<NumericVector >(__result);

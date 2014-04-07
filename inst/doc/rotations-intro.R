@@ -52,13 +52,13 @@ rot.dist(S, SL1$Shat)
 
 ## ----ex6-----------------------------------------------------------------
 Rs <- ruars(50, rcayley, kappa = 10)
-region(Rs, method="direct", type="theory", estimator="mean", alp=0.05)
+region(Rs, method="direct", type="asymptotic", estimator="mean", alp=0.05)
 region(Rs, method="direct", type="bootstrap", estimator="mean", alp=0.05, m=300)
-region(Rs, method="direct", type="theory", estimator="median", alp=0.05)
+region(Rs, method="direct", type="asymptotic", estimator="median", alp=0.05)
 region(Rs, method="direct", type="bootstrap", estimator="median", alp=0.05, m=300)
 
 
-## ----ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\kappa=1$, $n=50$.  All for point estimates are displayed in the left sub-figure and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\\textwidth",fig.pos="h",dev='png'----
+## ----ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\kappa=1$, $n=50$.  All for point estimates are displayed on the left and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\\textwidth",fig.pos="h",dev='png'----
 plot(Rs, center = mean(Rs), show_estimates = "all")
 plot(Rs, center = mean(Rs), show_estimates = "proj.mean", 
  mean_regions = "all",  alp = .05)
@@ -75,7 +75,7 @@ mean(Subj1Wdata)
 ## ----ex21----------------------------------------------------------------
 data(nickel)
 head(nickel[,1:6])
-Location1<-subset(nickel,location==1)
+Location1<-subset(nickel, location==1)
 Loc1data<-as.SO3(Location1[,5:13])
 mean(Loc1data)
 
