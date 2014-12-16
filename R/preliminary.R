@@ -73,11 +73,16 @@ rot.dist.SO3 <- function(x, R2=id.SO3, method='extrinsic' , p=1,...) {
   
   R1<-formatSO3(x)
   
+  method <- try(match.arg(method,c('projected','extrinsic','intrinsic')),silent=T)
+  
+  if (class(method)=="try-error")
+    stop("method needs to be one of 'projected', 'extrinsic' or 'intrinsic'.")
+  
   if(method%in%c('projected','extrinsic')){
     
     n<-nrow(R1)
     R1<-matrix(R1,n,9)
-    R2<-matrix(R2,n,9,byrow=T)
+    R2<-matrix(R2,n,9,byrow=TRUE)
     
     so3dist<-sqrt(rowSums((R1-R2)^2))^p
     
@@ -106,6 +111,11 @@ rot.dist.Q4 <- function(x, Q2=id.Q4 ,method='extrinsic', p=1,...) {
 
   Q1<-formatQ4(x)
   Q2<-formatQ4(Q2)
+  
+  method <- try(match.arg(method,c('projected','extrinsic','intrinsic')),silent=T)
+  
+  if (class(method)=="try-error")
+    stop("method needs to be one of 'projected', 'extrinsic' or 'intrinsic'.")
   
   if(method=='intrinsic'){
     
@@ -336,7 +346,11 @@ genR <- function(r, S = NULL, space='SO3') {
   		return(o)
   		
   	}else{
-
+      
+      if(is.Q4(S)){
+        S <- as.SO3(S)
+      }
+      
   	  S<-formatSO3(S)
       St<-t(matrix(S,3,3))
   	  o<-center.SO3(o,St)
@@ -360,6 +374,10 @@ genR <- function(r, S = NULL, space='SO3') {
   		
   	}else{
   	
+      if(is.SO3(S)){
+        S <- as.Q4(S)
+      }
+      
   		S<-formatQ4(S)
       S<--S
   		q<-center.Q4(q,S)

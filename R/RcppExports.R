@@ -21,6 +21,10 @@ genrC <- function(r, S, SO3, u) {
     .Call('rotations_genrC', PACKAGE = 'rotations', r, S, SO3, u)
 }
 
+rcayleyCpp <- function(n, kappa) {
+    .Call('rotations_rcayleyCpp', PACKAGE = 'rotations', n, kappa)
+}
+
 rfisherCpp <- function(n, kappa) {
     .Call('rotations_rfisherCpp', PACKAGE = 'rotations', n, kappa)
 }
@@ -119,6 +123,18 @@ fisherAxisCSymmetric <- function(Qs, Qhat) {
 
 fisherBootC <- function(Qs, m, symm) {
     .Call('rotations_fisherBootC', PACKAGE = 'rotations', Qs, m, symm)
+}
+
+HnCpp <- function(Qs) {
+    .Call('rotations_HnCpp', PACKAGE = 'rotations', Qs)
+}
+
+HnCppIntrinsic <- function(Qs) {
+    .Call('rotations_HnCppIntrinsic', PACKAGE = 'rotations', Qs)
+}
+
+HnCppBloc <- function(Qs, Cs) {
+    .Call('rotations_HnCppBloc', PACKAGE = 'rotations', Qs, Cs)
 }
 
 RdistC <- function(Q1, Q2) {

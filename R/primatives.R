@@ -12,10 +12,10 @@ print.SO3<-function(x,...){
     #class(tr)<-"SO3"
     print.default(tr,...)
   }else{
-    n<-nrow(Rs)
-    p<-ncol(Rs)
-    tRs<-matrix(Rs,nrow=n,ncol=p)
-    if(p==9){
+
+    tRs<-matrix(Rs,dim(Rs))
+    
+    if(ncol(tRs)==9){
       cnames<-c("R11","R21","R31","R12","R22","R32","R13","R23","R33")
       colnames(tRs)<-cnames
     }
@@ -25,7 +25,7 @@ print.SO3<-function(x,...){
 
 #' @S3method head SO3
 #' @method head SO3
-head.SO3<-function(x,n=6L,...){
+head.SO3<-function(x, n = 6L,...){
   
   #The following two lines are from 'head.matrix'
   stopifnot(length(n) == 1L)
@@ -33,6 +33,21 @@ head.SO3<-function(x,n=6L,...){
   
   x[seq_len(n) ,]
   
+}
+
+#' @S3method tail SO3
+#' @method tail SO3
+tail.SO3<-function(x, n = 6L, addrownums = TRUE,...){
+  
+  x<-matrix(x,dim(x))
+  
+  if(ncol(x)==9){
+    cnames<-c("R11","R21","R31","R12","R22","R32","R13","R23","R33")
+    colnames(x)<-cnames
+  } 
+  
+  tail.matrix(x, n, addrownums, ...)
+
 }
 
 #' @S3method str SO3
@@ -140,6 +155,17 @@ head.Q4<-function(x,n=6L,...){
   n <- if (n < 0L)  max(nrow(x) + n, 0L)  else min(n, nrow(x))
   
   x[seq_len(n), ]
+}
+
+#' @S3method tail Q4
+#' @method tail Q4
+tail.Q4<-function(x, n = 6L, addrownums = TRUE,...){
+  
+  x <- matrix(x, dim(x))
+  
+  if(ncol(x)==4) colnames(x) <- c("Real","i","j","k")
+  
+  tail.matrix(x, n, addrownums,...)
 }
 
 #' @S3method str Q4
