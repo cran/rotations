@@ -1,34 +1,3 @@
-
-
-arsample <- function(f, g, M, kappa, Haar, ...) {
-  #generate a random observation from target density f
-  found = FALSE
-  while (!found) {
-    x <- g(1, ...)
-    y <- runif(1, min = 0, max = M)
-    if (y < f(x, kappa, Haar)) 
-      found = TRUE
-  }
-  return(x)
-  # arsample(f, g, M, kappa, ...)
-}
-
-
-
-arsample.unif <- function(f, M, ...) {
-  #generate a random observation from target density f assuming g is uniform
-  found = FALSE
-  while (!found) {
-    x <- runif(1, -pi, pi)
-    y <- runif(1, min = 0, max = M)
-    if (y < f(x, ...)) 
-      found = TRUE
-  }
-  return(x)
-  # arsample.unif(f, M, ...)
-}
-
-
 #' Rotational distance
 #'
 #' Calculate the extrinsic or intrinsic distance between two rotations.
@@ -67,7 +36,7 @@ rot.dist<-function(x,...){
 
 #' @rdname rot.dist
 #' @method rot.dist SO3
-#' @S3method rot.dist SO3
+#' @export 
 
 rot.dist.SO3 <- function(x, R2=id.SO3, method='extrinsic' , p=1,...) {
   
@@ -105,7 +74,7 @@ rot.dist.SO3 <- function(x, R2=id.SO3, method='extrinsic' , p=1,...) {
 
 #' @rdname rot.dist
 #' @method rot.dist Q4
-#' @S3method rot.dist Q4
+#' @export 
 
 rot.dist.Q4 <- function(x, Q2=id.Q4 ,method='extrinsic', p=1,...) {
 
@@ -171,7 +140,7 @@ mis.angle<-function(x){
 
 #' @rdname mis.angle
 #' @method mis.angle SO3
-#' @S3method mis.angle SO3
+#' @export 
 
 mis.angle.SO3 <- function(x){
 	
@@ -183,7 +152,7 @@ mis.angle.SO3 <- function(x){
 
 #' @rdname mis.angle
 #' @method mis.angle Q4
-#' @S3method mis.angle Q4
+#' @export 
 
 mis.angle.Q4 <- function(x){
 	
@@ -232,7 +201,7 @@ mis.axis<-function(x,...){
 
 #' @rdname mis.axis
 #' @method mis.axis SO3
-#' @S3method mis.axis SO3
+#' @export 
 
 mis.axis.SO3<-function(x,...){
   
@@ -258,7 +227,7 @@ mis.axis.SO3<-function(x,...){
 
 #' @rdname mis.axis
 #' @method mis.axis Q4
-#' @S3method mis.axis Q4
+#' @export 
 
 mis.axis.Q4<- function(x,...){
   
@@ -399,7 +368,7 @@ genR <- function(r, S = NULL, space='SO3') {
 #'
 #' @param x single \eqn{3\times 3}{3-by-3} skew-symmetric matrix or \eqn{n\times 9}{n-by-9} sample of skew-symmetric matrices.
 #' @return Matrix \eqn{e^{\bm H}}{e^H} in \eqn{SO(3)} .
-#' @cite moakher02
+#' @@cite moakher02
 #' @export
 #' @examples
 #' Rs <- ruars(20, rcayley)
@@ -433,8 +402,8 @@ skew.exp <- function(x) {
 #' @param x \eqn{n\times 9}{n-by-9} matrix where each row corresponds to a random rotation matrix.
 #' @param ... additional arguments.
 #' @return Skew symmetric matrix \eqn{\log(R)}{log(R)}.
-#' @cite moakher02
-#' @S3method log SO3
+#' @@cite moakher02
+#' @export 
 #' @method log SO3
 #' @examples
 #' Rs <- ruars(20, rcayley)
@@ -538,7 +507,7 @@ rotdist.sum<-function(x, S = genR(0, space=class(x)), method='extrinsic', p=1){
 
 #' @rdname rotdist.sum
 #' @method rotdist.sum SO3
-#' @S3method rotdist.sum SO3
+#' @export 
 
 rotdist.sum.SO3 <- function(x, S = id.SO3, method='extrinsic', p=1) {
 
@@ -548,7 +517,7 @@ rotdist.sum.SO3 <- function(x, S = id.SO3, method='extrinsic', p=1) {
 
 #' @rdname rotdist.sum
 #' @method rotdist.sum Q4
-#' @S3method rotdist.sum Q4
+#' @export 
 
 rotdist.sum.Q4 <- function(x, S = id.Q4, method='extrinsic', p=1) {
   
@@ -586,7 +555,7 @@ center<-function(x,S){
 
 #' @rdname center
 #' @method center SO3
-#' @S3method center SO3
+#' @export 
 
 center.SO3<-function(x,S){
 	#This takes a set of observations in SO3 and centers them around S
@@ -615,7 +584,7 @@ center.SO3<-function(x,S){
 
 #' @rdname center
 #' @method center Q4
-#' @S3method center Q4
+#' @export 
 
 center.Q4<-function(x,S){
 	#This takes a set of observations in Q4 and centers them around S

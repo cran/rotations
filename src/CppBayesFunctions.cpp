@@ -26,6 +26,71 @@ NumericVector rcayleyCpp(int n, double kappa){
 }
 
 /////////////////////////////////////////////////////////////
+// Generate Maxwell Boltzmann random deviates using C++
+/////////////////////////////////////////////////////////////
+
+
+double dmbCpp(double r, double kappa) {
+  
+  double den;
+  
+  den = 2*kappa*sqrt(kappa/PI);
+  den *= pow(r,2)*exp(-kappa*pow(r,2));
+  
+  return den;
+}
+
+
+double arsample_mb_unifCpp(double M, double kappa) {
+  RNGScope scope;
+  //generate a random observation from target density f assuming g is uniform
+  int found = 0; //FALSE
+  NumericVector y(1);
+  double x, evalF = 0.0;
+  
+  while (!found) {
+    x = as<double>(runif(1, -PI, PI));
+    y = runif(1, 0, M);
+    
+    evalF = dmbCpp(x,kappa);
+    
+    if (y[0] < evalF) 
+      found = 1;
+    
+  }
+  return x;
+  
+}
+
+NumericVector rar_mb_Cpp(int n, double kappa, double M) {
+  
+  NumericVector res(n);
+  for (int i=0;i<n;i++){
+    res[i] = arsample_mb_unifCpp(M,kappa);
+  } 
+  return res;
+}
+
+// [[Rcpp::export]]
+NumericVector rmbCpp(int n, double kappa) {
+  double step = 0.0075, prog = -PI;
+  double M = 0.0, Mi=0.0;
+  NumericVector res(n);
+  
+  while(prog < .5){
+    Mi = dmbCpp(prog,kappa);
+    if(M<Mi){
+      M = Mi;
+    }
+    prog += step;
+  }
+  //Rprintf("M: %lf\n",M);
+  res = rar_mb_Cpp(n, kappa ,M);
+  
+  return res;  
+}
+
+/////////////////////////////////////////////////////////////
 // Generate matrix Fisher random deviates using C++
 /////////////////////////////////////////////////////////////
 
@@ -33,14 +98,22 @@ NumericVector rcayleyCpp(int n, double kappa){
 double dfisherCpp(double r, double kappa) {
     
   double den;
-  double I02k = R::bessel_i(2*kappa,0,1);
-  double I12k = R::bessel_i(2*kappa,1,1);
   
-  den = exp(2 * kappa * cos(r)); 
-  den *= (1 - cos(r));
+  if(kappa<200){
+    //Use the matrix Fisher density for kappa<100
+    double I02k = R::bessel_i(2*kappa,0,1);
+    double I12k = R::bessel_i(2*kappa,1,1);
   
-  den /= (2 * PI * (I02k - I12k));
+    den = exp(2 * kappa * cos(r)); 
+    den *= (1 - cos(r));
   
+    den /= (2 * PI * (I02k - I12k));
+  }else{
+    //Use the more efficientMaxwell Boltzman density otherwise
+
+    den = dmbCpp(r,kappa);
+
+  }
   return den;
 }
 
@@ -81,24 +154,19 @@ NumericVector rfisherCpp(int n, double kappa) {
   double M = 0.0, Mi=0.0;
   NumericVector res(n);
   
-  if(kappa>354){
-    
-    res = rcayleyCpp(n,kappa);
-    
-  }else{
-  
-    while(prog < .5){
-      Mi = dfisherCpp(prog,kappa);
-      if(M<Mi){
-        M = Mi;
-      }
-      prog += step;
+  while(prog < .5){
+    Mi = dfisherCpp(prog,kappa);
+    if(M<Mi){
+      M = Mi;
     }
-    //Rprintf("M: %lf\n",M);
-    res = rarCpp(n, kappa ,M);
+    prog += step;
   }
+  //Rprintf("M: %lf\n",M);
+  res = rarCpp(n, kappa ,M);
+  
   return res;  
 }
+
 
 /////////////////////////////////////////////////////////////
 // Generate von Mises random deviates using C++

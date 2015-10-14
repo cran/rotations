@@ -1,3 +1,7 @@
+dmkern <- function(r,kappa){
+  return(2*kappa*sqrt(kappa/pi)*(r^2)*exp(-kappa*(r^2)))
+}
+
 #' Angular distributions
 #' 
 #' Density, distribution function and random variate generation for symmetric probability distributions in the rotations package.
@@ -8,12 +12,43 @@
 #' 	\item See \code{\link{Cayley}} for the Cayley distribution.
 #' 	\item See \code{\link{Fisher}} for the matrix Fisher distribution.
 #' 	\item See \code{\link{Haar}} for the uniform distribution on the circle.
+#' 	\item See \code{\link{Maxwell}} for the Maxwell-Boltzmann distribution on the circle.
 #' 	\item See \code{\link{Mises}} for the von Mises-Fisher distribution.
 #' }
 #' 
 #' @name Angular-distributions
 
 NULL
+
+
+
+arsample <- function(f, g, M, kappa, Haar, ...) {
+  #generate a random observation from target density f
+  found = FALSE
+  while (!found) {
+    x <- g(1, ...)
+    y <- runif(1, min = 0, max = M)
+    if (y < f(x, kappa, Haar)) 
+      found = TRUE
+  }
+  return(x)
+  # arsample(f, g, M, kappa, ...)
+}
+
+
+
+arsample.unif <- function(f, M, ...) {
+  #generate a random observation from target density f assuming g is uniform
+  found = FALSE
+  while (!found) {
+    x <- runif(1, -pi, pi)
+    y <- runif(1, min = 0, max = M)
+    if (y < f(x, ...)) 
+      found = TRUE
+  }
+  return(x)
+  # arsample.unif(f, M, ...)
+}
 
 
 rar <- function(n, f, M, ...) {
@@ -43,7 +78,7 @@ rar <- function(n, f, M, ...) {
 #'          \item{pcayley}{gives the distribution function}
 #'          \item{rcayley}{generates a vector of random deviates}
 #' @seealso \link{Angular-distributions} for other distributions in the rotations package.
-#' @cite Schaeben1997 leon2006
+#' @@cite Schaeben1997 leon2006
 #' @examples
 #' r <- seq(-pi, pi, length = 500)
 #' 
@@ -83,6 +118,9 @@ dcayley <- function(r, kappa = 1, nu = NULL, Haar = TRUE) {
 #' @export
 
 pcayley<-function(q,kappa=1,nu=NULL,lower.tail=TRUE){
+  
+  if(!is.null(nu))
+    kappa <- cayley.kappa(nu)
   
   n<-length(q)
   cdf<-rep(NA,n)
@@ -128,6 +166,9 @@ rcayley <- function(n, kappa = 1, nu = NULL) {
 #' \eqn{\mathrm{I}_p(\kappa)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\cos(pr)e^{\kappa\cos r}dr}{Ip(\kappa)}.  If \code{kappa>354} then random deviates
 #' are generated from the \code{\link{Cayley}} distribution because they agree closely for large \code{kappa} and generation is 
 #' more stable from the Cayley distribution.
+#' 
+#' For large \eqn{\kappa}, the Bessel functon gives errors so a large \eqn{\kappa} approximation to the matrix-Fisher
+#' distribution is used instead, which is the Maxwell-Boltzmann density.
 #'
 #' @name Fisher
 #' @aliases Fisher dfisher rfisher pfisher
@@ -170,9 +211,14 @@ dfisher <- function(r, kappa = 1, nu = NULL, Haar = TRUE) {
   
   n<-length(r)
   den<-rep(0,n)
-  
- 	den <- exp(2 * kappa * cos(r)) * (1 - cos(r))/(2 * pi * (besselI(2 * kappa, 0) - besselI(2 * kappa, 1)))
-  
+  if(kappa<200){
+    #For small kappa use the matrix Fisher density directly
+ 	  den <- exp(2 * kappa * cos(r)) * (1 - cos(r))/(2 * pi * (besselI(2 * kappa, 0) - besselI(2 * kappa, 1)))
+  }
+  else{
+    #besselI function exhibits bad behavior for large kappa so use the Maxwell-Boltzman approx then
+    den <- 2*kappa*sqrt(kappa/pi)*r^2*exp(-kappa*r^2)
+  }
   if (Haar) 
     return(den/(1 - cos(r))) else return(den)
   
@@ -299,6 +345,105 @@ rhaar<-function(n){
   return(rar(n, dhaar, 1/pi))
 }
 
+#' The modified Maxwell-Boltzmann distribution
+#'
+#' Density, distribution function and random generation for the Maxwell-Boltzmann distribution with 
+#' concentration \code{kappa} \eqn{\kappa} restricted to the range \eqn{[-\pi,\pi)}.
+#'
+#' The Maxwell-Boltzmann distribution with concentration \eqn{\kappa} has density
+#' \deqn{C_\mathrm{{M}}(r|\kappa)=2\kappa\sqrt{\frac{\kappa}{\pi}}r^2e^{-\kappa r^2}}{C(r|\kappa)=2\kappa(\kappa/\pi)^(1/2)r^2exp(-\kappa r^2)}
+#' with respect to Lebesgue measure.  The usual expression for the Maxwell-Boltzmann distribution can be recovered by
+#' setting \eqn{a=(2\kappa)^0.5}.
+#'
+#' @name Maxwell
+#' @aliases Maxwell rmaxwell dmaxwell pmaxwell
+#' @param r,q vector of quantiles.
+#' @param n number of observations.  If \code{length(n)>1}, the length is taken to be the number required.
+#' @param kappa concentration parameter.
+#' @param nu circular variance, can be used in place of \code{kappa}.
+#' @param Haar logical; if TRUE density is evaluated with respect to the Haar measure.
+#' @param lower.tail logical; if TRUE (default) probabilities are \eqn{P(X\leq x)}{P(X\le x)} otherwise, \eqn{P(X>x)}.
+#' @return  \item{dmaxwell}{gives the density}
+#'          \item{pmaxwell}{gives the distribution function}
+#'          \item{rmaxwell}{generates a vector of random deviates}
+#' @seealso \link{Angular-distributions} for other distributions in the rotations package.
+#' @@cite bingham2010
+#' @examples
+#' r <- seq(-pi, pi, length = 500)
+#' 
+#' #Visualize the Maxwell-Boltzmann density fucntion with respect to the Haar measure
+#' plot(r, dmaxwell(r, kappa = 10), type = "l", ylab = "f(r)")
+#' 
+#' #Visualize the Maxwell-Boltzmann density fucntion with respect to the Lebesgue measure
+#' plot(r, dmaxwell(r, kappa = 10, Haar = FALSE), type = "l", ylab = "f(r)")
+#' 
+#' #Plot the Maxwell-Boltzmann CDF
+#' plot(r,pmaxwell(r,kappa = 10), type = "l", ylab = "F(r)")
+#' 
+#' #Generate random observations from Maxwell-Boltzmann distribution
+#' rs <- rmaxwell(20, kappa = 1)
+#' hist(rs, breaks = 10)
+
+NULL
+
+
+#' @name Maxwell
+#' @aliases Maxwell rmaxwell dmaxwell pmaxwell
+#' @export
+
+dmaxwell <- function(r, kappa = 1, nu = NULL, Haar = TRUE) {
+  
+  if(!is.null(nu))
+    kappa <- maxwell.kappa(nu)
+  
+  den <- dmkern(r = r, kappa = kappa)
+  
+  if(kappa<1.9){
+    den <- den/(1-2*integrate(dmkern,lower = pi, upper = Inf,kappa = kappa)$value)
+  }
+  
+  zeros <- which(abs(r)>pi)
+  if(length(zeros)>0)
+    den[zeros] <- 0
+  
+  if (Haar) 
+    return(den/(1 - cos(r))) else return(den)
+}
+
+
+#' @name Maxwell
+#' @aliases Maxwell rmaxwell dmaxwell pmaxwell
+#' @export
+
+pmaxwell<-function(q,kappa=1,nu=NULL,lower.tail=TRUE){
+  
+  n<-length(q)
+  cdf<-rep(NA,n)
+  
+  for(i in 1:n)
+    cdf[i]<-max(min(integrate(dmaxwell,-pi,q[i],kappa,nu,Haar=FALSE)$value,1),0)
+  
+  if(lower.tail)
+    return(cdf) else return((1-cdf))
+}
+
+#' @name Maxwell
+#' @aliases Maxwell rmaxwell dmaxwell pmaxwell
+#' @export
+
+rmaxwell <- function(n, kappa = 1, nu = NULL) {
+  
+  if(!is.null(nu))
+    kappa <- maxwell.kappa(nu)
+  
+  lenn<-length(n)
+  if(lenn>1)
+    n<-lenn
+  
+  theta<-rmbCpp(n,kappa)
+  return(theta)
+}
+
 #' The circular-von Mises distribution
 #'
 #' Density, distribution function and random generation for the circular-von Mises distribution with concentration \code{kappa} \eqn{\kappa}.
@@ -416,7 +561,7 @@ rvmises <- function(n, kappa = 1, nu = NULL) {
 #'          \item{puars}{gives the distribution function.  If pangle is left empty, the empirical CDF is returned.}
 #'          \item{ruars}{generates random deviates}
 #' @seealso For more on the angular distribution options see \link{Angular-distributions}.
-#' @cite bingham09
+#' @@cite bingham09
 #' @examples
 #' #Generate random rotations from the Cayley-UARS distribution with central orientation 
 #' #rotated about the y-axis through pi/2 radians
