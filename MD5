@@ -1,6 +1,6 @@
-9e1d80eccfd944df7b160ed2cb3ffaf7 *DESCRIPTION
-c1dee01c4dccd895a86012b84fc49db4 *LICENSE
-3ff04158d92953d2863765f04216517d *NAMESPACE
+83e634b2300910ba7d8946ef24ab1af4 *DESCRIPTION
+845e245ab42d37a952e59ef66fe71361 *LICENSE
+d14a6db79edcf97725b7e235e9176d3d *NAMESPACE
 89eb3aa171893fd9c89bf7609424b547 *NEWS
 baeb7dc028fcc8bfb687da974b46d2ee *R/RcppExports.R
 d2c82a9216d90c0e16e6493204e190fa *R/bayes.R
@@ -10,12 +10,12 @@ f1846dea7fdf567a96d00bf75fd5d57f *R/distributions.R
 2aad189a5618f6309908116904ac80f3 *R/help.R
 f76a6eeeef5c7698b266836b90fd111e *R/kappa.R
 e16a9790aed0553e6418b65e86b24820 *R/parameterizations.R
-ec7afa36427df84244098626d469a7cd *R/plot.R
+c5da3631c6a6f2fdae5c99bdf99108e9 *R/plot.R
 ad292a83d131838460d6d1b8534c4dbc *R/preliminary.R
 ba4bd2854950df8023e974c9344464c4 *R/primatives.R
 3e83d954495d88c597a9c0ebba1fc290 *R/regions.R
 cfa89887676445164ea14d1feb34897b *R/robust.R
-edd54c9d65aabdb168ae96dd20d40b08 *build/vignette.rds
+04999cd92225794bffed6b79a03e7c0f *build/vignette.rds
 f964ddef3ae34522deefce21e21899dd *data/datalist
 55c3c83c019985fc1f282bfbaa8645c5 *data/drill.rda
 33c052766220f828b76f2d4790cf3a88 *data/nickel.rda
@@ -23,7 +23,7 @@ b9689ff86ac07dc5a4d1e9eeeb2f83a2 *inst/CITATION
 a646a4d3239a5bc70c9d7c28b8054a43 *inst/REFERENCES.bib
 a6505f5f5ad70518768e91a630b7757b *inst/doc/rotations-intro.R
 cdf11f76b0386e549be1def0e8f33944 *inst/doc/rotations-intro.Rnw
-273e3d3d8b70486fa41b448996c32e96 *inst/doc/rotations-intro.pdf
+3ec8943eeafecaf4ac8e4b0afdaf373e *inst/doc/rotations-intro.pdf
 38d3c02ef2e8225abcc1d53ce3de1998 *inst/include/rotations.h
 8438cf70de82b93ec7e2e2bdfa3416e4 *inst/include/rotations_RcppExports.h
 820bc692278ed4bef903da3d45a84efa *man/Angular-distributions.Rd
@@ -57,7 +57,7 @@ dc48a50af1a8ece6484f92a718b99495 *man/mean.SO3.Rd
 566cbec3c267d2a23f4d392dbf8f78fc *man/mis.angle.Rd
 b84df1f64e6c69932f9e7e1c95819045 *man/mis.axis.Rd
 0ef730b077f102695c202c51f310df68 *man/nickel.Rd
-27b4bd96a3123bd81c7ad46cdc61f690 *man/plot.SO3.Rd
+32ce9a89078142a1aefd3a01ea02f337 *man/plot.SO3.Rd
 d306b3f8146016441b07b3a2bdc2ec76 *man/pointsXYZ.Rd
 4d7bbfec391cc58119e017624c058f7f *man/prentice.Rd
 d8d6bf2e0e3175b93118cbcf763441f5 *man/project.SO3.Rd
