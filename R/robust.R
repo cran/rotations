@@ -16,9 +16,11 @@
 #' @export
 #' @examples
 #' #Compute the measures of discord for a sample from the Cayley distribution
-#' Rs <- ruars(20,rcayley,kappa=1)
-#' Hi <- discord(Rs, type='intrinsic')
-#' He <- discord(Rs, type='extrinsic')
+#' # Intrinsic examples are commented out but are below if you're interested
+#' 
+#' Rss <- ruars(20,rcayley,kappa=1)
+#' Hi <- discord(Rss, type='intrinsic')
+#' He <- discord(Rss, type='extrinsic')
 #' 
 #' #Compare to the theoretical F distribution
 #' OrdHi <- sort(Hi)
@@ -30,6 +32,7 @@
 #' 
 #' plot(ecdf(OrdHe),main='Extrinsic',xlim=range(c(OrdHi,OrdHe)))
 #' lines(OrdHi,pf(OrdHi,3,3*(length(OrdHe)-2)))
+#' layout(1)
 
 discord<-function(x, type, t=1L, obs=1:nrow(x)){
   #Compute the statistic proposed by Best and Fisher (1986) that is a function of the largest eigenvalue
@@ -38,10 +41,10 @@ discord<-function(x, type, t=1L, obs=1:nrow(x)){
   
   Qs<-as.Q4(x)
   type <- try(match.arg(type,c("intrinsic", "extrinsic")),silent=T)
-  if (class(type)=="try-error")
+  if ("try-error"%in%class(type))
     stop("type needs to be one of 'intrinsic' or 'extrinsic'.")
   
-  if(any(obs>nrow(x)||obs<0))
+  if(any(obs>nrow(x))||any(obs<0))
     stop("obs must be between 1 and nrow(x)")
   
   if(t>1){
@@ -85,7 +88,7 @@ HnBlocCpp<-function(Qs,t){
   #Compute the Hn statistic when each possible set of t observations is deleted
   Qs<-as.Q4(Qs)
   n<-nrow(Qs)
-  groups <- combn(n,t)
+  groups <- utils::combn(n,t)
   
   Hnia <- HnCppBloc(Qs,groups)
   
