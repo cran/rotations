@@ -1,7 +1,7 @@
 Package: rotations
 Type: Package
 Title: Working with Rotation Data
-Version: 1.6
+Version: 1.6.1
 Authors@R: 
     c(person(given = "Bryan",
              family = "Stanfill",
@@ -55,7 +55,7 @@ Collate: 'Q4-class.R' 'RcppExports.R' 'preliminary.R' 'SO3-class.R'
         'grid-search.R' 'help.R' 'kappa.R' 'plot.R' 'primitives.R'
         'regions.R' 'robust.R' 'rotations-package.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2020-03-26 17:10:19 UTC; stanfill
+Packaged: 2020-04-02 13:22:48 UTC; stanfill
 Author: Bryan Stanfill [aut, cre],
   Heike Hofmann [aut],
   Ulrike Genschel [aut],
@@ -63,4 +63,4 @@ Author: Bryan Stanfill [aut, cre],
   Luciano Selzer [ctb]
 Maintainer: Bryan Stanfill <bstanfill2003@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-03-28 15:40:02 UTC
+Date/Publication: 2020-04-03 14:10:09 UTC

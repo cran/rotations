@@ -1,7 +1,7 @@
-7cf247c79c8ac31ca020315f86b3d4d4 *DESCRIPTION
+6e47edf1203731d621e92bd72de1419b *DESCRIPTION
 e5521af3ec25395c9ecf8c12c4b31f27 *LICENSE
 191f4f28382e011e5e89178ac03cf878 *NAMESPACE
-6913548530ffa1b6d38b3e9ed3dc787a *NEWS
+85bdedd56902fb6e67c16520e03468d3 *NEWS
 09f74857f5fc92bec494c8de4eeefd2c *R/Q4-class.R
 2af7ec9b979d9dc65db87dc96938dd1d *R/RcppExports.R
 ff23c16b37ca2f2ac3231e1a19fd38c1 *R/SO3-class.R
@@ -19,7 +19,7 @@ eea976f881f60b56cd7427d126a89d64 *R/preliminary.R
 9952866ca25f676fcae2ac94c0b41ee6 *R/robust.R
 a44181c51292751c6fb340b619d2e739 *R/rotations-package.R
 51a2109fb882d402c4e20c340c9fffc3 *R/zzz.R
-cca0bb9aa51aa21f1204f72660cf2a3a *README.md
+7d747bad057077faa278dc1ef9fd9cc8 *README.md
 8dc440583e5415fdc69e85270e7325de *build/vignette.rds
 f964ddef3ae34522deefce21e21899dd *data/datalist
 ec354d35f427235154d1f2936c50baa6 *data/drill.rda
@@ -28,7 +28,7 @@ e6a9a004c61d11b0323787fe6007d754 *inst/CITATION
 a646a4d3239a5bc70c9d7c28b8054a43 *inst/REFERENCES.bib
 d5e2984912ef1cca7ad908be20a9f6cd *inst/doc/rotations-intro.R
 61258614a64b960c6dbcdcf2d08ab25f *inst/doc/rotations-intro.Rnw
-f60df995ba43bb6ed59f88149efba291 *inst/doc/rotations-intro.pdf
+9f9d1674eba42688d6545cb521794183 *inst/doc/rotations-intro.pdf
 f36685bae64c38cefae3651718cb0619 *inst/include/rotations.h
 7307f89bf82c600c34234892df55a031 *inst/include/rotations_RcppExports.h
 c6cfb782d87e51e17856daa5037493a9 *man/Angular-distributions.Rd
@@ -83,7 +83,7 @@ e913cf57abb0c98b4c2c29ff0fd05699 *src/Makevars.win
 a818088423fbd84a1ae449ea851959d5 *src/RcppExports.cpp
 2d2ea455a9fe21a2f5b4e20fad7be17f *src/ZhangMethod.cpp
 376a4d7a117d5c36aea2286651476207 *src/ZhangMethod.h
-6e643c7364c9a79dbd8ac331a8dee27d *src/basics.cpp
+6d098ce1c276818c17c65e6bb41a86cf *src/basics.cpp
 7cc1bba08de9cef42ac9ec2596c67798 *src/basics.h
 b9d6caf2d2080ba683fc8fe4773334fc *src/estimators.cpp
 02b462242c1ad25c9a25e3a564a44636 *src/estimators.h
