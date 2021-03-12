@@ -1,7 +1,7 @@
 Package: rotations
 Type: Package
 Title: Working with Rotation Data
-Version: 1.6.1
+Version: 1.6.2
 Authors@R: 
     c(person(given = "Bryan",
              family = "Stanfill",
@@ -41,21 +41,21 @@ Description: Tools for working with rotational data, including
     Fisher, Nicholas I. (1996, ISBN:0521568900).
 License: MIT + file LICENSE
 Depends: R (>= 2.10)
-Imports: ggplot2, gridExtra, Rcpp, rgl, sphereplot
-Suggests: knitr, onion, orientlib, testthat, rmarkdown
+Imports: ggplot2, gridExtra, Rcpp, sphereplot
+Suggests: knitr, onion, orientlib, testthat, rmarkdown, rgl
 LinkingTo: Rcpp, RcppArmadillo
 URL: https://github.com/stanfill/rotationsC
 BugReports: https://github.com/stanfill/rotationsC/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 Collate: 'Q4-class.R' 'RcppExports.R' 'preliminary.R' 'SO3-class.R'
         'bayes.R' 'data.R' 'distributions.R' 'estimators.R'
         'grid-search.R' 'help.R' 'kappa.R' 'plot.R' 'primitives.R'
         'regions.R' 'robust.R' 'rotations-package.R' 'zzz.R'
 NeedsCompilation: yes
-Packaged: 2020-04-02 13:22:48 UTC; stanfill
+Packaged: 2021-03-11 22:50:28 UTC; stanfill
 Author: Bryan Stanfill [aut, cre],
   Heike Hofmann [aut],
   Ulrike Genschel [aut],
@@ -63,4 +63,4 @@ Author: Bryan Stanfill [aut, cre],
   Luciano Selzer [ctb]
 Maintainer: Bryan Stanfill <bstanfill2003@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-04-03 14:10:09 UTC
+Date/Publication: 2021-03-12 22:50:02 UTC

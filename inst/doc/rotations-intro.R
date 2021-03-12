@@ -115,7 +115,7 @@ mean(Loc1data)
  Qs <- ruars(20, rcayley, space = 'Q4')
  Rs <- as.SO3(Qs)
  suppressMessages(require(onion))
- onionQs <- as.quaternion(t(Qs))
+ onionQs <- as.quaternion(matrix(Qs,nrow=4, byrow = TRUE))
  suppressMessages(require(orientlib))
  orientRs <- rotvector(matrix(Rs, ncol = 9))
 
