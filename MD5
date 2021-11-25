@@ -1,7 +1,7 @@
-7922b37f0b989ed0044718e31d2c0680 *DESCRIPTION
+ec25df46ab6a6d1da252ce06ec5d468c *DESCRIPTION
 e5521af3ec25395c9ecf8c12c4b31f27 *LICENSE
 191f4f28382e011e5e89178ac03cf878 *NAMESPACE
-a5e65c15d435d4fac0b475f06a4f75b0 *NEWS
+a64fd37acaf40f759b7903a49772bfae *NEWS
 09f74857f5fc92bec494c8de4eeefd2c *R/Q4-class.R
 2af7ec9b979d9dc65db87dc96938dd1d *R/RcppExports.R
 ff23c16b37ca2f2ac3231e1a19fd38c1 *R/SO3-class.R
@@ -20,14 +20,14 @@ eea976f881f60b56cd7427d126a89d64 *R/preliminary.R
 a44181c51292751c6fb340b619d2e739 *R/rotations-package.R
 51a2109fb882d402c4e20c340c9fffc3 *R/zzz.R
 dae99e997029dab116f58c915b396958 *README.md
-26751dc629559d93ffc0a6127a382585 *build/vignette.rds
+a484178aa13ef6f316b2b79a02d8bc90 *build/vignette.rds
 ec354d35f427235154d1f2936c50baa6 *data/drill.rda
 cc2d8b54df3fcd0d250d1ee1d689f3ae *data/nickel.rda
 e6a9a004c61d11b0323787fe6007d754 *inst/CITATION
 a646a4d3239a5bc70c9d7c28b8054a43 *inst/REFERENCES.bib
 b67fee9f09b747033e905a4f0ac0d5ff *inst/doc/rotations-intro.R
 04d2a073f2bbea29309a90a221028a4e *inst/doc/rotations-intro.Rnw
-7954ce033ff80a30069ddd99a66846df *inst/doc/rotations-intro.pdf
+317eb9cf91e2547039ccb2f8cb6abf4c *inst/doc/rotations-intro.pdf
 f36685bae64c38cefae3651718cb0619 *inst/include/rotations.h
 7307f89bf82c600c34234892df55a031 *inst/include/rotations_RcppExports.h
 c6cfb782d87e51e17856daa5037493a9 *man/Angular-distributions.Rd
@@ -79,7 +79,7 @@ f6e4028669ffd3eeae31e9c59c8b49bc *src/CppBayesFunctions.h
 85639a92829bd63b42ae3b0ad1387062 *src/FisherMethod.h
 8ae924020533577c47c4940f402bbaa9 *src/Makevars
 e913cf57abb0c98b4c2c29ff0fd05699 *src/Makevars.win
-a818088423fbd84a1ae449ea851959d5 *src/RcppExports.cpp
+2835ae03b7508a8f7d71785ae487f49f *src/RcppExports.cpp
 2d2ea455a9fe21a2f5b4e20fad7be17f *src/ZhangMethod.cpp
 376a4d7a117d5c36aea2286651476207 *src/ZhangMethod.h
 6d098ce1c276818c17c65e6bb41a86cf *src/basics.cpp
@@ -89,7 +89,7 @@ b9d6caf2d2080ba683fc8fe4773334fc *src/estimators.cpp
 46dfe14e06e6f13c824e5c89fda6a8cc *src/robustCpp.cpp
 6c20a41416fcf229d0c855510daaa3af *src/robustCpp.h
 22d0e113a1bc7560b8ceac1ec2ea94eb *tests/test-all.R
-24c3db8cbb2bd574dd1e0de7826d8a7e *tests/testthat/test_arithmetic.R
+b8fa85c849a0261adf598a56dffd1882 *tests/testthat/test_arithmetic.R
 9385c7a01ba13e669f6936f298e0aa69 *tests/testthat/test_basics.R
 b8b7b0383d4c370037f08a5648670dae *tests/testthat/test_conversions.R
 6856001047a00aca7f727aa3f80da15b *tests/testthat/test_discord.R
