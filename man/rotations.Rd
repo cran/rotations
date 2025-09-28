@@ -2,11 +2,36 @@
 % Please edit documentation in R/help.R
 \docType{package}
 \name{rotations}
+\alias{rotations-package}
 \alias{rotations}
 \title{A package for working with rotation data.}
 \description{
-This package implements tools for working with rotational data: it allows simulation from the 
-most commonly used  distributions on \eqn{SO(3)}, it includes methods for different mean and median type 
-estimators for the central orientation of a sample, it provides confidence regions 
+This package implements tools for working with rotational data: it allows simulation from the
+most commonly used  distributions on \eqn{SO(3)}, it includes methods for different mean and median type
+estimators for the central orientation of a sample, it provides confidence regions
 for those estimates and it includes a novel visualization technique for rotation data.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/stanfill/rotationsC}
+  \item Report bugs at \url{https://github.com/stanfill/rotationsC/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Bryan Stanfill \email{bstanfill2003@gmail.com}
+
+Authors:
+\itemize{
+  \item Heike Hofmann
+  \item Ulrike Genschel
+}
+
+Other contributors:
+\itemize{
+  \item Aymeric Stamm \email{aymeric.stamm@math.cnrs.fr} (\href{https://orcid.org/0000-0002-8725-3654}{ORCID}) [contributor]
+  \item Luciano Selzer [contributor]
+}
+
 }
