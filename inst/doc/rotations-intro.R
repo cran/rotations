@@ -1,3 +1,9 @@
+## ----include=FALSE------------------------------------------------------------
+library(knitr)
+opts_chunk$set(
+concordance=TRUE
+)
+
 ## ----setup,include=FALSE------------------------------------------------------
 orig_options <- options()
 options(digits=3)
@@ -83,7 +89,7 @@ region(
   m = 300
 )
 
-## ----ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\kappa=1$ and $n=50$. All four point estimates are displayed on the left and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\\textwidth",fig.pos="h",dev='png'----
+## ----ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\\\kappa=1$ and $n=50$. All four point estimates are displayed on the left and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\textwidth",fig.pos="h",dev='png'----
 plot(
   x = Rs, 
   center = mean(Rs), 

@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Bryan Stanfill \email{bstanfill2003@gmail.com}
   \item Heike Hofmann
   \item Ulrike Genschel
 }

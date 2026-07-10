@@ -23,7 +23,16 @@
 %\VignetteDepends{knitr,onion,orientlib}
 %\VignetteEngine{knitr::knitr}
 
+
 \begin{document}
+
+<<include=FALSE>>=
+library(knitr)
+opts_chunk$set(
+concordance=TRUE
+)
+@
+
 
 <<setup,include=FALSE>>=
 orig_options <- options()
@@ -320,7 +329,7 @@ Calling the \code{plot} function with a \code{"SO3"} or \code{"Q4"} object will 
 
 All four estimates of the central orientation can be plotted along with a sample of rotations. Setting the argument \code{estimates$\_$show = "all"} will display all four simultaneously.  If only a few estimates are of interest then any combination of \code{"proj.mean"}, \code{"proj.median"}, \code{"geom.mean"} or \code{"geom.median"} are valid inputs.  The estimators are indicated by color and a legend is provided, see Figure \ref{figure:eye1ex7}. Finally, the \code{mean$\_$regions} and \code{median$\_$regions} options allow the user to draw a circle on the surface of the sphere representing the confidence region for that axis, centered at $\ProjMean$ and $\ProjMedian$ respectively.  If estimators are plotted along with the different regions in static plots then shapes represent the estimators and colors represent the region methods, see Figure \ref{figure:eye1ex7}, while regions and estimators are always distinguished by colors for the interactive plots.  Given the sample of rotations generated in a previous example, the example below illustrates how to produce static plots using the \code{plot} function for objects of class \code{"SO3"} and Figure \ref{figure:eye1ex7} illustrates the results of these commands.% and Figure \ref{figure:eye2} illustrates the same data with the additional argument \code{interactive=TRUE}.
 
-<<ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\kappa=1$ and $n=50$. All four point estimates are displayed on the left and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\\textwidth",fig.pos="h",dev='png'>>=
+<<ex7,fig.cap="The $x$-axis of a random sample from the Cayley-UARS distribution with $\\\\kappa=1$ and $n=50$. All four point estimates are displayed on the left and all three region methods along with the projected mean are on the right.",fig.lp="figure:eye1",out.width=".4\textwidth",fig.pos="h",dev='png'>>=
 plot(
   x = Rs, 
   center = mean(Rs), 
